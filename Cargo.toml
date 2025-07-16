@@ -7,5 +7,7 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-mlua = { version = "0.10", features = ["luajit", "vendored"]}
+lazy_static = "1.5.0"
+mlua = { version = "0.10", features = ["luajit", "vendored", "serialize"]}
 nvim-oxi = {version = "0.6", features = ["neovim-0-11", "mlua"]}
+serde = "1.0.219"
