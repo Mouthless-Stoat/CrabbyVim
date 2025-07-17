@@ -1,5 +1,6 @@
 mod lazy;
 mod lsp;
+mod macros;
 
 #[nvim_oxi::plugin]
 fn config() -> nvim_oxi::Result<()> {
@@ -7,4 +8,3 @@ fn config() -> nvim_oxi::Result<()> {
     lsp::setup_lsp()?;
     Ok(())
 }
-

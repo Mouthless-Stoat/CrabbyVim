@@ -1,26 +1,22 @@
-use mlua::{Table, Function};
+use crate::lua_table;
+use mlua::{Function, Table};
 use nvim_oxi::mlua;
 use serde::Serialize;
 
 #[derive(Serialize)]
 struct LspConfig {
     name: &'static str,
-    cmd: &'static [&'static str],
-    filetypes: &'static [&'static str],
-    root_markers: &'static [&'static str],
-    settings: Table
+    settings: Table,
 }
 
 pub struct Lsp {
-    configs: Vec<LspConfig>
+    configs: Vec<LspConfig>,
 }
 
 impl Lsp {
     /// Create a new LSP structure to configure the LSP servers
     fn new() -> Self {
-        Lsp {
-            configs: vec![]
-        }
+        Lsp { configs: vec![] }
     }
 
     /// Add a new LSP server config
@@ -31,15 +27,13 @@ impl Lsp {
     /// Configure the LSP server with all config.
     fn configure(self) -> nvim_oxi::Result<()> {
         let lua = mlua::lua();
-        let vim_lsp = lua.globals().get::<Table>("vim")?.get::<Table>("lsp")?;
+        let vim = lua.globals().get::<Table>("vim")?;
+        let vim_lsp = vim.get::<Table>("lsp")?;
         let lsp_config = vim_lsp.get::<Table>("config")?;
 
         for config in self.configs {
             let tbl = lua.create_table()?;
 
-            tbl.set("cmd", config.cmd)?;
-            tbl.set("filetypes", config.filetypes)?;
-            tbl.set("root_markers", config.root_markers)?;
             tbl.set("settings", config.settings)?;
 
             lsp_config.set(config.name, tbl)?;
@@ -52,13 +46,9 @@ impl Lsp {
 
 pub fn setup_lsp() -> nvim_oxi::Result<()> {
     let lua = nvim_oxi::mlua::lua();
-    let mut lsp =Lsp::new();
+    let mut lsp = Lsp::new();
 
     lsp.add_config(LspConfig {
-        name: "rust",
-        cmd: &[ "rust-analyzer" ],
-        filetypes: &[ "rust" ],
-        root_markers: &[ "Cargo.toml"],
         settings: {
             let tbl = lua.create_table()?;
             
@@ -82,6 +72,7 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
 
             tbl
         }
+        name: "rust_analyzer",
     });
 
     lsp.configure()?;

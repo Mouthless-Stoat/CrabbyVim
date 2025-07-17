@@ -15,7 +15,8 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
                 lazypath.to_str().unwrap(),
             ])
             .spawn()
-            .unwrap();
+            .and_then(|mut c| c.wait())
+            .expect("Cannot install lazy.nvim");
     }
 
     let old_rtp = nvim_oxi::api::get_option_value::<String>("runtimepath", &OptionOpts::default())?;
@@ -36,7 +37,21 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
         .call::<Table>("lazy")?
         .get::<Function>("setup")?;
 
-    lazy_setup.call::<()>(lua.create_table())?;
+    let plugins = lua.create_table()?;
+
+    plugins.push(lsp_config()?)?;
+
+    lazy_setup.call::<()>(lua.create_table_from([("spec", plugins)])?)?;
 
     Ok(())
+}
+
+fn lsp_config() -> nvim_oxi::Result<Table> {
+    let lua = nvim_oxi::mlua::lua();
+
+    let config = lua.create_table()?;
+
+    config.push("neovim/nvim-lspconfig")?;
+
+    Ok(config)
 }
