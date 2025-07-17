@@ -49,30 +49,24 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
     let mut lsp = Lsp::new();
 
     lsp.add_config(LspConfig {
-        settings: {
-            let tbl = lua.create_table()?;
-            
-            let imports = lua.create_table()?;
-            imports.set("granularity", lua.create_table_from([("group", "module")])?)?;
-            imports.set("prefix", "self")?;
-
-            let cargo = lua.create_table()?;
-            cargo.set("buildScripts", lua.create_table_from([("enable", true)])?)?;
-
-            let check = lua.create_table()?;
-            check.set("command", "clippy")?;
-
-            let inner_tbl = lua.create_table()?;
-
-            inner_tbl.set("imports", imports)?;
-            inner_tbl.set("cargo", cargo)?;
-            inner_tbl.set("check", check)?;
-
-            tbl.set("rust-analyzer", inner_tbl)?;
-
-            tbl
-        }
         name: "rust_analyzer",
+        settings: lua_table! {
+            imports = lua_table! { 
+                granularity = lua_table! { group = "module" } ,
+                prefix = "self"
+            },
+            cargo = lua_table! {
+                buildScripts = lua_table! {
+                    enable = true
+                }
+            },
+            proMacro = lua_table! {
+                enable = true
+            },
+            check = lua_table! {
+                command = "clippy"
+            }
+        },
     });
 
     lsp.configure()?;
