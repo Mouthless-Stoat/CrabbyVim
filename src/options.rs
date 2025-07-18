@@ -1,4 +1,6 @@
 use nvim_oxi::conversion::ToObject;
+use mlua::{Function, Table};
+use crate::lua_table;
 
 pub fn configure_options() -> nvim_oxi::Result<()> {
     set_option("number", true)?;
@@ -45,6 +47,20 @@ pub fn configure_options() -> nvim_oxi::Result<()> {
     set_option("guifont", "CaskaydiaCove Nerd Font Mono:h10:#h-none")?;
     set_option("shell", "powershell")?;
     set_option("shellcmdflag", "-c")?;
+
+    let yank_callback = |_args| {
+        nvim_oxi::mlua::lua().globals()
+            .get::<Table>("vim")?
+            .get::<Table>("hl")?
+            .get::<Function>("on_yank")?.call::<bool>(lua_table!{ higroup = "Yank" })
+    };
+
+    let opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder()
+        .patterns(["*"])
+        .callback(yank_callback)
+        .build();
+
+    nvim_oxi::api::create_autocmd(["TextYankPost"], &opts)?;
 
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
         configure_neovide()?;
