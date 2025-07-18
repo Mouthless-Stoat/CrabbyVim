@@ -4,7 +4,7 @@ use std::env;
 
 pub fn setup_lazy() -> nvim_oxi::Result<()> {
     let lazypath =
-        std::path::Path::new(&env::var("XDG_CONFIG_HOME").unwrap()).join("lazy/lazy.nvim");
+        std::path::Path::new(&env::var("XDG_DATA_HOME").unwrap()).join("nvim-data/lazy/lazy.nvim");
     if !lazypath.exists() {
         std::process::Command::new("git")
             .args([

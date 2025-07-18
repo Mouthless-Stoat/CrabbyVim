@@ -45,13 +45,12 @@ impl Lsp {
 }
 
 pub fn setup_lsp() -> nvim_oxi::Result<()> {
-    let lua = nvim_oxi::mlua::lua();
     let mut lsp = Lsp::new();
 
     lsp.add_config(LspConfig {
         name: "rust_analyzer",
         settings: lua_table! {
-            imports = lua_table! { 
+            imports = lua_table! {
                 granularity = lua_table! { group = "module" } ,
                 prefix = "self"
             },
