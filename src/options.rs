@@ -79,13 +79,13 @@ fn configure_neovide() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-fn set_option<T: ToObject>(name: &'static str, value: T) -> nvim_oxi::Result<()>
+pub fn set_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()>
 {
     nvim_oxi::api::set_option_value::<T>(name, value, &nvim_oxi::api::opts::OptionOpts::default())?;
     Ok(())
 }
 
-fn set_neovide_option<T: ToObject>(name: &'static str, value: T) -> nvim_oxi::Result<()> {
+fn set_neovide_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_var(format!("neovide_{name}").as_str(), value)?;
     Ok(())
 }
