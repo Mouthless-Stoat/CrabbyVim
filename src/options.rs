@@ -1,6 +1,6 @@
-use nvim_oxi::conversion::ToObject;
-use mlua::{Function, Table};
 use crate::lua_table;
+use mlua::{Function, Table};
+use nvim_oxi::conversion::ToObject;
 
 pub fn configure_options() -> nvim_oxi::Result<()> {
     set_option("number", true)?;
@@ -49,10 +49,12 @@ pub fn configure_options() -> nvim_oxi::Result<()> {
     set_option("shellcmdflag", "-c")?;
 
     let yank_callback = |_args| {
-        nvim_oxi::mlua::lua().globals()
+        nvim_oxi::mlua::lua()
+            .globals()
             .get::<Table>("vim")?
             .get::<Table>("hl")?
-            .get::<Function>("on_yank")?.call::<bool>(lua_table!{ higroup = "Yank" })
+            .get::<Function>("on_yank")?
+            .call::<bool>(lua_table! { higroup = "Yank" })
     };
 
     let opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder()
@@ -79,8 +81,7 @@ fn configure_neovide() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-pub fn set_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()>
-{
+pub fn set_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_option_value::<T>(name, value, &nvim_oxi::api::opts::OptionOpts::default())?;
     Ok(())
 }
