@@ -26,18 +26,19 @@ pub fn syntax_highlight() -> nvim_oxi::Result<()> {
     set_hl(Type, HighlightOpt::new().fg(Color::Orange))?;
 
     set_hl(Operator, HighlightOpt::new().fg(Color::Cyan))?;
-    set_hl(Special, HighlightOpt::new().fg(Color::Cyan))?;
+    set_hl(Special, HighlightOpt::new().fg(Color::Pink).italic())?;
     set_hl(Delimiter, HighlightOpt::new().fg(Color::Gray))?;
 
     set_hl("@variable", HighlightOpt::link(Identifier))?;
-    set_hl("@variable.member", HighlightOpt::new().fg(Color::Red))?;
-    set_hl("@variable.builtin", HighlightOpt::new().fg(Color::Red))?;
+    set_hl("@variable.member", HighlightOpt::link(Member))?;
+    set_hl("@variable.builtin", HighlightOpt::link(Builtin))?;
 
     set_lsp_hl("property", HighlightOpt::link(Member))?;
     set_lsp_hl("modifier", HighlightOpt::link(Keyword))?;
 
     set_lsp_hl("struct", HighlightOpt::link(Structure))?;
     set_lsp_hl("enum", HighlightOpt::link(Structure))?;
+    set_lsp_hl("enumMember", HighlightOpt::new().fg(Color::Yellow).italic())?;
 
     set_hl("rustSigil", HighlightOpt::link(Operator))?;
 
