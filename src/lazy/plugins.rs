@@ -3,10 +3,30 @@ use mlua::Table;
 
 pub struct Lazy(Vec<LazyPlugin>);
 
+enum LazyVersion {
+    Branch(&'static str),
+    Commit(&'static str),
+    Tag(&'static str),
+    Semver(&'static str),
+}
+
+struct LazyLoad {
+    lazy: bool,
+    event: Option<&'static [&'static str]>,
+    cmd: Option<&'static [&'static str]>,
+    ft: Option<&'static [&'static str]>,
+    keys: Option<&'static [&'static str]>,
+}
+
+#[derive(Default)]
 pub struct LazyPlugin {
     url: &'static str,
     dependencies: Option<&'static [&'static str]>,
     callback: Option<Box<dyn Fn() -> nvim_oxi::Result<()>>>,
+    main: Option<&'static str>,
+    build: Option<&'static str>,
+    version: Option<LazyVersion>,
+    lazy_load: Option<LazyLoad>,
 }
 
 impl Lazy {
@@ -64,15 +84,51 @@ impl Lazy {
             }
         };
 
-        let spec = lua_table! {};
+        let plugins_spec = lua_table! {};
 
         for plugin in self.0 {
-            let tbl = lua_table! {};
+            let spec = lua_table! {};
 
-            tbl.push(plugin.url)?;
-            tbl.set("dependencies", plugin.dependencies)?;
+            spec.push(plugin.url)?;
+
+            if let Some(dependencies) = plugin.dependencies {
+                spec.set("dependencies", dependencies)?
+            };
+            if let Some(main) = plugin.main {
+                spec.set("main", main)?
+            };
+            if let Some(build) = plugin.build {
+                spec.set("build", build)?
+            };
+
+            if let Some(version) = plugin.version {
+                match version {
+                    LazyVersion::Branch(b) => spec.set("branch", b)?,
+                    LazyVersion::Commit(c) => spec.set("commit", c)?,
+                    LazyVersion::Tag(t) => spec.set("tag", t)?,
+                    LazyVersion::Semver(v) => spec.set("version", v)?,
+                }
+            };
+
+            if let Some(lazy_load) = plugin.lazy_load {
+                spec.set("lazy", lazy_load.lazy)?;
+
+                if let Some(event) = lazy_load.event {
+                    spec.set("event", event)?;
+                }
+                if let Some(cmd) = lazy_load.cmd {
+                    spec.set("cmd", cmd)?;
+                }
+                if let Some(ft) = lazy_load.ft {
+                    spec.set("ft", ft)?;
+                }
+                if let Some(keys) = lazy_load.keys {
+                    spec.set("keys", keys)?;
+                }
+            }
+
             if let Some(callback) = plugin.callback {
-                tbl.set(
+                spec.set(
                     "config",
                     lua.create_function(move |_, _: Table| {
                         callback().unwrap();
@@ -81,10 +137,10 @@ impl Lazy {
                 )?;
             }
 
-            spec.push(tbl)?;
+            plugins_spec.push(spec)?;
         }
 
-        tbl.set("spec", spec)?;
+        tbl.set("spec", plugins_spec)?;
 
         crate::require_setup("lazy", tbl)?;
 
@@ -93,11 +149,10 @@ impl Lazy {
 }
 
 impl LazyPlugin {
-    fn new(url: &'static str) -> Self{
+    fn new(url: &'static str) -> Self {
         LazyPlugin {
             url,
-            dependencies: None,
-            callback: None,
+            ..LazyPlugin::default()
         }
     }
 
@@ -106,7 +161,7 @@ impl LazyPlugin {
         self
     }
 
-    fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self{
+    fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self {
         self.callback = Some(Box::new(callback));
         self
     }
