@@ -23,6 +23,7 @@ pub struct LazyLoad {
 pub struct LazyPlugin {
     url: &'static str,
     dependencies: Option<&'static [&'static str]>,
+    opts: Option<mlua::Table>,
     callback: Option<Box<dyn Fn() -> nvim_oxi::Result<()>>>,
     main: Option<&'static str>,
     build: Option<&'static str>,
@@ -92,6 +93,10 @@ impl Lazy {
 
             spec.push(plugin.url)?;
 
+            if let Some(opts) = plugin.opts {
+                spec.set("opts", opts)?;
+            }
+
             if let Some(dependencies) = plugin.dependencies {
                 spec.set("dependencies", dependencies)?;
             }
@@ -155,6 +160,11 @@ impl LazyPlugin {
             url,
             ..Self::default()
         }
+    }
+
+    pub fn opts(mut self, opts: mlua::Table) -> Self {
+        self.opts = Some(opts);
+        self
     }
 
     pub fn depend(mut self, dependencies: &'static [&'static str]) -> Self {
