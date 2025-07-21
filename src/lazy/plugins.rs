@@ -150,7 +150,7 @@ impl Lazy {
 }
 
 impl LazyPlugin {
-    fn new(url: &'static str) -> Self {
+    pub fn new(url: &'static str) -> Self {
         Self {
             url,
             ..Self::default()
