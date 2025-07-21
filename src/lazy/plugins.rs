@@ -3,16 +3,17 @@ use mlua::Table;
 
 pub struct Lazy(Vec<LazyPlugin>);
 
-enum LazyVersion {
+pub enum LazyVersion {
     Branch(&'static str),
     Commit(&'static str),
     Tag(&'static str),
     Semver(&'static str),
 }
 
-struct LazyLoad {
+#[derive(Default)]
+pub struct LazyLoad {
     lazy: bool,
-    event: Option<&'static [&'static str]>,
+    events: Option<&'static [&'static str]>,
     cmd: Option<&'static [&'static str]>,
     ft: Option<&'static [&'static str]>,
     keys: Option<&'static [&'static str]>,
@@ -92,14 +93,14 @@ impl Lazy {
             spec.push(plugin.url)?;
 
             if let Some(dependencies) = plugin.dependencies {
-                spec.set("dependencies", dependencies)?
-            };
+                spec.set("dependencies", dependencies)?;
+            }
             if let Some(main) = plugin.main {
-                spec.set("main", main)?
-            };
+                spec.set("main", main)?;
+            }
             if let Some(build) = plugin.build {
-                spec.set("build", build)?
-            };
+                spec.set("build", build)?;
+            }
 
             if let Some(version) = plugin.version {
                 match version {
@@ -108,13 +109,13 @@ impl Lazy {
                     LazyVersion::Tag(t) => spec.set("tag", t)?,
                     LazyVersion::Semver(v) => spec.set("version", v)?,
                 }
-            };
+            }
 
             if let Some(lazy_load) = plugin.lazy_load {
                 spec.set("lazy", lazy_load.lazy)?;
 
-                if let Some(event) = lazy_load.event {
-                    spec.set("event", event)?;
+                if let Some(events) = lazy_load.events {
+                    spec.set("event", events)?;
                 }
                 if let Some(cmd) = lazy_load.cmd {
                     spec.set("cmd", cmd)?;
@@ -150,19 +151,68 @@ impl Lazy {
 
 impl LazyPlugin {
     fn new(url: &'static str) -> Self {
-        LazyPlugin {
+        Self {
             url,
-            ..LazyPlugin::default()
+            ..Self::default()
         }
     }
 
-    fn depend(mut self, dependencies: &'static [&'static str]) -> Self {
+    pub fn depend(mut self, dependencies: &'static [&'static str]) -> Self {
         self.dependencies = Some(dependencies);
         self
     }
 
-    fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self {
+    pub fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self {
         self.callback = Some(Box::new(callback));
+        self
+    }
+
+    pub fn main(mut self, main: &'static str) -> Self {
+        self.main = Some(main);
+        self
+    }
+
+    pub fn build(mut self, build: &'static str) -> Self {
+        self.build = Some(build);
+        self
+    }
+
+    pub fn version(mut self, version: LazyVersion) -> Self {
+        self.version = Some(version);
+        self
+    }
+
+    pub fn lazy_load(mut self, lazy_load: LazyLoad) -> Self {
+        self.lazy_load = Some(lazy_load);
+        self
+    }
+}
+
+impl LazyLoad {
+    pub fn new(lazy: bool) -> Self {
+        Self {
+            lazy,
+            ..Self::default()
+        }
+    }
+
+    pub fn events(mut self, events: &'static [&'static str]) -> Self {
+        self.events = Some(events);
+        self
+    }
+
+    pub fn cmd(mut self, cmd: &'static [&'static str]) -> Self {
+        self.cmd = Some(cmd);
+        self
+    }
+
+    pub fn ft(mut self, ft: &'static [&'static str]) -> Self {
+        self.ft = Some(ft);
+        self
+    }
+
+    pub fn keys(mut self, keys: &'static [&'static str]) -> Self {
+        self.keys = Some(keys);
         self
     }
 }
