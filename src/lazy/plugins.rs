@@ -74,7 +74,10 @@ impl Lazy {
             if let Some(callback) = plugin.callback {
                 tbl.set(
                     "config",
-                    lua.create_function(move |_, _: Table| Ok(callback().unwrap()))?,
+                    lua.create_function(move |_, _: Table| {
+                        callback().unwrap();
+                        Ok(())
+                    })?,
                 )?;
             }
 

@@ -67,28 +67,28 @@ enum SyntaxGroup {
     Delimiter,
 }
 
-impl Into<&'static str> for SyntaxGroup {
-    fn into(self) -> &'static str {
-        match self {
-            Self::Comment => "Comment",
-            Self::String => "String",
-            Self::Number => "Number",
-            Self::Float => "Float",
-            Self::Boolean => "Boolean",
-            Self::Character => "Character",
-            Self::Structure => "Struture",
-            Self::Identifier => "Identifier",
-            Self::Constant => "Constant",
-            Self::Member => "Member",
-            Self::Builtin => "Builtin",
-            Self::Function => "Function",
-            Self::Statement => "Statement",
-            Self::Keyword => "Keyword",
-            Self::Preproc => "Preproc",
-            Self::Type => "Type",
-            Self::Operator => "Operator",
-            Self::Special => "Special",
-            Self::Delimiter => "Delimiter",
+impl From<SyntaxGroup> for &'static str {
+    fn from(val: SyntaxGroup) -> Self {
+        match val {
+            SyntaxGroup::Comment => "Comment",
+            SyntaxGroup::String => "String",
+            SyntaxGroup::Number => "Number",
+            SyntaxGroup::Float => "Float",
+            SyntaxGroup::Boolean => "Boolean",
+            SyntaxGroup::Character => "Character",
+            SyntaxGroup::Structure => "Struture",
+            SyntaxGroup::Identifier => "Identifier",
+            SyntaxGroup::Constant => "Constant",
+            SyntaxGroup::Member => "Member",
+            SyntaxGroup::Builtin => "Builtin",
+            SyntaxGroup::Function => "Function",
+            SyntaxGroup::Statement => "Statement",
+            SyntaxGroup::Keyword => "Keyword",
+            SyntaxGroup::Preproc => "Preproc",
+            SyntaxGroup::Type => "Type",
+            SyntaxGroup::Operator => "Operator",
+            SyntaxGroup::Special => "Special",
+            SyntaxGroup::Delimiter => "Delimiter",
         }
     }
 }
