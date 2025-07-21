@@ -17,7 +17,7 @@ pub enum Mode {
 }
 
 impl Mode {
-    fn current_mode() -> nvim_oxi::Result<Self> {
+    pub fn current_mode() -> nvim_oxi::Result<Self> {
         Ok(match nvim_oxi::api::get_mode()?.mode.to_str().unwrap() {
             "n" | "niI" | "niR" | "niV" | "nt" | "ntT" => Self::Normal,
             "i" | "ic" | "ix" => Self::Insert,
@@ -28,7 +28,7 @@ impl Mode {
         })
     }
 
-    fn as_str(self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             Self::Normal => "normal",
             Self::Insert => "insert",
