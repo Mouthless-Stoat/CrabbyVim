@@ -8,7 +8,7 @@ pub fn syntax_highlight() -> nvim_oxi::Result<()> {
 
     set_hl(String, HighlightOpt::new().fg(Color::Green))?;
     set_hl(Number, HighlightOpt::new().fg(Color::Orange))?;
-    set_hl(Float, HighlightOpt::link(SyntaxGroup::Number))?;
+    set_hl(Float, HighlightOpt::link(Number))?;
     set_hl(Boolean, HighlightOpt::new().fg(Color::Orange))?;
     set_hl(Character, HighlightOpt::new().fg(Color::Orange))?;
     set_hl(Structure, HighlightOpt::new().fg(Color::Yellow))?;
@@ -32,6 +32,8 @@ pub fn syntax_highlight() -> nvim_oxi::Result<()> {
     set_hl("@variable", HighlightOpt::link(Identifier))?;
     set_hl("@variable.member", HighlightOpt::link(Member))?;
     set_hl("@variable.builtin", HighlightOpt::link(Builtin))?;
+
+    set_hl("@type.builtin", HighlightOpt::link(Type))?;
 
     set_lsp_hl("property", HighlightOpt::link(Member))?;
     set_lsp_hl("modifier", HighlightOpt::link(Keyword))?;
