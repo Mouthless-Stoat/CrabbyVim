@@ -39,7 +39,7 @@ pub fn configure_options() -> nvim_oxi::Result<()> {
             .join("nvim-data/undo")
             .to_str()
             .unwrap()
-            .replace("/", "\\"),
+            .replace('/', "\\"),
     )?;
     set_option("undofile", true)?;
 

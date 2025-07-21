@@ -44,7 +44,7 @@ impl Lazy {
             "runtimepath",
             format!(
                 "{old_rtp},{}",
-                lazypath.to_str().unwrap().replace("/", "\\")
+                lazypath.to_str().unwrap().replace('/', "\\")
             ),
             &nvim_oxi::api::opts::OptionOpts::default(),
         )?;
