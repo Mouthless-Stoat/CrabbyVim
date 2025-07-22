@@ -5,7 +5,6 @@ pub fn configure_keymaps() -> nvim_oxi::Result<()> {
     use Mode::*;
 
     set_key(&[Terminal], "<esc>", "<C-\\><C-n>")?;
-    set_key(&[Normal], "x", "\"_x")?;
     set_key(&[Normal], "Q", "<nop>")?;
 
     set_key(&[Normal], "<C-d>", "<C-d>zz")?;
@@ -32,7 +31,7 @@ pub fn configure_keymaps() -> nvim_oxi::Result<()> {
 
 pub enum Action {
     Map(&'static str),
-    Fn(Box<dyn FnMut()>),
+    Fn(Box<dyn FnMut() -> nvim_oxi::Result<()>>),
 }
 
 pub fn set_key(
@@ -58,7 +57,10 @@ pub fn set_key_desc(
     match action.into() {
         Action::Map(key) => rhs = key,
         Action::Fn(mut fn_mut) => {
-            opts.callback(move |()| fn_mut());
+            opts.callback(move |()| match fn_mut() {
+                Ok(_) => (),
+                Err(err) => nvim_oxi::api::err_writeln(format!("{err}").as_str()),
+            });
         }
     }
 
