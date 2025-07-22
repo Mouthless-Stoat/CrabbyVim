@@ -15,7 +15,16 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
             .version(LazyVersion::Branch("master"))
             .build(":TSUpdate")
             .opts(lua_table! {
-                ensure_installed = ["python", "javascript", "typescript", "rust"],
+                ensure_installed = [
+                    "python",
+                    "javascript",
+                    "typescript",
+                    "rust",
+                    "gitcommit",
+                    "gitignore",
+                    "git_rebase",
+                    "markdown"
+                ],
                 auto_install = true,
                 highlight = lua_table! {
                     enable = true,
