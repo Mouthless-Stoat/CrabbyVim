@@ -76,7 +76,7 @@ macro_rules! colors {
             $($name,)*
         }
         impl Color {
-            fn as_str(self) -> &'static str {
+            fn to_str(self) -> &'static str {
                 match self {
                     $(Self::$name => $value,)*
                 }
@@ -168,10 +168,10 @@ pub fn set_hl<'a>(name: impl Into<&'a str>, opt: HighlightOpt) -> nvim_oxi::Resu
         opt_builder.link(link);
     } else {
         if let Some(fg) = opt.fg {
-            opt_builder.foreground(fg.as_str());
+            opt_builder.foreground(fg.to_str());
         }
         if let Some(bg) = opt.bg {
-            opt_builder.background(bg.as_str());
+            opt_builder.background(bg.to_str());
         }
 
         opt_builder.underline(opt.underline);
