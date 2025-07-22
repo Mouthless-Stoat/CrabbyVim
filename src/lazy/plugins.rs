@@ -83,6 +83,9 @@ impl Lazy {
             change_detection = lua_table! {
                 enable = false,
                 notify = false
+            },
+            rocks = lua_table! {
+                enabled = false
             }
         };
 
