@@ -3,7 +3,7 @@ use crate::{Mode, lua_table};
 use mlua::{Function, Table};
 use nvim_oxi::conversion::ToObject;
 
-pub fn configure_options() -> nvim_oxi::Result<()> {
+pub fn configure() -> nvim_oxi::Result<()> {
     set_option("number", true)?;
     set_option("relativenumber", true)?;
 

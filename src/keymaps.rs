@@ -1,8 +1,7 @@
 use crate::Mode;
 
 #[rustfmt::skip]
-pub fn configure_keymaps() -> nvim_oxi::Result<()> {
-    use Action::*;
+pub fn configure() -> nvim_oxi::Result<()> {
     use Mode::*;
 
     nvim_oxi::api::set_var("mapleader", " ")?;

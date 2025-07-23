@@ -1,6 +1,6 @@
 mod syntax;
 
-pub fn configure_highlight() -> nvim_oxi::Result<()> {
+pub fn configure() -> nvim_oxi::Result<()> {
     nvim_highlight()?;
     syntax::syntax_highlight()?;
     Ok(())
