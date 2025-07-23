@@ -1,30 +1,51 @@
 use crate::Mode;
 
+#[rustfmt::skip]
 pub fn configure_keymaps() -> nvim_oxi::Result<()> {
     use Action::*;
     use Mode::*;
 
-    set_key(&[Terminal], "<esc>", "<C-\\><C-n>")?;
-    set_key(&[Normal], "Q", "<nop>")?;
+    nvim_oxi::api::set_var("mapleader", " ")?;
 
+    set_key(&[Terminal], "<esc>", "<C-\\><C-n>")?; // escape in terminal mode
+
+    set_key(&[Normal], "Q", "<nop>")?; // Eat shit and die
+
+    // center when paging
     set_key(&[Normal], "<C-d>", "<C-d>zz")?;
     set_key(&[Normal], "<C-u>", "<C-u>zz")?;
 
+    // keep selection when indenting
     set_key(&[Visual], ">", ">gv")?;
     set_key(&[Visual], "<", "<gv")?;
 
+    // word movement in insert mode
     set_key(&[Insert], "<C-Right>", "<esc>ea")?;
     set_key(&[Insert], "<C-Left>", "<esc>ba")?;
     set_key(&[Insert], "<S-C-Right>", "<esc>Ea")?;
     set_key(&[Insert], "<S-C-Left>", "<esc>Ba")?;
 
+    // movement across wrap line
     set_key(&[Normal], "k", "gk")?;
     set_key(&[Normal], "j", "gj")?;
 
+    // easier bind pasting from system clip
     set_key(&[Normal], "+", "\"+")?;
 
+    // keybind to go to first and last 
     set_key(&[Normal], "H", "^")?;
     set_key(&[Normal], "L", "$")?;
+
+    // split creation and movement
+    set_key(&[Normal], "<C-h>", "<C-w>h")?;
+    set_key(&[Normal], "<C-j>", "<C-w>j")?;
+    set_key(&[Normal], "<C-k>", "<C-w>k")?;
+    set_key(&[Normal], "<C-l>", "<C-w>l")?;
+
+    set_key_desc("Make new split left", &[Normal], "<Leader>h", "<cmd>top vnew<cr>")?;
+    set_key_desc("Make new split down", &[Normal], "<Leader>j", "<cmd>bot new<cr>")?;
+    set_key_desc("Make new split up", &[Normal], "<Leader>k", "<cmd>top new<cr>")?;
+    set_key_desc("Make new split right", &[Normal], "<Leader>l", "<cmd>bot vnew<cr>")?;
 
     Ok(())
 }
