@@ -18,6 +18,7 @@ fn config() -> nvim_oxi::Result<()> {
     keymaps::configure()?;
 
     theme::configure()?;
+    commands::configure()?;
 
     Ok(())
 }
