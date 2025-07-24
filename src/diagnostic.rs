@@ -1,4 +1,4 @@
-use crate::lua_table;
+use crate::table;
 use mlua::{Function, Integer, Table};
 
 pub fn configure() -> nvim_oxi::Result<()> {
@@ -8,17 +8,15 @@ pub fn configure() -> nvim_oxi::Result<()> {
         .get::<Table>("diagnostic")?
         .get::<Function>("config")?;
 
-    let signs_text = lua_table! {};
-
-    signs_text.set(DiagnosticSeverity::Error, "")?;
-    signs_text.set(DiagnosticSeverity::Warn, "")?;
-    signs_text.set(DiagnosticSeverity::Hint, "󰌵")?;
-    signs_text.set(DiagnosticSeverity::Info, "")?;
-
-    config.call::<()>(lua_table! {
+    config.call::<()>(table! {
         virtual_text = true,
-        signs = lua_table!{
-            text = signs_text
+        signs = table!{
+            text = table! {
+                [DiagnosticSeverity::Error] = "",
+                [DiagnosticSeverity::Warn] = "",
+                [DiagnosticSeverity::Hint] = "󰌵",
+                [DiagnosticSeverity::Info] = ""
+            }
         }
     })?;
 

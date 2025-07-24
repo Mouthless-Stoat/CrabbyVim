@@ -1,4 +1,4 @@
-use crate::lua_table;
+use crate::table;
 use mlua::Table;
 
 pub struct Lazy(Vec<LazyPlugin>);
@@ -79,20 +79,20 @@ impl Lazy {
 
         let lua = nvim_oxi::mlua::lua();
 
-        let tbl = lua_table! {
-            change_detection = lua_table! {
+        let tbl = table! {
+            change_detection = table! {
                 enable = false,
                 notify = false
             },
-            rocks = lua_table! {
+            rocks = table! {
                 enabled = false
             }
         };
 
-        let plugins_spec = lua_table! {};
+        let plugins_spec = table! {};
 
         for plugin in self.0 {
-            let spec = lua_table! {};
+            let spec = table! {};
 
             spec.push(plugin.url)?;
 

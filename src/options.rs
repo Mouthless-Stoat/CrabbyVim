@@ -1,5 +1,5 @@
 use crate::keymaps::{Action, set_key};
-use crate::{Mode, lua_table};
+use crate::{Mode, table};
 use mlua::{Function, Table};
 use nvim_oxi::conversion::ToObject;
 
@@ -55,7 +55,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
             .get::<Table>("vim")?
             .get::<Table>("hl")?
             .get::<Function>("on_yank")?
-            .call::<bool>(lua_table! { higroup = "Yank" })
+            .call::<bool>(table! { higroup = "Yank" })
     };
 
     let opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder()

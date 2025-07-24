@@ -1,4 +1,4 @@
-use crate::lua_table;
+use crate::table;
 
 mod plugins;
 
@@ -14,7 +14,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
             .main("nvim-treesitter.configs")
             .version(LazyVersion::Branch("master"))
             .build(":TSUpdate")
-            .opts(lua_table! {
+            .opts(table! {
                 ensure_installed = [
                     "python",
                     "javascript",
@@ -26,11 +26,11 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
                     "markdown"
                 ],
                 auto_install = true,
-                highlight = lua_table! {
+                highlight = table! {
                     enable = true,
                     additional_vim_regex_highlighting = false
                 },
-                indent = lua_table! { enable = true }
+                indent = table! { enable = true }
             }),
     );
 

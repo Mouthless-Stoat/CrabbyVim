@@ -1,4 +1,4 @@
-use crate::lua_table;
+use crate::table;
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
 use serde::Serialize;
@@ -49,20 +49,20 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
 
     lsp.add_config(LspConfig {
         name: "rust_analyzer",
-        settings: lua_table! {
-            imports = lua_table! {
-                granularity = lua_table! { group = "module" } ,
+        settings: table! {
+            imports = table! {
+                granularity = table! { group = "module" } ,
                 prefix = "self"
             },
-            cargo = lua_table! {
-                buildScripts = lua_table! {
+            cargo = table! {
+                buildScripts = table! {
                     enable = true
                 }
             },
-            proMacro = lua_table! {
+            proMacro = table! {
                 enable = true
             },
-            check = lua_table! {
+            check = table! {
                 command = "clippy"
             }
         },
