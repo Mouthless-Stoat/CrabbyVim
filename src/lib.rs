@@ -1,6 +1,7 @@
 use mlua::{Function, Table};
 use nvim_oxi::api::types::Mode as OxiMode;
 
+mod autocmds;
 mod commands;
 mod diagnostic;
 mod keymaps;
@@ -22,6 +23,8 @@ fn config() -> nvim_oxi::Result<()> {
 
     theme::configure()?;
     commands::configure()?;
+
+    autocmds::configure()?;
 
     Ok(())
 }
