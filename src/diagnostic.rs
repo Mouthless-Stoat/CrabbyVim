@@ -9,13 +9,21 @@ pub fn configure() -> nvim_oxi::Result<()> {
         .get::<Function>("config")?;
 
     config.call::<()>(table! {
-        virtual_text = true,
+        virtual_text = table! {
+            prefix = " "
+        },
         signs = table!{
             text = table! {
                 [DiagnosticSeverity::Error] = "",
                 [DiagnosticSeverity::Warn] = "",
                 [DiagnosticSeverity::Hint] = "󰌵",
                 [DiagnosticSeverity::Info] = ""
+            },
+            num_hl = table! {
+                [DiagnosticSeverity::Error] = "DiagnosticError",
+                [DiagnosticSeverity::Warn] = "DiagnosticWarn",
+                [DiagnosticSeverity::Hint] = "DiagnosticHint",
+                [DiagnosticSeverity::Info] = "DiagnosticInfo"
             }
         }
     })?;
