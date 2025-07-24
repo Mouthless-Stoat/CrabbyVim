@@ -108,6 +108,17 @@ pub fn set_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+pub fn set_local_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
+    nvim_oxi::api::set_option_value::<T>(
+        name,
+        value,
+        &nvim_oxi::api::opts::OptionOpts::builder()
+            .scope(nvim_oxi::api::opts::OptionScope::Local)
+            .build(),
+    )?;
+    Ok(())
+}
+
 fn set_neovide_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_var(format!("neovide_{name}").as_str(), value)?;
     Ok(())
