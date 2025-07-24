@@ -9,7 +9,8 @@ pub fn configure() -> nvim_oxi::Result<()> {
         "Scratch",
         "enew | setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile",
     )?;
-    create_command("Common quit typo", "Q", "q")?;
+
+    create_command("Common typo", "Q", ":q<cr>")?;
 
     Ok(())
 }

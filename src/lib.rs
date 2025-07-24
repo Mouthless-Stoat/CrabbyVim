@@ -2,6 +2,7 @@ use mlua::{Function, Table};
 use nvim_oxi::api::types::Mode as OxiMode;
 
 mod commands;
+mod diagnostic;
 mod keymaps;
 mod lazy;
 mod lsp;
@@ -13,6 +14,8 @@ mod theme;
 fn config() -> nvim_oxi::Result<()> {
     lazy::setup_lazy()?;
     lsp::setup_lsp()?;
+
+    diagnostic::configure()?;
 
     options::configure()?;
     keymaps::configure()?;
