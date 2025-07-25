@@ -16,6 +16,5 @@ wildcard_imports = "allow"
 crate-type = ["cdylib"]
 
 [dependencies]
-mlua = { version = "0.10.5", features = ["luajit", "vendored", "serialize"]}
+mlua = { version = "0.10.5", features = ["luajit", "vendored", "macros"] }
 nvim-oxi = {version = "0.6.0", features = ["neovim-0-11", "mlua"]}
-serde = "1.0.219"
