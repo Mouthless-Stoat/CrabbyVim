@@ -1,5 +1,6 @@
 use crate::table;
 use mlua::Table;
+use nvim_oxi::api::select_popupmenu_item;
 
 pub struct Lazy(Vec<LazyPlugin>);
 
@@ -31,6 +32,7 @@ pub struct LazyPlugin {
     url: &'static str,
     dependencies: Option<&'static [&'static str]>,
     opts: Option<mlua::Table>,
+    opts_extend: Option<&'static [&'static str]>,
     callback: Option<Box<dyn Fn() -> nvim_oxi::Result<()>>>,
     main: Option<&'static str>,
     build: Option<&'static str>,
@@ -229,6 +231,11 @@ impl LazyPlugin {
     /// Specify how this plugin will be lazy load and the lazy loading configuration.
     pub fn lazy_load(mut self, lazy_load: LazyLoad) -> Self {
         self.lazy_load = Some(lazy_load);
+        self
+    }
+
+    pub fn opts_extend(mut self, opt_extend: &'static [&'static str]) -> Self {
+        self.opts_extend = Some(opt_extend);
         self
     }
 }

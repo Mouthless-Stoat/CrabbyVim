@@ -1,9 +1,7 @@
-use crate::{lazy, require, table};
+use crate::{lua_table, require, table, theme::Color};
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
-use serde::Serialize;
 
-#[derive(Serialize)]
 struct LspConfig {
     name: &'static str,
     settings: Table,
@@ -48,20 +46,20 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
 
     lsp.add_config(LspConfig {
         name: "rust_analyzer",
-        settings: table! {
-            imports = table! {
-                granularity = table! { group = "module" } ,
+        settings: lua_table! {
+            imports = {
+                granularity = { group = "module" } ,
                 prefix = "self"
             },
-            cargo = table! {
-                buildScripts = table! {
+            cargo = {
+                buildScripts = {
                     enable = true
                 }
             },
-            proMacro = table! {
+            proMacro = {
                 enable = true
             },
-            check = table! {
+            check = {
                 command = "clippy"
             }
         },
@@ -73,14 +71,48 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
 
 pub fn plugins() -> nvim_oxi::Result<crate::lazy::LazyPlugin> {
     use crate::lazy::{LazyPlugin, LazyVersion};
+    // kind_icons  only include those are diff from normal
     Ok(LazyPlugin::new("saghen/blink.cmp")
-        .depend(&["rafamadriz/friendly-snippets", "neovim/nvim-lspconfig"])
+        .depend(&["neovim/nvim-lspconfig"])
         .version(LazyVersion::Semver("1.*"))
-        .opts(table! {
-            keymap = table! { preset = "super-tab" },
-            appearance = table! { nerd_font_variant = "mono" },
-            completion = table! { documentation = table! { auto_show = false } },
-            sources = table! { default = ["lsp", "path", "snippets", "buffer"] },
-            fuzzy = table! { implementation = "rust" }
+        .opts_extend(&["sources.default"])
+        .opts(lua_table! {
+            keymap = { preset = "super-tab" },
+            appearance = { 
+                nerd_font_variant = "mono",
+                kind_icons = {
+                    Constructor = '󱌣',
+
+                    Class = '',
+                    Interface = '',
+                    Struct = '',
+
+                    Unit = '',
+                    Enum = '',
+                    EnumMember = '',
+
+                    Snippet = '',
+                    Operator = '',
+                    TypeParameter = ''
+                }
+            },
+            completion = {
+                ghost_text = { enabled = true },
+                documentation = { auto_show = true },
+                menu = {
+                    draw = {
+                        columns = {{"kind_icon"}, {"label", "kind"}},
+                        treesitter = {"lsp"},
+                        components = {
+                            label = {
+                                text = function(ctx) return ctx.label end
+                            }
+                        }
+                    }
+                }
+            },
+            sources = { default = {"lsp", "path", "snippets", "buffer"} },
+            fuzzy = { implementation = "rust" },
+            signature = { enabled = true }
         }))
 }
