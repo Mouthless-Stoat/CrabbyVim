@@ -3,13 +3,19 @@ use mlua::Table;
 
 pub struct Lazy(Vec<LazyPlugin>);
 
+/// Enum storing used to specific the version of a plugin to be downloaded by Lazy
 pub enum LazyVersion {
+    // Pin to a specific branch. Equivalent to `branch` in spec.
     Branch(&'static str),
+    // Pin to a commit. Equivalent to `commit` in spec
     Commit(&'static str),
+    // Pin to a tag. Equivalent to `tag` in spec.
     Tag(&'static str),
+    /// Pin to a release or Semver. Equivalent to `version` in spec.
     Semver(&'static str),
 }
 
+/// Lazy loading configuration for plugin
 #[derive(Default)]
 pub struct LazyLoad {
     lazy: bool,
@@ -19,6 +25,7 @@ pub struct LazyLoad {
     keys: Option<&'static [&'static str]>,
 }
 
+/// A plugin to be loaded and download for lazy
 #[derive(Default)]
 pub struct LazyPlugin {
     url: &'static str,
@@ -32,17 +39,26 @@ pub struct LazyPlugin {
 }
 
 impl Lazy {
+    /// Create a new Lazy instant to start managing plugin.
     pub fn new() -> Self {
         Self(vec![])
     }
 
+    /// Add a plugins for Lazy to managing and download.
     pub fn add_plugin(&mut self, plugin: impl std::convert::Into<LazyPlugin>) {
         self.0.push(plugin.into());
     }
 
+    /// Bootstrap Lazy into neovim, download if not already on disk.
     fn bootstrap() -> nvim_oxi::Result<()> {
+        // Thsi code is simply a rewrite from the normal bootstrap script. It is only missing the
+        // error report when lazy could not be install.
+        // Refer to https://lazy.folke.io/installation for more info
+
+        // TODO: replace enviroment variable access with using neovim api for `stdpath`
         let lazypath = std::path::Path::new(&std::env::var("XDG_DATA_HOME").unwrap())
             .join("nvim-data/lazy/lazy.nvim");
+
         if !lazypath.exists() {
             std::process::Command::new("git")
                 .args([
@@ -57,6 +73,7 @@ impl Lazy {
                 .expect("Cannot install lazy.nvim");
         }
 
+        // TODO: clean this up. Appending to the option is way too messy
         let old_rtp = nvim_oxi::api::get_option_value::<String>(
             "runtimepath",
             &nvim_oxi::api::opts::OptionOpts::default(),
@@ -74,6 +91,7 @@ impl Lazy {
         Ok(())
     }
 
+    /// Bootstrap and call set up for lazy with all specified plugin.
     pub fn setup(self) -> nvim_oxi::Result<()> {
         Self::bootstrap()?;
 
@@ -92,6 +110,7 @@ impl Lazy {
         let plugins_spec = table! {};
 
         for plugin in self.0 {
+            // TODO: possibly implement ToLua for LazyPlugin for cleaner code?
             let spec = table! {};
 
             spec.push(plugin.url)?;
@@ -158,6 +177,7 @@ impl Lazy {
 }
 
 impl LazyPlugin {
+    /// Create a new LazyPlugin builder
     pub fn new(url: &'static str) -> Self {
         Self {
             url,
@@ -165,36 +185,48 @@ impl LazyPlugin {
         }
     }
 
+    /// Set the option for this plugin. Equivalent to `opts` in spec
     pub fn opts(mut self, opts: mlua::Table) -> Self {
         self.opts = Some(opts);
         self
     }
 
+    /// Specified which plugin this plugin depend on to be load at the same time. Equivalent to
+    /// `dependencies` in spec.
     pub fn depend(mut self, dependencies: &'static [&'static str]) -> Self {
         self.dependencies = Some(dependencies);
         self
     }
 
+    /// Set a callback when this plugin is loaded to configure it. Equivalent to `config` in spec.
     pub fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self {
         self.callback = Some(Box::new(callback));
         self
     }
 
+    /// Set a different name for the module to be automatically require when lazy call setup. Equivalent to `main`
+    /// in spec.
     pub fn main(mut self, main: &'static str) -> Self {
         self.main = Some(main);
         self
     }
 
+    /// Set a build command to be run after the plugin is installed or updated. Equivalent to
+    /// `build` in spec.
     pub fn build(mut self, build: &'static str) -> Self {
         self.build = Some(build);
         self
     }
 
+    /// Set a version to be pinned when lazy is installing or updating. Equivalent to all the
+    /// version specifier: `branch`, `tag`, `commit`, `version`. Refer to [`LazyVersion`] for more
+    /// info.
     pub fn version(mut self, version: LazyVersion) -> Self {
         self.version = Some(version);
         self
     }
 
+    /// Specify how this plugin will be lazy load and the lazy loading configuration.
     pub fn lazy_load(mut self, lazy_load: LazyLoad) -> Self {
         self.lazy_load = Some(lazy_load);
         self
@@ -202,6 +234,7 @@ impl LazyPlugin {
 }
 
 impl LazyLoad {
+    /// Create a new LazyLoad builder.
     pub fn new(lazy: bool) -> Self {
         Self {
             lazy,
@@ -209,27 +242,32 @@ impl LazyLoad {
         }
     }
 
+    /// Lazy load on events. Equivalent to `events` in spec.
     pub fn events(mut self, events: &'static [&'static str]) -> Self {
         self.events = Some(events);
         self
     }
 
+    /// Lazy load on command execution. Equivalent to `cmd` in spec.
     pub fn cmd(mut self, cmd: &'static [&'static str]) -> Self {
         self.cmd = Some(cmd);
         self
     }
 
+    /// Lazy load on file type. Equivalent to `ft` in spec.
     pub fn ft(mut self, ft: &'static [&'static str]) -> Self {
         self.ft = Some(ft);
         self
     }
 
+    /// Lazy load on key map. Equivalent to `keys` in spec.
     pub fn keys(mut self, keys: &'static [&'static str]) -> Self {
         self.keys = Some(keys);
         self
     }
 }
 
+// implement easy config for plugin without much configuration
 impl From<&'static str> for LazyPlugin {
     fn from(str: &'static str) -> Self {
         Self::new(str)
