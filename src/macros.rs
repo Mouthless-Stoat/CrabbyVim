@@ -19,3 +19,18 @@ macro_rules! table {
         }
     }
 }
+
+/// Straight up embed a table with lua code
+#[macro_export]
+macro_rules! lua_table {
+    ($($tk:tt)*) => {
+        nvim_oxi::mlua::lua().load(concat!("{",stringify!($($tk)*),"}")).eval::<mlua::Table>()?
+    };
+}
+
+#[macro_export]
+macro_rules! expr {
+    (return $ty:ty; $($tk:tt)*) => {
+        nvim_oxi::mlua::lua().load(stringify!($($tk)*)).eval::<mlua::$ty>()?
+    };
+}
