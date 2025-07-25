@@ -1,33 +1,33 @@
 use super::{Color, HighlightOpt, set_hl};
 
-pub fn syntax_highlight() -> nvim_oxi::Result<()> {
+pub fn configure_highlight() -> nvim_oxi::Result<()> {
     use SyntaxGroup::*;
 
     // Recommended neovim highlight group
-    set_hl(Comment, HighlightOpt::new().fg(Color::Gray))?;
+    set_hl(Comment, HighlightOpt::default().fg(Color::Gray))?;
 
-    set_hl(String, HighlightOpt::new().fg(Color::Green))?;
-    set_hl(Number, HighlightOpt::new().fg(Color::Orange))?;
+    set_hl(String, HighlightOpt::default().fg(Color::Green))?;
+    set_hl(Number, HighlightOpt::default().fg(Color::Orange))?;
     set_hl(Float, HighlightOpt::link(Number))?;
-    set_hl(Boolean, HighlightOpt::new().fg(Color::Orange))?;
-    set_hl(Character, HighlightOpt::new().fg(Color::Orange))?;
-    set_hl(Structure, HighlightOpt::new().fg(Color::Yellow))?;
+    set_hl(Boolean, HighlightOpt::default().fg(Color::Orange))?;
+    set_hl(Character, HighlightOpt::default().fg(Color::Orange))?;
+    set_hl(Structure, HighlightOpt::default().fg(Color::Yellow))?;
 
-    set_hl(Identifier, HighlightOpt::new().fg(Color::Red))?;
-    set_hl(Constant, HighlightOpt::new().fg(Color::Yellow))?;
-    set_hl(Member, HighlightOpt::new().fg(Color::Cyan))?;
-    set_hl(Builtin, HighlightOpt::new().fg(Color::Purple))?;
+    set_hl(Identifier, HighlightOpt::default().fg(Color::Red))?;
+    set_hl(Constant, HighlightOpt::default().fg(Color::Yellow))?;
+    set_hl(Member, HighlightOpt::default().fg(Color::Cyan))?;
+    set_hl(Builtin, HighlightOpt::default().fg(Color::Purple))?;
 
-    set_hl(Function, HighlightOpt::new().fg(Color::Blue))?;
-    set_hl(Statement, HighlightOpt::new().fg(Color::Purple))?;
-    set_hl(Keyword, HighlightOpt::new().fg(Color::Purple))?;
+    set_hl(Function, HighlightOpt::default().fg(Color::Blue))?;
+    set_hl(Statement, HighlightOpt::default().fg(Color::Purple))?;
+    set_hl(Keyword, HighlightOpt::default().fg(Color::Purple))?;
 
-    set_hl(Preproc, HighlightOpt::new().fg(Color::Purple))?;
-    set_hl(Type, HighlightOpt::new().fg(Color::Orange))?;
+    set_hl(Preproc, HighlightOpt::default().fg(Color::Purple))?;
+    set_hl(Type, HighlightOpt::default().fg(Color::Orange))?;
 
-    set_hl(Operator, HighlightOpt::new().fg(Color::Cyan))?;
-    set_hl(Special, HighlightOpt::new().fg(Color::Pink).italic())?;
-    set_hl(Delimiter, HighlightOpt::new().fg(Color::Gray))?;
+    set_hl(Operator, HighlightOpt::default().fg(Color::Cyan))?;
+    set_hl(Special, HighlightOpt::default().fg(Color::Pink).italic())?;
+    set_hl(Delimiter, HighlightOpt::default().fg(Color::Gray))?;
 
     set_hl("@variable", HighlightOpt::link(Identifier))?;
     set_hl("@variable.member", HighlightOpt::link(Member))?;
@@ -40,7 +40,10 @@ pub fn syntax_highlight() -> nvim_oxi::Result<()> {
 
     set_lsp_hl("struct", HighlightOpt::link(Structure))?;
     set_lsp_hl("enum", HighlightOpt::link(Structure))?;
-    set_lsp_hl("enumMember", HighlightOpt::new().fg(Color::Yellow).italic())?;
+    set_lsp_hl(
+        "enumMember",
+        HighlightOpt::default().fg(Color::Yellow).italic(),
+    )?;
 
     set_hl("rustSigil", HighlightOpt::link(Operator))?;
 
