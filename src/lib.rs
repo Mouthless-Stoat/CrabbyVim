@@ -78,11 +78,10 @@ impl From<Mode> for OxiMode {
 
 /// Helper for require and setup method
 pub fn require(module: &str) -> nvim_oxi::Result<Table> {
-    nvim_oxi::mlua::lua()
+    Ok(nvim_oxi::mlua::lua()
         .globals()
         .get::<Function>("require")?
-        .call::<Table>(module)?;
-    Ok(())
+        .call::<Table>(module)?)
 }
 
 /// Helper for require and setup method

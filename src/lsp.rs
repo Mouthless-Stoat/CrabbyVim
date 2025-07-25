@@ -1,4 +1,4 @@
-use crate::table;
+use crate::{lazy, require, table};
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
 use serde::Serialize;
@@ -32,11 +32,10 @@ impl Lsp {
         let lsp_config = vim_lsp.get::<Table>("config")?;
 
         for config in self.configs {
-            let tbl = lua.create_table()?;
-
-            tbl.set("settings", config.settings)?;
-
-            lsp_config.set(config.name, tbl)?;
+            lsp_config.set(config.name, table! {
+                settings = config.settings,
+                capabilities = require("blink.cmp")?.get::<Function>("get_lsp_capabilities")?.call::<Table>(())?
+            })?;
             vim_lsp.get::<Function>("enable")?.call::<()>(config.name)?;
         }
 
@@ -70,4 +69,18 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
 
     lsp.configure()?;
     Ok(())
+}
+
+pub fn plugins() -> nvim_oxi::Result<crate::lazy::LazyPlugin> {
+    use crate::lazy::{LazyPlugin, LazyVersion};
+    Ok(LazyPlugin::new("saghen/blink.cmp")
+        .depend(&["rafamadriz/friendly-snippets", "neovim/nvim-lspconfig"])
+        .version(LazyVersion::Semver("1.*"))
+        .opts(table! {
+            keymap = table! { preset = "super-tab" },
+            appearance = table! { nerd_font_variant = "mono" },
+            completion = table! { documentation = table! { auto_show = false } },
+            sources = table! { default = ["lsp", "path", "snippets", "buffer"] },
+            fuzzy = table! { implementation = "rust" }
+        }))
 }
