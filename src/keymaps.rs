@@ -1,3 +1,5 @@
+use mlua::Table;
+
 use crate::Mode;
 
 #[rustfmt::skip]

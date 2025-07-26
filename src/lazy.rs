@@ -7,7 +7,7 @@ pub use plugins::*;
 pub fn setup_lazy() -> nvim_oxi::Result<()> {
     let mut lazy = Lazy::new();
 
-    lazy.add_plugin(crate::lsp::plugins()?);
+    lazy.add_plugins(crate::lsp::plugins()?);
 
     lazy.add_plugin(
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")

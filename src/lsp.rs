@@ -69,16 +69,17 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-pub fn plugins() -> nvim_oxi::Result<crate::lazy::LazyPlugin> {
+pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
     use crate::lazy::{LazyPlugin, LazyVersion};
-    // kind_icons  only include those are diff from normal
-    Ok(LazyPlugin::new("saghen/blink.cmp")
-        .depend(&["neovim/nvim-lspconfig"])
+
+    // cheat using lua_table because there so many god damn table and funky function
+    let blink = LazyPlugin::new("saghen/blink.cmp")
+        .depend(&["neovim/nvim-lspconfig", "L3MON4D3/LuaSnip"])
         .version(LazyVersion::Semver("1.*"))
         .opts_extend(&["sources.default"])
         .opts(lua_table! {
             keymap = { preset = "super-tab" },
-            appearance = { 
+            appearance = {
                 nerd_font_variant = "mono",
                 kind_icons = {
                     Constructor = '󱌣',
@@ -115,6 +116,11 @@ pub fn plugins() -> nvim_oxi::Result<crate::lazy::LazyPlugin> {
             },
             sources = { default = {"lsp", "path", "snippets", "buffer"} },
             fuzzy = { implementation = "rust" },
-            signature = { enabled = true }
-        }))
+            signature = { enabled = true },
+            snippets = { preset = "luasnip" }
+        });
+
+    let luasnip = LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*"));
+
+    return Ok(vec![blink, luasnip]);
 }
