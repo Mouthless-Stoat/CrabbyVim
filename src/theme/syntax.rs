@@ -50,7 +50,7 @@ pub fn configure_highlight() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-enum SyntaxGroup {
+pub enum SyntaxGroup {
     Comment,
     String,
     Number,

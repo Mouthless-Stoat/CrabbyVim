@@ -101,11 +101,13 @@ pub fn plugins() -> nvim_oxi::Result<crate::lazy::LazyPlugin> {
                 documentation = { auto_show = true },
                 menu = {
                     draw = {
-                        columns = {{"kind_icon"}, {"label", "kind"}},
-                        treesitter = {"lsp"},
+                        columns = {{"kind_icon"}, {"label"}, {"kind"}},
                         components = {
                             label = {
                                 text = function(ctx) return ctx.label end
+                            },
+                            kind = {
+                                highlight = "Comment"
                             }
                         }
                     }
