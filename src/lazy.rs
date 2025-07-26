@@ -23,6 +23,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
                     "gitcommit",
                     "gitignore",
                     "git_rebase",
+                    "git_config",
                     "markdown"
                 ],
                 auto_install = true,
