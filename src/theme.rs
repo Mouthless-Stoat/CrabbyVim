@@ -12,61 +12,61 @@ pub fn configure() -> nvim_oxi::Result<()> {
 #[rustfmt::skip]
 fn configure_highlight() -> nvim_oxi::Result<()> {
     use Color::*;
-    set_hl("Normal", HighlightOpt::default().fg(White).bg(Bg0))?;
+    set_hl("Normal", HighlightOpt::with_fg(White).bg(Bg0))?;
 
-    set_hl("NCursor", HighlightOpt::default().bg(Blue))?;
-    set_hl("ICursor", HighlightOpt::default().bg(Green))?;
-    set_hl("VCursor", HighlightOpt::default().bg(Purple))?;
-    set_hl("CCursor", HighlightOpt::default().bg(Yellow))?;
-    set_hl("RCursor", HighlightOpt::default().bg(Red))?;
+    set_hl("NCursor", HighlightOpt::with_bg(Blue))?;
+    set_hl("ICursor", HighlightOpt::with_bg(Green))?;
+    set_hl("VCursor", HighlightOpt::with_bg(Purple))?;
+    set_hl("CCursor", HighlightOpt::with_bg(Yellow))?;
+    set_hl("RCursor", HighlightOpt::with_bg(Red))?;
 
-    set_hl("ErrorMsg", HighlightOpt::default().fg(Red))?;
-    set_hl("MoreMsg", HighlightOpt::default().fg(Blue))?;
-    set_hl("WarningMsg", HighlightOpt::default().fg(Yellow))?;
-    set_hl("Question", HighlightOpt::default().fg(Green))?;
+    set_hl("ErrorMsg", HighlightOpt::with_fg(Red))?;
+    set_hl("MoreMsg", HighlightOpt::with_fg(Blue))?;
+    set_hl("WarningMsg", HighlightOpt::with_fg(Yellow))?;
+    set_hl("Question", HighlightOpt::with_fg(Green))?;
 
-    set_hl("IncSearch", HighlightOpt::default().fg(Bg0).bg(Yellow))?;
-    set_hl("Subsitube", HighlightOpt::default().fg(Bg0).bg(Green))?;
+    set_hl("IncSearch", HighlightOpt::with_fg(Bg0).bg(Yellow))?;
+    set_hl("Subsitube", HighlightOpt::with_fg(Bg0).bg(Green))?;
 
     set_hl("Yank", HighlightOpt::default().reverse())?;
 
-    set_hl("Visual", HighlightOpt::default().fg(Bg0).bg(Purple))?;
-    set_hl("EndOfBuffer", HighlightOpt::default().fg(Bg0))?;
+    set_hl("Visual", HighlightOpt::with_fg(Bg0).bg(Purple))?;
+    set_hl("EndOfBuffer", HighlightOpt::with_fg(Bg0))?;
 
-    set_hl("LineNr", HighlightOpt::default().fg(Gray).bg(Bg1))?;
-    set_hl("CursorLineNr", HighlightOpt::default().fg(Blue).bg(Bg0))?;
+    set_hl("LineNr", HighlightOpt::with_fg(Gray).bg(Bg1))?;
+    set_hl("CursorLineNr", HighlightOpt::with_fg(Blue).bg(Bg0))?;
 
-    set_hl("DiffAdd", HighlightOpt::default().fg(Green).bg(Bg0).bold().italic())?;
-    set_hl("DiffChange", HighlightOpt::default().fg(Yellow).bg(Bg0).bold().italic())?;
-    set_hl("DiffDelete", HighlightOpt::default().fg(Red).bg(Bg0).bold().italic(),)?;
-    set_hl("DiffText", HighlightOpt::default().fg(Blue).bg(Bg0).bold().italic())?;
+    set_hl("DiffAdd", HighlightOpt::with_fg(Green).bg(Bg0).bold().italic())?;
+    set_hl("DiffChange", HighlightOpt::with_fg(Yellow).bg(Bg0).bold().italic())?;
+    set_hl("DiffDelete", HighlightOpt::with_fg(Red).bg(Bg0).bold().italic(),)?;
+    set_hl("DiffText", HighlightOpt::with_fg(Blue).bg(Bg0).bold().italic())?;
 
-    set_hl("Changed", HighlightOpt::default().fg(Yellow).bold())?;
-    set_hl("Added", HighlightOpt::default().fg(Green).bold())?;
-    set_hl("Removed", HighlightOpt::default().fg(Red).bold())?;
+    set_hl("Changed", HighlightOpt::with_fg(Yellow).bold())?;
+    set_hl("Added", HighlightOpt::with_fg(Green).bold())?;
+    set_hl("Removed", HighlightOpt::with_fg(Red).bold())?;
 
-    set_hl("WinSeparator", HighlightOpt::default().fg(Blue).bg(Bg1))?;
+    set_hl("WinSeparator", HighlightOpt::with_fg(Blue).bg(Bg1))?;
 
-    set_hl("MatchParen", HighlightOpt::default().fg(Blue).bg(Bg1))?;
+    set_hl("MatchParen", HighlightOpt::with_fg(Blue).bg(Bg1))?;
 
-    set_hl("MsgArea", HighlightOpt::default().fg(Yellow).bg(Bg0))?;
+    set_hl("MsgArea", HighlightOpt::with_fg(Yellow).bg(Bg0))?;
 
-    set_hl("SpellBad", HighlightOpt::default().fg(Red))?;
-    set_hl("SpellCap", HighlightOpt::default().fg(Blue))?;
-    set_hl("SpellLocal", HighlightOpt::default().fg(Yellow))?;
-    set_hl("SpellRare", HighlightOpt::default().fg(Green))?;
+    set_hl("SpellBad", HighlightOpt::with_fg(Red))?;
+    set_hl("SpellCap", HighlightOpt::with_fg(Blue))?;
+    set_hl("SpellLocal", HighlightOpt::with_fg(Yellow))?;
+    set_hl("SpellRare", HighlightOpt::with_fg(Green))?;
 
-    set_hl("DiagnosticError", HighlightOpt::default().fg(Red))?;
-    set_hl("DiagnosticWarn", HighlightOpt::default().fg(Yellow))?;
-    set_hl("DiagnosticInfo", HighlightOpt::default().fg(Blue))?;
-    set_hl("DiagnosticHint", HighlightOpt::default().fg(Purple))?;
-    set_hl("DiagnosticOk", HighlightOpt::default().fg(Green))?;
+    set_hl("DiagnosticError", HighlightOpt::with_fg(Red))?;
+    set_hl("DiagnosticWarn", HighlightOpt::with_fg(Yellow))?;
+    set_hl("DiagnosticInfo", HighlightOpt::with_fg(Blue))?;
+    set_hl("DiagnosticHint", HighlightOpt::with_fg(Purple))?;
+    set_hl("DiagnosticOk", HighlightOpt::with_fg(Green))?;
 
-    set_hl("DiagnosticUnderlineError", HighlightOpt::default().fg(Red).underline())?;
-    set_hl("DiagnosticUnderlineWarn", HighlightOpt::default().fg(Yellow).underline())?;
-    set_hl("DiagnosticUnderlineInfo", HighlightOpt::default().fg(Blue).underline())?;
-    set_hl("DiagnosticUnderlineHint", HighlightOpt::default().fg(Purple).underline())?;
-    set_hl("DiagnosticUnderlineOk", HighlightOpt::default().fg(Green).underline())?;
+    set_hl("DiagnosticUnderlineError", HighlightOpt::with_fg(Red).underline())?;
+    set_hl("DiagnosticUnderlineWarn", HighlightOpt::with_fg(Yellow).underline())?;
+    set_hl("DiagnosticUnderlineInfo", HighlightOpt::with_fg(Blue).underline())?;
+    set_hl("DiagnosticUnderlineHint", HighlightOpt::with_fg(Purple).underline())?;
+    set_hl("DiagnosticUnderlineOk", HighlightOpt::with_fg(Green).underline())?;
 
     Ok(())
 }
@@ -123,37 +123,45 @@ pub struct HighlightOpt {
 }
 
 impl HighlightOpt {
-    fn link(hl: impl Into<&'static str>) -> Self {
+    pub fn with_fg(color: Color) -> Self {
+        Self::default().fg(color)
+    }
+
+    pub fn with_bg(color: Color) -> Self {
+        Self::default().bg(color)
+    }
+
+    pub fn link(hl: impl Into<&'static str>) -> Self {
         let mut t = Self::default();
         t.link = Some(hl.into());
         t
     }
 
-    fn fg(mut self, color: Color) -> Self {
+    pub fn fg(mut self, color: Color) -> Self {
         self.fg = Some(color);
         self
     }
-    fn bg(mut self, color: Color) -> Self {
+    pub fn bg(mut self, color: Color) -> Self {
         self.bg = Some(color);
         self
     }
-    fn underline(mut self) -> Self {
+    pub fn underline(mut self) -> Self {
         self.underline = true;
         self
     }
-    fn bold(mut self) -> Self {
+    pub fn bold(mut self) -> Self {
         self.bold = true;
         self
     }
-    fn italic(mut self) -> Self {
+    pub fn italic(mut self) -> Self {
         self.italic = true;
         self
     }
-    fn reverse(mut self) -> Self {
+    pub fn reverse(mut self) -> Self {
         self.reverse = true;
         self
     }
-    fn strike(mut self) -> Self {
+    pub fn strike(mut self) -> Self {
         self.strike = true;
         self
     }
