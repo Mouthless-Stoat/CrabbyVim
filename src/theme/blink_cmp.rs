@@ -1,8 +1,9 @@
 use crate::theme::{Color, HighlightOpt, set_hl};
 
+#[rustfmt::skip]
 pub fn configure_highlight() -> nvim_oxi::Result<()> {
-    use Color::*;
     use crate::theme::syntax::SyntaxGroup::*;
+    use Color::*;
 
     set_hl("Pmenu", HighlightOpt::default().bg(Bg1))?;
     set_hl("PmenuSel", HighlightOpt::default().bg(Bg2))?;
