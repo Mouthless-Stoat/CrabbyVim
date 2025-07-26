@@ -51,6 +51,13 @@ impl Lazy {
         self.0.push(plugin.into());
     }
 
+    /// Add a plugins for Lazy to managing and download.
+    pub fn add_plugins(&mut self, plugins: Vec<impl std::convert::Into<LazyPlugin>>) {
+        for plugin in plugins {
+            self.0.push(plugin.into());
+        }
+    }
+
     /// Bootstrap Lazy into neovim, download if not already on disk.
     fn bootstrap() -> nvim_oxi::Result<()> {
         // Thsi code is simply a rewrite from the normal bootstrap script. It is only missing the
