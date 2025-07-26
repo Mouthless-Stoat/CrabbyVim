@@ -13,6 +13,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
 fn configure_highlight() -> nvim_oxi::Result<()> {
     use Color::*;
     set_hl("Normal", HighlightOpt::with_fg(White).bg(Bg0))?;
+    set_hl("NormalFloat", HighlightOpt::with_fg(White).bg(Bg1))?;
 
     set_hl("NCursor", HighlightOpt::with_bg(Blue))?;
     set_hl("ICursor", HighlightOpt::with_bg(Green))?;

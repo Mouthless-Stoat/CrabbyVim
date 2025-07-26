@@ -40,10 +40,7 @@ pub fn configure_highlight() -> nvim_oxi::Result<()> {
 
     set_lsp_hl("struct", HighlightOpt::link(Structure))?;
     set_lsp_hl("enum", HighlightOpt::link(Structure))?;
-    set_lsp_hl(
-        "enumMember",
-        HighlightOpt::with_fg(Color::Yellow).italic(),
-    )?;
+    set_lsp_hl("enumMember", HighlightOpt::with_fg(Color::Yellow).italic())?;
 
     set_hl("rustSigil", HighlightOpt::link(Operator))?;
 

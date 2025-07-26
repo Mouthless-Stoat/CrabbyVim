@@ -1,4 +1,4 @@
-use crate::{lua_table, require, table, theme::Color};
+use crate::{lazy::LazyPlugin, lua_table, require, table};
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
 
@@ -82,19 +82,36 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
             appearance = {
                 nerd_font_variant = "mono",
                 kind_icons = {
-                    Constructor = '󱌣',
+                    Text = "󰉿",
+                    Method = "󰊕",
+                    Function = "󰊕",
+                    Constructor = "󱌣",
 
-                    Class = '',
-                    Interface = '',
-                    Struct = '',
+                    Field = "󰜢",
+                    Variable = "󰀫",
+                    Property = "󰖷",
 
-                    Unit = '',
-                    Enum = '',
-                    EnumMember = '',
+                    Class = "󰠱",
+                    Interface = "",
+                    Struct = "󰅩",
+                    Module = "",
 
-                    Snippet = '',
-                    Operator = '',
-                    TypeParameter = ''
+                    Unit = "",
+                    Value = "",
+                    Enum = "󱡠",
+                    EnumMember = "󰦨",
+
+                    Keyword = "󰌋",
+                    Constant = "󰏿",
+
+                    Snippet = "",
+                    Color = "󰏘",
+                    File = "󰈔",
+                    Reference = "󰬲",
+                    Folder = "󰉋",
+                    Event = "",
+                    Operator = "󰆕",
+                    TypeParameter = "󰬁"
                 }
             },
             completion = {
@@ -102,6 +119,7 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
                 documentation = { auto_show = true },
                 menu = {
                     draw = {
+                        padding = {0, 1},
                         columns = {{"kind_icon"}, {"label"}, {"kind"}},
                         components = {
                             label = {
@@ -109,6 +127,9 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
                             },
                             kind = {
                                 highlight = "Comment"
+                            },
+                            kind_icon = {
+                                text = function(ctx) return " " .. ctx.kind_icon .. " " end
                             }
                         }
                     }
