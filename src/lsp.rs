@@ -1,4 +1,4 @@
-use crate::{lazy::LazyPlugin, lua_table, require, table};
+use crate::{lua_table, require, table};
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
 
@@ -47,20 +47,22 @@ pub fn setup_lsp() -> nvim_oxi::Result<()> {
     lsp.add_config(LspConfig {
         name: "rust_analyzer",
         settings: lua_table! {
-            imports = {
-                granularity = { group = "module" } ,
-                prefix = "self"
-            },
-            cargo = {
-                buildScripts = {
+            ["rust-analyzer"] = {
+                imports = {
+                    granularity = { group = "module" } ,
+                    prefix = "self"
+                },
+                cargo = {
+                    buildScripts = {
+                        enable = true
+                    }
+                },
+                proMacro = {
                     enable = true
+                },
+                check = {
+                    command = "clippy"
                 }
-            },
-            proMacro = {
-                enable = true
-            },
-            check = {
-                command = "clippy"
             }
         },
     });
