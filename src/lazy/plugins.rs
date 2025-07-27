@@ -1,6 +1,4 @@
 use crate::table;
-use mlua::Table;
-use nvim_oxi::api::select_popupmenu_item;
 
 pub struct Lazy(Vec<LazyPlugin>);
 
@@ -23,7 +21,7 @@ pub struct LazyLoad {
     events: Option<&'static [&'static str]>,
     cmd: Option<&'static [&'static str]>,
     ft: Option<&'static [&'static str]>,
-    keys: Option<&'static [&'static str]>,
+    keys: Option<mlua::Table>,
 }
 
 /// A plugin to be loaded and download for lazy
@@ -33,7 +31,7 @@ pub struct LazyPlugin {
     dependencies: Option<&'static [&'static str]>,
     opts: Option<mlua::Table>,
     opts_extend: Option<&'static [&'static str]>,
-    callback: Option<Box<dyn Fn(Table) -> nvim_oxi::Result<()>>>,
+    callback: Option<Box<dyn Fn(mlua::Table) -> nvim_oxi::Result<()>>>,
     main: Option<&'static str>,
     build: Option<&'static str>,
     version: Option<LazyVersion>,
@@ -208,7 +206,10 @@ impl LazyPlugin {
     }
 
     /// Set a callback when this plugin is loaded to configure it. Equivalent to `config` in spec.
-    pub fn callback(mut self, callback: impl Fn(Table) -> nvim_oxi::Result<()> + 'static) -> Self {
+    pub fn callback(
+        mut self,
+        callback: impl Fn(mlua::Table) -> nvim_oxi::Result<()> + 'static,
+    ) -> Self {
         self.callback = Some(Box::new(callback));
         self
     }
@@ -275,7 +276,7 @@ impl LazyLoad {
     }
 
     /// Lazy load on key map. Equivalent to `keys` in spec.
-    pub fn keys(mut self, keys: &'static [&'static str]) -> Self {
+    pub fn keys(mut self, keys: mlua::Table) -> Self {
         self.keys = Some(keys);
         self
     }
