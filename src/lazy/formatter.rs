@@ -1,6 +1,5 @@
-use mlua::Function;
 
-use crate::{autocmds::create_autocmd, require, require_setup, table};
+use crate::table;
 
 use super::LazyPlugin;
 

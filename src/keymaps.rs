@@ -1,4 +1,3 @@
-use mlua::Table;
 
 use crate::Mode;
 
