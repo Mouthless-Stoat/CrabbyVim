@@ -13,17 +13,16 @@ mod theme;
 
 #[nvim_oxi::plugin]
 fn config() -> nvim_oxi::Result<()> {
-    lazy::setup_lazy()?;
-    lsp::setup_lsp()?;
-
-    diagnostic::configure()?;
-
     options::configure()?;
     keymaps::configure()?;
 
     theme::configure()?;
-    commands::configure()?;
 
+    lazy::setup_lazy()?;
+    lsp::setup_lsp()?;
+
+    diagnostic::configure()?;
+    commands::configure()?;
     autocmds::configure()?;
 
     Ok(())
