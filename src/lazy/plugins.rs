@@ -1,3 +1,5 @@
+use mlua::IntoLua;
+
 use crate::table;
 
 pub struct Lazy(Vec<LazyPlugin>);
@@ -102,8 +104,6 @@ impl Lazy {
     pub fn setup(self) -> nvim_oxi::Result<()> {
         Self::bootstrap()?;
 
-        let lua = nvim_oxi::mlua::lua();
-
         let tbl = table! {
             change_detection = table! {
                 enable = false,
@@ -114,68 +114,7 @@ impl Lazy {
             }
         };
 
-        let plugins_spec = table! {};
-
-        for plugin in self.0 {
-            // TODO: possibly implement ToLua for LazyPlugin for cleaner code?
-            let spec = table! {};
-
-            spec.push(plugin.url)?;
-
-            if let Some(opts) = plugin.opts {
-                spec.set("opts", opts)?;
-            }
-
-            if let Some(dependencies) = plugin.dependencies {
-                spec.set("dependencies", dependencies)?;
-            }
-            if let Some(main) = plugin.main {
-                spec.set("main", main)?;
-            }
-            if let Some(build) = plugin.build {
-                spec.set("build", build)?;
-            }
-
-            if let Some(version) = plugin.version {
-                match version {
-                    LazyVersion::Branch(b) => spec.set("branch", b)?,
-                    LazyVersion::Commit(c) => spec.set("commit", c)?,
-                    LazyVersion::Tag(t) => spec.set("tag", t)?,
-                    LazyVersion::Semver(v) => spec.set("version", v)?,
-                }
-            }
-
-            if let Some(lazy_load) = plugin.lazy_load {
-                spec.set("lazy", lazy_load.lazy)?;
-
-                if let Some(events) = lazy_load.events {
-                    spec.set("event", events)?;
-                }
-                if let Some(cmd) = lazy_load.cmd {
-                    spec.set("cmd", cmd)?;
-                }
-                if let Some(ft) = lazy_load.ft {
-                    spec.set("ft", ft)?;
-                }
-                if let Some(keys) = lazy_load.keys {
-                    spec.set("keys", keys)?;
-                }
-            }
-
-            if let Some(callback) = plugin.callback {
-                spec.set(
-                    "config",
-                    lua.create_function(move |_, opt: Table| match callback(opt) {
-                        Ok(_) => Ok(()),
-                        Err(err) => panic!("Error in config function of {}: {err}", plugin.url),
-                    })?,
-                )?;
-            }
-
-            plugins_spec.push(spec)?;
-        }
-
-        tbl.set("spec", plugins_spec)?;
+        tbl.set("spec", self.0)?;
 
         crate::require_setup("lazy", tbl)?;
 
@@ -184,7 +123,7 @@ impl Lazy {
 }
 
 impl LazyPlugin {
-    /// Create a new LazyPlugin builder
+    /// Create a new builder.
     pub fn new(url: &'static str) -> Self {
         Self {
             url,
@@ -286,5 +225,65 @@ impl LazyLoad {
 impl From<&'static str> for LazyPlugin {
     fn from(str: &'static str) -> Self {
         Self::new(str)
+    }
+}
+
+impl IntoLua for LazyPlugin {
+    fn into_lua(self, lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
+        let spec = lua.create_table()?;
+
+        spec.push(self.url)?;
+
+        if let Some(opts) = self.opts {
+            spec.set("opts", opts)?;
+        }
+
+        if let Some(dependencies) = self.dependencies {
+            spec.set("dependencies", dependencies)?;
+        }
+        if let Some(main) = self.main {
+            spec.set("main", main)?;
+        }
+        if let Some(build) = self.build {
+            spec.set("build", build)?;
+        }
+
+        if let Some(version) = self.version {
+            match version {
+                LazyVersion::Branch(b) => spec.set("branch", b)?,
+                LazyVersion::Commit(c) => spec.set("commit", c)?,
+                LazyVersion::Tag(t) => spec.set("tag", t)?,
+                LazyVersion::Semver(v) => spec.set("version", v)?,
+            }
+        }
+
+        if let Some(lazy_load) = self.lazy_load {
+            spec.set("lazy", lazy_load.lazy)?;
+
+            if let Some(events) = lazy_load.events {
+                spec.set("event", events)?;
+            }
+            if let Some(cmd) = lazy_load.cmd {
+                spec.set("cmd", cmd)?;
+            }
+            if let Some(ft) = lazy_load.ft {
+                spec.set("ft", ft)?;
+            }
+            if let Some(keys) = lazy_load.keys {
+                spec.set("keys", keys)?;
+            }
+        }
+
+        if let Some(callback) = self.callback {
+            spec.set(
+                "config",
+                lua.create_function(move |_, opt: mlua::Table| match callback(opt) {
+                    Ok(()) => Ok(()),
+                    Err(err) => panic!("Error in config function of {}: {err}", self.url),
+                })?,
+            )?;
+        }
+
+        Ok(mlua::Value::Table(spec))
     }
 }
