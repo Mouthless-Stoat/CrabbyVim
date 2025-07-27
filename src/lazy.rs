@@ -2,6 +2,7 @@ use crate::table;
 
 mod formatter;
 mod plugins;
+mod snacks;
 
 pub use plugins::*;
 
@@ -10,6 +11,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
 
     lazy.add_plugins(crate::lsp::plugins()?);
     lazy.add_plugin(formatter::plugin()?);
+    lazy.add_plugin(snacks::plugin()?);
 
     lazy.add_plugin(
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")
