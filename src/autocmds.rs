@@ -7,7 +7,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
         set_local_option("spell", true)?;
         set_local_option("breakindent", true)?;
         set_local_option("showbreak", "| ")?;
-        Ok(false)
+        Ok(())
     })?;
 
     Ok(())
@@ -19,12 +19,15 @@ pub fn create_autocmd<T>(
     callback: T,
 ) -> nvim_oxi::Result<()>
 where
-    T: Fn(nvim_oxi::api::types::AutocmdCallbackArgs) -> nvim_oxi::Result<bool> + 'static,
+    T: Fn(nvim_oxi::api::types::AutocmdCallbackArgs) -> nvim_oxi::Result<()> + 'static,
 {
     let mut opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder();
 
     opts.patterns(patterns.into_iter().map(|s| *s));
-    opts.callback(callback);
+    opts.callback(move |args| -> nvim_oxi::Result<bool> {
+        callback(args)?;
+        Ok(false)
+    });
 
     nvim_oxi::api::create_autocmd(events.into_iter().map(|s| *s), &opts.build())?;
 
