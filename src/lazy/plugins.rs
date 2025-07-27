@@ -33,7 +33,7 @@ pub struct LazyPlugin {
     dependencies: Option<&'static [&'static str]>,
     opts: Option<mlua::Table>,
     opts_extend: Option<&'static [&'static str]>,
-    callback: Option<Box<dyn Fn() -> nvim_oxi::Result<()>>>,
+    callback: Option<Box<dyn Fn(Table) -> nvim_oxi::Result<()>>>,
     main: Option<&'static str>,
     build: Option<&'static str>,
     version: Option<LazyVersion>,
@@ -167,9 +167,9 @@ impl Lazy {
             if let Some(callback) = plugin.callback {
                 spec.set(
                     "config",
-                    lua.create_function(move |_, _: Table| {
-                        callback().unwrap();
-                        Ok(())
+                    lua.create_function(move |_, opt: Table| match callback(opt) {
+                        Ok(_) => Ok(()),
+                        Err(err) => panic!("Error in config function of {}: {err}", plugin.url),
                     })?,
                 )?;
             }
@@ -208,7 +208,7 @@ impl LazyPlugin {
     }
 
     /// Set a callback when this plugin is loaded to configure it. Equivalent to `config` in spec.
-    pub fn callback(mut self, callback: impl Fn() -> nvim_oxi::Result<()> + 'static) -> Self {
+    pub fn callback(mut self, callback: impl Fn(Table) -> nvim_oxi::Result<()> + 'static) -> Self {
         self.callback = Some(Box::new(callback));
         self
     }
