@@ -23,6 +23,7 @@ pub struct LazyLoad {
     events: Option<&'static [&'static str]>,
     cmd: Option<&'static [&'static str]>,
     ft: Option<&'static [&'static str]>,
+    // TODO: create a struct for this spec instead of just using a lua table
     keys: Option<mlua::Table>,
 }
 
