@@ -16,7 +16,7 @@ pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
             toml = ["taplo"]
         },
         format_on_save = table! {
-            timeout_ms = 500,
+            timeout_ms = 5000,
             lsp_format = "fallback"
         }
     }))
