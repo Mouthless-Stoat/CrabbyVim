@@ -132,10 +132,11 @@ impl HighlightOpt {
         Self::default().bg(color)
     }
 
-    pub fn link(hl: impl Into<&'static str>) -> Self {
-        let mut t = Self::default();
-        t.link = Some(hl.into());
-        t
+    pub fn link(link: impl Into<&'static str>) -> Self {
+        Self {
+            link: Some(link.into()),
+            ..Self::default()
+        }
     }
 
     pub fn fg(mut self, color: Color) -> Self {

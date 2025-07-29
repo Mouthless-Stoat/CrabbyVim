@@ -37,7 +37,7 @@ enum DiagnosticSeverity {
 }
 
 impl mlua::IntoLua for DiagnosticSeverity {
-    fn into_lua(self, lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
+    fn into_lua(self, _lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
         Ok(mlua::Value::Integer(
             crate::vim()?
                 .get::<Table>("diagnostic")?

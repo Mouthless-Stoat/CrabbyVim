@@ -5,6 +5,7 @@ use crate::{table, vim};
 pub struct Lazy(Vec<LazyPlugin>);
 
 /// Enum storing used to specific the version of a plugin to be downloaded by Lazy
+#[allow(unused)]
 pub enum LazyVersion {
     // Pin to a specific branch. Equivalent to `branch` in spec.
     Branch(&'static str),
@@ -126,6 +127,7 @@ impl Lazy {
     }
 }
 
+#[allow(unused)]
 impl LazyPlugin {
     /// Create a new builder.
     pub fn new(url: &'static str) -> Self {
@@ -191,8 +193,9 @@ impl LazyPlugin {
     }
 }
 
+#[allow(unused)]
 impl LazyLoad {
-    /// Create a new LazyLoad builder.
+    /// Create a new `LazyLoad` builder.
     pub fn new(lazy: bool) -> Self {
         Self {
             lazy,

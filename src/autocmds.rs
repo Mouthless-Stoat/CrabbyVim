@@ -23,13 +23,13 @@ where
 {
     let mut opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder();
 
-    opts.patterns(patterns.into_iter().map(|s| *s));
+    opts.patterns(patterns.iter().copied());
     opts.callback(move |args| -> nvim_oxi::Result<bool> {
         callback(args)?;
         Ok(false)
     });
 
-    nvim_oxi::api::create_autocmd(events.into_iter().map(|s| *s), &opts.build())?;
+    nvim_oxi::api::create_autocmd(events.iter().copied(), &opts.build())?;
 
     Ok(())
 }

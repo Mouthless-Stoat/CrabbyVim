@@ -143,5 +143,5 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
 
     let luasnip = LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*"));
 
-    return Ok(vec![blink, luasnip]);
+    Ok(vec![blink, luasnip])
 }

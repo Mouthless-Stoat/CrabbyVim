@@ -59,6 +59,8 @@ pub fn configure_highlight() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+#[derive(Clone, Copy)]
+#[allow(clippy::enum_variant_names)]
 enum KindHighlight {
     PinkKind,
     RedKind,

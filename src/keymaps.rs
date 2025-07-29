@@ -78,7 +78,7 @@ pub fn set_key_desc(
         Action::Map(key) => rhs = key,
         Action::Fn(mut fn_mut) => {
             opts.callback(move |()| match fn_mut() {
-                Ok(_) => (),
+                Ok(()) => (),
                 Err(err) => nvim_oxi::api::err_writeln(format!("{err}").as_str()),
             });
         }
