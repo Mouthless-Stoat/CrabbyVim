@@ -1,6 +1,6 @@
 use crate::table;
 
-mod formatter;
+mod conform;
 mod plugins;
 mod snacks;
 
@@ -10,7 +10,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
     let mut lazy = Lazy::new();
 
     lazy.add_plugins(crate::lsp::plugins()?);
-    lazy.add_plugin(formatter::plugin()?);
+    lazy.add_plugin(conform::plugin()?);
     lazy.add_plugin(snacks::plugin()?);
 
     lazy.add_plugin(
