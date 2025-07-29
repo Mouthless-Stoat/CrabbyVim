@@ -50,9 +50,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("shellcmdflag", "-c")?;
 
     let yank_callback = |_args| {
-        nvim_oxi::mlua::lua()
-            .globals()
-            .get::<Table>("vim")?
+        crate::vim()?
             .get::<Table>("hl")?
             .get::<Function>("on_yank")?
             .call::<bool>(table! { higroup = "Yank" })

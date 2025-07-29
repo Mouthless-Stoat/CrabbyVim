@@ -61,7 +61,7 @@ impl Lazy {
 
     /// Bootstrap Lazy into neovim, download if not already on disk.
     fn bootstrap() -> nvim_oxi::Result<()> {
-        // Thsi code is simply a rewrite from the normal bootstrap script. It is only missing the
+        // This code is simply a rewrite from the normal bootstrap script. It is only missing the
         // error report when lazy could not be install.
         // Refer to https://lazy.folke.io/installation for more info
 

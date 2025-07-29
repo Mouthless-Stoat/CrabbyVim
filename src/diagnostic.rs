@@ -2,9 +2,7 @@ use crate::table;
 use mlua::{Function, Integer, Table};
 
 pub fn configure() -> nvim_oxi::Result<()> {
-    let config = nvim_oxi::mlua::lua()
-        .globals()
-        .get::<Table>("vim")?
+    let config = crate::vim()?
         .get::<Table>("diagnostic")?
         .get::<Function>("config")?;
 
@@ -41,8 +39,7 @@ enum DiagnosticSeverity {
 impl mlua::IntoLua for DiagnosticSeverity {
     fn into_lua(self, lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
         Ok(mlua::Value::Integer(
-            lua.globals()
-                .get::<Table>("vim")?
+            crate::vim()?
                 .get::<Table>("diagnostic")?
                 .get::<Table>("severity")?
                 .get::<Integer>(match self {

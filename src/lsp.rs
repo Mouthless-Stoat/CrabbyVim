@@ -24,9 +24,7 @@ impl Lsp {
 
     /// Configure the LSP server with all config.
     fn configure(self) -> nvim_oxi::Result<()> {
-        let lua = mlua::lua();
-        let vim = lua.globals().get::<Table>("vim")?;
-        let vim_lsp = vim.get::<Table>("lsp")?;
+        let vim_lsp = crate::vim()?.get::<Table>("lsp")?;
         let lsp_config = vim_lsp.get::<Table>("config")?;
 
         for config in self.configs {
