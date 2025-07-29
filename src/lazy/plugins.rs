@@ -1,6 +1,6 @@
-use mlua::IntoLua;
+use mlua::{IntoLua, ObjectLike};
 
-use crate::table;
+use crate::{table, vim};
 
 pub struct Lazy(Vec<LazyPlugin>);
 
@@ -65,9 +65,12 @@ impl Lazy {
         // error report when lazy could not be install.
         // Refer to https://lazy.folke.io/installation for more info
 
-        // TODO: replace enviroment variable access with using neovim api for `stdpath`
-        let lazypath = std::path::Path::new(&std::env::var("XDG_DATA_HOME").unwrap())
-            .join("nvim-data/lazy/lazy.nvim");
+        let lazypath = std::path::Path::new(
+            &vim()?
+                .get::<mlua::Table>("fn")?
+                .call_function::<String>("stdpath", "data")?,
+        )
+        .join("nvim-data/lazy/lazy.nvim");
 
         if !lazypath.exists() {
             std::process::Command::new("git")
