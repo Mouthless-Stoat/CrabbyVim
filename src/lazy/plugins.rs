@@ -87,7 +87,6 @@ impl Lazy {
                 .expect("Cannot install lazy.nvim");
         }
 
-        // TODO: clean this up. Appending to the option is way too messy
         let old_rtp = nvim_oxi::api::get_option_value::<String>(
             "runtimepath",
             &nvim_oxi::api::opts::OptionOpts::default(),
