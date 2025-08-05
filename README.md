@@ -9,8 +9,9 @@ This config is written in Rust with the help of [`nvim-oxi`](https://crates.io/c
 Some time ago I found out about [CatNvim](https://github.com/rewhile/CatNvim), and thought the idea was intriguing. Later while looking at the [Neovim wiki](https://github.com/neovim/neovim/wiki/Related-projects), I found out about [`nvim-oxi`](https://github.com/noib3/nvim-oxi), the Rust api client for Neovim. The idea was funny enough because "Hur hur, rewrite everything in rust" just for the meme.
 
 ## Requirements
-- Neovim = 0.11
-- Git (for lazy.nvim)
-- [Caskadyia Cove](https://github.com/eliheuer/caskaydia-cove) (font of choice)
-- [`just`](https://just.systems) (to build rust config)
-- Rust
+
+-   Neovim = 0.11
+-   Git (for lazy.nvim)
+-   [Caskadyia Cove](https://github.com/eliheuer/caskaydia-cove) (font of choice)
+-   [`just`](https://just.systems) (to build rust config)
+-   Rust
