@@ -12,6 +12,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
     lazy.add_plugins(crate::lsp::plugins()?);
     lazy.add_plugin(conform::plugin()?);
     lazy.add_plugin(snacks::plugin()?);
+    lazy.add_plugin("wakatime/vim-wakatime");
 
     lazy.add_plugin(
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")
