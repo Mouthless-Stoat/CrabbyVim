@@ -1,5 +1,7 @@
 use mlua::{IntoLua, ObjectLike};
+use nvim_oxi::api::types::Mode;
 
+use crate::keymaps::Action;
 use crate::{table, vim};
 
 pub struct Lazy(Vec<LazyPlugin>);
@@ -24,8 +26,16 @@ pub struct LazyLoad {
     events: Option<&'static [&'static str]>,
     cmd: Option<&'static [&'static str]>,
     ft: Option<&'static [&'static str]>,
-    // TODO: create a struct for this spec instead of just using a lua table
-    keys: Option<mlua::Table>,
+    keys: Vec<LazyKey>,
+}
+
+// Missing mode because most if not all of the time it always normal mode
+// TODO: include mode in this struct for more info
+#[derive(Default)]
+pub struct LazyKey {
+    key: &'static str,
+    action: Option<Action>,
+    desc: Option<&'static str>,
 }
 
 /// A plugin to be loaded and download for lazy
@@ -221,8 +231,25 @@ impl LazyLoad {
     }
 
     /// Lazy load on key map. Equivalent to `keys` in spec.
-    pub fn keys(mut self, keys: mlua::Table) -> Self {
-        self.keys = Some(keys);
+    pub fn add_key(mut self, key: LazyKey) -> Self {
+        self.keys.push(key);
+        self
+    }
+}
+
+impl LazyKey {
+    pub fn new(key: &'static str) -> Self {
+        Self {
+            key,
+            ..Self::default()
+        }
+    }
+
+    pub fn action<I>(mut self, action: I) -> Self
+    where
+        I: Into<Action>,
+    {
+        self.action = Some(action.into());
         self
     }
 }
@@ -275,7 +302,18 @@ impl IntoLua for LazyPlugin {
             if let Some(ft) = lazy_load.ft {
                 spec.set("ft", ft)?;
             }
-            if let Some(keys) = lazy_load.keys {
+            if !lazy_load.keys.is_empty() {
+                let keys = table! {};
+                for key in lazy_load.keys {
+                    let k = table! {};
+
+                    k.push(key.key)?;
+                    k.push(key.action)?;
+                    if let Some(desc) = key.desc {
+                        k.set("desc", desc)?;
+                    }
+                    keys.push(k)?;
+                }
                 spec.set("keys", keys)?;
             }
         }

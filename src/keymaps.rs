@@ -1,3 +1,5 @@
+use mlua::IntoLua;
+
 use crate::Mode;
 
 #[rustfmt::skip]
@@ -93,5 +95,16 @@ pub fn set_key_desc(
 impl From<&'static str> for Action {
     fn from(val: &'static str) -> Self {
         Action::Map(val)
+    }
+}
+
+impl IntoLua for Action {
+    fn into_lua(self, lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
+        match self {
+            Action::Map(str) => str.into_lua(lua),
+            Action::Fn(mut fn_mut) => Ok(mlua::Value::Function(lua.create_function_mut(
+                move |_, _: ()| Ok(fn_mut().expect("Cannot turn key action into lua function")),
+            )?)),
+        }
     }
 }
