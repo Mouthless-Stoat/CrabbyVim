@@ -2,7 +2,7 @@
 
 These are todo for the project not code todo and clean up, those are inline comments.
 
--   [ ] Add mason to handle LSP and formatter
+-   [x] Add mason to handle LSP and formatter
 -   [ ] Add `gitsign.nvim` or fugitive for gutter icon
 -   [ ] Set up various snacks
     -   [ ] Dashboard?

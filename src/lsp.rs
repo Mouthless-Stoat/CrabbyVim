@@ -142,6 +142,15 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
         });
 
     let luasnip = LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*"));
+    let mason = LazyPlugin::new("mason-org/mason.nvim").opts(lua_table! {
+        ui = {
+            icons = {
+                package_installed = "",
+                package_pending = "",
+                package_uninstalled = ""
+            }
+        }
+    });
 
-    Ok(vec![blink, luasnip])
+    Ok(vec![blink, luasnip, mason])
 }
