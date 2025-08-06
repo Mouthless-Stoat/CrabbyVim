@@ -22,7 +22,7 @@ icon_table! {
     UNIT = "";
     VALUE = "";
     ENUM = "󱡠";
-    ENUMMEMBER = "󰦨";
+    ENUM_MEMBER = "󰦨";
 
     KEYWORD = "󰌋";
     CONSTANT = "󰏿";
@@ -34,7 +34,7 @@ icon_table! {
     FOLDER = "󰉋";
     EVENT = "";
     OPERATOR = "󰆕";
-    TYPEPARAMETER = "󰬁";
+    TYPE_PARAMETER = "󰬁";
 
     GOOD = "";
     BAD = "";
@@ -46,4 +46,11 @@ icon_table! {
     INFO = "";
 
     DOT = "";
+
+    ADDED = "│";
+    CHANGED = "│";
+    DELETED = "";
+    TOP_DELETED = "";
+    CHANGE_DELETED = "│";
+    UNTRACKED = "┊";
 }

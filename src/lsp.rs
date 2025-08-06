@@ -125,7 +125,7 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
                 Unit = icons::UNIT,
                 Value = icons::VALUE,
                 Enum = icons::ENUM,
-                EnumMember = icons::ENUMMEMBER,
+                EnumMember = icons::ENUM_MEMBER,
 
                 Keyword = icons::KEYWORD,
                 Constant = icons::CONSTANT,
@@ -137,7 +137,7 @@ pub fn plugins() -> nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>> {
                 Folder = icons::FOLDER,
                 Event = icons::EVENT,
                 Operator = icons::OPERATOR,
-                TypeParameter = icons::TYPEPARAMETER
+                TypeParameter = icons::TYPE_PARAMETER
             }
         },
     )?;
