@@ -1,6 +1,6 @@
 use crate::table;
 
-use super::LazyPlugin;
+use crate::lazy::LazyPlugin;
 
 pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
     Ok(LazyPlugin::new("stevearc/conform.nvim").opts(table! {

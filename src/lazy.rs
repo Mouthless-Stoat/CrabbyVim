@@ -1,22 +1,19 @@
 use crate::table;
 
-mod conform;
-mod gitsigns;
-mod plugins;
-mod snacks;
+mod types;
 
-pub use plugins::*;
+pub use types::*;
 
 pub fn setup_lazy() -> nvim_oxi::Result<()> {
     let mut lazy = Lazy::new();
 
     lazy.add_plugin("wakatime/vim-wakatime");
 
-    lazy.add_plugin(snacks::plugin()?);
+    lazy.add_plugin(crate::plugins::snacks::plugin()?);
 
     // lsp and coding stuff
     lazy.add_plugins(crate::lsp::plugins()?);
-    lazy.add_plugin(conform::plugin()?);
+    lazy.add_plugin(crate::plugins::conform::plugin()?);
     lazy.add_plugin(
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")
             .main("nvim-treesitter.configs")
@@ -43,7 +40,7 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
             }),
     );
 
-    lazy.add_plugin(gitsigns::plugin()?);
+    lazy.add_plugin(crate::plugins::gitsigns::plugin()?);
 
     lazy.setup()
 }

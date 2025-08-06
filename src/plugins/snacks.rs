@@ -3,7 +3,7 @@ use mlua::ObjectLike;
 use crate::keymaps::Action;
 use crate::{lua_table, require};
 
-use super::{LazyKey, LazyLoad, LazyPlugin};
+use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 
 pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
     // TODO: replace this lua spam with rust function to be more "authentic"

@@ -11,6 +11,7 @@ mod lsp;
 mod macros;
 mod options;
 mod theme;
+mod plugins;
 
 #[nvim_oxi::plugin]
 fn config() -> nvim_oxi::Result<()> {

@@ -1,6 +1,6 @@
 use crate::{icons, table};
 
-use super::LazyPlugin;
+use crate::lazy::LazyPlugin;
 
 pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
     let signs_table = table! {

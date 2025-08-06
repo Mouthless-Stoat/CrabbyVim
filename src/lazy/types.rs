@@ -1,5 +1,4 @@
 use mlua::{IntoLua, ObjectLike};
-use nvim_oxi::api::types::Mode;
 
 use crate::keymaps::Action;
 use crate::{table, vim};
