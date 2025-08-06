@@ -4,6 +4,7 @@ use nvim_oxi::api::types::Mode as OxiMode;
 mod autocmds;
 mod commands;
 mod diagnostic;
+mod icons;
 mod keymaps;
 mod lazy;
 mod lsp;

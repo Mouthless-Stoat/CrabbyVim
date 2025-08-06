@@ -1,4 +1,4 @@
-use crate::table;
+use crate::{icons, table};
 use mlua::{Function, Integer, Table};
 
 pub fn configure() -> nvim_oxi::Result<()> {
@@ -12,10 +12,10 @@ pub fn configure() -> nvim_oxi::Result<()> {
         },
         signs = table!{
             text = table! {
-                [DiagnosticSeverity::Error] = "",
-                [DiagnosticSeverity::Warn] = "",
-                [DiagnosticSeverity::Hint] = "󰌵",
-                [DiagnosticSeverity::Info] = ""
+                [DiagnosticSeverity::Error] = icons::ERROR,
+                [DiagnosticSeverity::Warn] = icons::WARN,
+                [DiagnosticSeverity::Hint] = icons::HINT,
+                [DiagnosticSeverity::Info] = icons::INFO
             },
             num_hl = table! {
                 [DiagnosticSeverity::Error] = "DiagnosticError",
