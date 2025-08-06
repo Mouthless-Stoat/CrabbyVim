@@ -1,3 +1,5 @@
+use crate::options::set_option;
+
 mod blink_cmp;
 mod syntax;
 
@@ -14,6 +16,8 @@ fn configure_highlight() -> nvim_oxi::Result<()> {
     use Color::*;
     set_hl("Normal", HighlightOpt::with_fg(White).bg(Bg0))?;
     set_hl("NormalFloat", HighlightOpt::with_fg(White).bg(Bg1))?;
+
+    set_option("guicursor", "n-o:block-NCursor,i:ver20-ICursor,v-ve:block-VCursor,c-ci-cr:ver25-CCursor,r:hor15-RCursor")?;
 
     set_hl("NCursor", HighlightOpt::with_bg(Blue))?;
     set_hl("ICursor", HighlightOpt::with_bg(Green))?;
