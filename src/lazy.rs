@@ -1,6 +1,7 @@
 use crate::table;
 
 mod conform;
+mod gitsigns;
 mod plugins;
 mod snacks;
 
@@ -41,6 +42,8 @@ pub fn setup_lazy() -> nvim_oxi::Result<()> {
                 indent = table! { enable = true }
             }),
     );
+
+    lazy.add_plugin(gitsigns::plugin()?);
 
     lazy.setup()
 }
