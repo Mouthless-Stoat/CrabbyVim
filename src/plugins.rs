@@ -18,7 +18,7 @@ macro_rules! add_plugins {
             let mut vec = vec![];
             $(
                 vec.extend($plugin()?);
-                $(paste::paste!($crate::theme::configure_highlights([<$plugin _ $highlight>]())?;);)?
+                $(paste::paste!([<$plugin _ $highlight>]()?;);)?
             )*
             Ok(vec)
         }
@@ -29,7 +29,7 @@ macro_rules! add_plugins {
             let mut vec = vec![];
             $(
                 vec.extend($plugin()?);
-                $(paste::paste!($crate::theme::configure_highlights([<$plugin _ $highlight>]())?;);)?
+                $(paste::paste!([<$plugin _ $highlight>]()?;);)?
             )*
             $(
                 vec.push($expr);
@@ -40,7 +40,6 @@ macro_rules! add_plugins {
 }
 
 pub type Plugins = nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>>;
-pub type Highlights = Vec<(&'static str, crate::theme::HighlightOpt)>;
 
 add_plugins! {
     snacks;
