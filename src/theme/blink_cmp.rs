@@ -1,7 +1,7 @@
 use crate::theme::{Color, HighlightOpt, set_hl};
 
 #[rustfmt::skip]
-pub fn configure_highlight() -> nvim_oxi::Result<()> {
+pub fn highlights() -> nvim_oxi::Result<()> {
     use Color::*;
     use KindHighlight::*;
 

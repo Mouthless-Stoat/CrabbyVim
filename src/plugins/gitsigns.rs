@@ -2,7 +2,7 @@ use crate::{icons, table};
 
 use crate::lazy::LazyPlugin;
 
-pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
+pub fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
     let signs_table = table! {
         add = table!{text = icons::ADDED},
         change = table!{text = icons::CHANGED},
@@ -12,10 +12,12 @@ pub fn plugin() -> nvim_oxi::Result<LazyPlugin> {
         untracked     = table!{text = icons::UNTRACKED}
     };
 
-    Ok(LazyPlugin::new("lewis6991/gitsigns.nvim").opts(table! {
-        signs = &signs_table,
-        signs_staged = signs_table,
-        numhl = true,
-        attach_to_untracked = true
-    }))
+    Ok(vec![LazyPlugin::new("lewis6991/gitsigns.nvim").opts(
+        table! {
+            signs = &signs_table,
+            signs_staged = signs_table,
+            numhl = true,
+            attach_to_untracked = true
+        },
+    )])
 }

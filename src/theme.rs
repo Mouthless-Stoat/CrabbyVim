@@ -4,15 +4,22 @@ mod blink_cmp;
 mod syntax;
 
 pub fn configure() -> nvim_oxi::Result<()> {
-    configure_highlight()?;
-    syntax::configure_highlight()?;
-    blink_cmp::configure_highlight()?;
+    highlights()?;
+    syntax::highlights()?;
+    blink_cmp::highlights()?;
 
     Ok(())
 }
 
+pub fn configure_highlights(hls: Vec<(&'static str, HighlightOpt)>) -> nvim_oxi::Result<()> {
+    for hl in hls {
+        set_hl(hl.0, hl.1)?;
+    }
+    Ok(())
+}
+
 #[rustfmt::skip]
-fn configure_highlight() -> nvim_oxi::Result<()> {
+fn highlights() -> nvim_oxi::Result<()> {
     use Color::*;
     set_hl("Normal", HighlightOpt::with_fg(White).bg(Bg0))?;
     set_hl("NormalFloat", HighlightOpt::with_fg(White).bg(Bg1))?;
