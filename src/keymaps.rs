@@ -103,7 +103,10 @@ impl IntoLua for Action {
         match self {
             Action::Map(str) => str.into_lua(lua),
             Action::Fn(mut fn_mut) => Ok(mlua::Value::Function(lua.create_function_mut(
-                move |_, _: ()| Ok(fn_mut().expect("Cannot turn key action into lua function")),
+                move |_, (): ()| {
+                    fn_mut().expect("Cannot turn key action into lua function");
+                    Ok(())
+                },
             )?)),
         }
     }
