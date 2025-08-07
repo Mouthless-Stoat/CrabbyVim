@@ -181,7 +181,9 @@ impl HighlightOpt {
     }
 }
 
-pub fn set_hl<'a>(name: impl Into<&'a str>, opt: HighlightOpt) -> nvim_oxi::Result<()> {
+pub fn set_hl<'a>(name: impl Into<&'a str>, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
+    let opt = opt.into();
+
     let mut opt_builder = nvim_oxi::api::opts::SetHighlightOpts::builder();
 
     if let Some(link) = opt.link {

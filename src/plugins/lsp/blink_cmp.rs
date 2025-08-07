@@ -152,10 +152,9 @@ enum KindHighlight {
     PurpleKind,
 }
 
-fn set_hl_kind(kind: &str, hl: KindHighlight) -> nvim_oxi::Result<()> {
-    set_blink_hl(
-        format!("Kind{kind}").as_str(),
-        HighlightOpt::link(match hl {
+impl From<KindHighlight> for HighlightOpt {
+    fn from(val: KindHighlight) -> Self {
+        HighlightOpt::link(match val {
             KindHighlight::PinkKind => "PinkKind",
             KindHighlight::RedKind => "RedKind",
             KindHighlight::OrangeKind => "OrangeKind",
@@ -164,12 +163,16 @@ fn set_hl_kind(kind: &str, hl: KindHighlight) -> nvim_oxi::Result<()> {
             KindHighlight::CyanKind => "CyanKind",
             KindHighlight::BlueKind => "BlueKind",
             KindHighlight::PurpleKind => "PurpleKind",
-        }),
-    )?;
+        })
+    }
+}
+
+fn set_hl_kind(kind: &str, hl: KindHighlight) -> nvim_oxi::Result<()> {
+    set_blink_hl(format!("Kind{kind}").as_str(), hl)?;
     Ok(())
 }
 
-fn set_blink_hl(hl: &str, opt: HighlightOpt) -> nvim_oxi::Result<()> {
+fn set_blink_hl(hl: &str, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
     set_hl(format!("BlinkCmp{hl}").as_str(), opt)?;
     Ok(())
 }
