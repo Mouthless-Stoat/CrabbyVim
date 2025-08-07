@@ -23,6 +23,20 @@ macro_rules! add_plugins {
             Ok(vec)
         }
     };
+    ($($plugin:ident $($with:ident $highlight:ident)?;)*---$($expr:expr;)*) => {
+        $(plugin!($plugin $($with $highlight)?);)*
+        pub fn plugins() -> $crate::plugins::Plugins {
+            let mut vec = vec![];
+            $(
+                vec.extend($plugin()?);
+                $(paste::paste!($crate::theme::configure_highlights([<$plugin _ $highlight>]())?;);)?
+            )*
+            $(
+                vec.push($expr);
+            )*
+            Ok(vec)
+        }
+    };
 }
 
 pub type Plugins = nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>>;
@@ -32,4 +46,5 @@ add_plugins! {
     snacks;
     conform;
     gitsigns;
+    lsp;
 }
