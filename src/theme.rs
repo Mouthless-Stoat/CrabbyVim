@@ -1,12 +1,10 @@
 use crate::options::set_option;
 
-mod blink_cmp;
 mod syntax;
 
 pub fn configure() -> nvim_oxi::Result<()> {
     highlights()?;
     syntax::highlights()?;
-    blink_cmp::highlights()?;
 
     Ok(())
 }
@@ -21,65 +19,68 @@ pub fn configure_highlights(hls: Vec<(&'static str, HighlightOpt)>) -> nvim_oxi:
 #[rustfmt::skip]
 fn highlights() -> nvim_oxi::Result<()> {
     use Color::*;
-    set_hl("Normal", HighlightOpt::with_fg(White).bg(Bg0))?;
-    set_hl("NormalFloat", HighlightOpt::with_fg(White).bg(Bg1))?;
 
     set_option("guicursor", "n-o:block-NCursor,i:ver20-ICursor,v-ve:block-VCursor,c-ci-cr:ver25-CCursor,r:hor15-RCursor")?;
+    
+    configure_highlights(vec![
+        ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
+        ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg1)),
 
-    set_hl("NCursor", HighlightOpt::with_bg(Blue))?;
-    set_hl("ICursor", HighlightOpt::with_bg(Green))?;
-    set_hl("VCursor", HighlightOpt::with_bg(Purple))?;
-    set_hl("CCursor", HighlightOpt::with_bg(Yellow))?;
-    set_hl("RCursor", HighlightOpt::with_bg(Red))?;
+        ("NCursor",HighlightOpt::with_bg(Blue)),
+        ("ICursor",HighlightOpt::with_bg(Green)),
+        ("VCursor",HighlightOpt::with_bg(Purple)),
+        ("CCursor",HighlightOpt::with_bg(Yellow)),
+        ("RCursor",HighlightOpt::with_bg(Red)),
 
-    set_hl("ErrorMsg", HighlightOpt::with_fg(Red))?;
-    set_hl("MoreMsg", HighlightOpt::with_fg(Blue))?;
-    set_hl("WarningMsg", HighlightOpt::with_fg(Yellow))?;
-    set_hl("Question", HighlightOpt::with_fg(Green))?;
+        ("ErrorMsg",HighlightOpt::with_fg(Red)),
+        ("MoreMsg",HighlightOpt::with_fg(Blue)),
+        ("WarningMsg",HighlightOpt::with_fg(Yellow)),
+        ("Question",HighlightOpt::with_fg(Green)),
 
-    set_hl("IncSearch", HighlightOpt::with_fg(Bg0).bg(Yellow))?;
-    set_hl("Subsitube", HighlightOpt::with_fg(Bg0).bg(Green))?;
+        ("IncSearch",HighlightOpt::with_fg(Bg0).bg(Yellow)),
+        ("Subsitube",HighlightOpt::with_fg(Bg0).bg(Green)),
 
-    set_hl("Yank", HighlightOpt::default().reverse())?;
+        ("Yank",HighlightOpt::default().reverse()),
 
-    set_hl("Visual", HighlightOpt::with_fg(Bg0).bg(Purple))?;
-    set_hl("EndOfBuffer", HighlightOpt::with_fg(Bg0))?;
+        ("Visual",HighlightOpt::with_fg(Bg0).bg(Purple)),
+        ("EndOfBuffer",HighlightOpt::with_fg(Bg0)),
 
-    set_hl("LineNr", HighlightOpt::with_fg(Gray).bg(Bg1))?;
-    set_hl("CursorLineNr", HighlightOpt::with_fg(Blue).bg(Bg0))?;
+        ("LineNr",HighlightOpt::with_fg(Gray).bg(Bg1)),
+        ("CursorLineNr",HighlightOpt::with_fg(Blue).bg(Bg0)),
 
-    set_hl("DiffAdd", HighlightOpt::with_fg(Green).bg(Bg0).bold().italic())?;
-    set_hl("DiffChange", HighlightOpt::with_fg(Yellow).bg(Bg0).bold().italic())?;
-    set_hl("DiffDelete", HighlightOpt::with_fg(Red).bg(Bg0).bold().italic(),)?;
-    set_hl("DiffText", HighlightOpt::with_fg(Blue).bg(Bg0).bold().italic())?;
+        ("DiffAdd",HighlightOpt::with_fg(Green).bg(Bg0).bold().italic()),
+        ("DiffChange",HighlightOpt::with_fg(Yellow).bg(Bg0).bold().italic()),
+        ("DiffDelete",HighlightOpt::with_fg(Red).bg(Bg0).bold().italic(),),
+        ("DiffText",HighlightOpt::with_fg(Blue).bg(Bg0).bold().italic()),
 
-    set_hl("Changed", HighlightOpt::with_fg(Yellow).bold())?;
-    set_hl("Added", HighlightOpt::with_fg(Green).bold())?;
-    set_hl("Removed", HighlightOpt::with_fg(Red).bold())?;
+        ("Changed",HighlightOpt::with_fg(Yellow).bold()),
+        ("Added",HighlightOpt::with_fg(Green).bold()),
+        ("Removed",HighlightOpt::with_fg(Red).bold()),
 
-    set_hl("WinSeparator", HighlightOpt::with_fg(Blue).bg(Bg1))?;
+        ("WinSeparator",HighlightOpt::with_fg(Blue).bg(Bg1)),
 
-    set_hl("MatchParen", HighlightOpt::with_fg(Blue).bg(Bg1))?;
+        ("MatchParen",HighlightOpt::with_fg(Blue).bg(Bg1)),
 
-    set_hl("MsgArea", HighlightOpt::with_fg(Yellow).bg(Bg0))?;
+        ("MsgArea",HighlightOpt::with_fg(Yellow).bg(Bg0)),
 
-    set_hl("SpellBad", HighlightOpt::with_fg(Red))?;
-    set_hl("SpellCap", HighlightOpt::with_fg(Blue))?;
-    set_hl("SpellLocal", HighlightOpt::with_fg(Yellow))?;
-    set_hl("SpellRare", HighlightOpt::with_fg(Green))?;
+        ("SpellBad",HighlightOpt::with_fg(Red)),
+        ("SpellCap",HighlightOpt::with_fg(Blue)),
+        ("SpellLocal",HighlightOpt::with_fg(Yellow)),
+        ("SpellRare",HighlightOpt::with_fg(Green)),
 
-    set_hl("DiagnosticError", HighlightOpt::with_fg(Red))?;
-    set_hl("DiagnosticWarn", HighlightOpt::with_fg(Yellow))?;
-    set_hl("DiagnosticInfo", HighlightOpt::with_fg(Blue))?;
-    set_hl("DiagnosticHint", HighlightOpt::with_fg(Purple))?;
-    set_hl("DiagnosticOk", HighlightOpt::with_fg(Green))?;
+        ("DiagnosticError",HighlightOpt::with_fg(Red)),
+        ("DiagnosticWarn",HighlightOpt::with_fg(Yellow)),
+        ("DiagnosticInfo",HighlightOpt::with_fg(Blue)),
+        ("DiagnosticHint",HighlightOpt::with_fg(Purple)),
+        ("DiagnosticOk",HighlightOpt::with_fg(Green)),
 
-    set_hl("DiagnosticUnderlineError", HighlightOpt::with_fg(Red).underline())?;
-    set_hl("DiagnosticUnderlineWarn", HighlightOpt::with_fg(Yellow).underline())?;
-    set_hl("DiagnosticUnderlineInfo", HighlightOpt::with_fg(Blue).underline())?;
-    set_hl("DiagnosticUnderlineHint", HighlightOpt::with_fg(Purple).underline())?;
-    set_hl("DiagnosticUnderlineOk", HighlightOpt::with_fg(Green).underline())?;
-
+        ("DiagnosticUnderlineError",HighlightOpt::with_fg(Red).underline()),
+        ("DiagnosticUnderlineWarn",HighlightOpt::with_fg(Yellow).underline()),
+        ("DiagnosticUnderlineInfo",HighlightOpt::with_fg(Blue).underline()),
+        ("DiagnosticUnderlineHint",HighlightOpt::with_fg(Purple).underline()),
+        ("DiagnosticUnderlineOk",HighlightOpt::with_fg(Green).underline()),
+    ])?;
+        
     Ok(())
 }
 
