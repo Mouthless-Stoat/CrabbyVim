@@ -1,8 +1,9 @@
 use crate::{icons, table};
 
 use crate::lazy::LazyPlugin;
+use crate::plugins::Plugins;
 
-pub fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
+pub fn plugins() -> Plugins {
     let signs_table = table! {
         add = table!{text = icons::ADDED},
         change = table!{text = icons::CHANGED},

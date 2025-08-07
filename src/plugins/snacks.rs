@@ -1,12 +1,12 @@
 use mlua::ObjectLike;
 
 use crate::keymaps::Action;
-use crate::theme::HighlightOpt;
+use crate::plugins::Plugins;
 use crate::{lua_table, require};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 
-pub fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
+pub fn plugins() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")

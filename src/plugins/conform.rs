@@ -1,8 +1,9 @@
 use crate::table;
 
 use crate::lazy::LazyPlugin;
+use crate::plugins::Plugins;
 
-pub fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
+pub fn plugins() -> Plugins {
     Ok(vec![LazyPlugin::new("stevearc/conform.nvim").opts(
         table! {
             formatters_by_ft = table! {
