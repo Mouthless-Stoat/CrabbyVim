@@ -1,4 +1,4 @@
-use crate::lazy::{LazyLoad, LazyPlugin};
+use crate::lazy::LazyPlugin;
 
 macro_rules! plugin {
     ($mod:ident) => {
@@ -49,5 +49,6 @@ add_plugins! {
     gitsigns;
     lsp;
     ---
+    "brianhuster/unnest.nvim";
     "wakatime/vim-wakatime";
 }
