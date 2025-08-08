@@ -51,4 +51,6 @@ icon_table! {
     TOP_DELETED = "";
     CHANGE_DELETED = "│";
     UNTRACKED = "┊";
+
+    MAGNIFYING_GLASS = "";
 }
