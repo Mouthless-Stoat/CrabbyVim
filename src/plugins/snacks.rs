@@ -15,7 +15,7 @@ pub fn plugins() -> Plugins {
                 picker = picker_config()?
             })
             .lazy_load(
-                LazyLoad::new(true)
+                LazyLoad::new(false)
                     .add_key(LazyKey::new("<Leader>sf").action(snack_picker("files")))
                     .add_key(LazyKey::new("<Leader>st").action(snack_picker("grep")))
                     .add_key(
