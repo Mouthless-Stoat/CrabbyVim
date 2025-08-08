@@ -91,7 +91,7 @@ impl Lazy {
                     "--filter=blob:none",
                     "--branch=stable",
                     "https://github.com/folke/lazy.nvim.git",
-                    &lazypath_str
+                    &lazypath_str,
                 ])
                 .spawn()
                 .and_then(|mut c| c.wait())
@@ -105,10 +105,7 @@ impl Lazy {
 
         nvim_oxi::api::set_option_value(
             "runtimepath",
-            format!(
-                "{old_rtp},{}",
-                lazypath_str
-            ),
+            format!("{old_rtp},{lazypath_str}"),
             &nvim_oxi::api::opts::OptionOpts::default(),
         )?;
 

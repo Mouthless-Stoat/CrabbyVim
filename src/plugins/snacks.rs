@@ -2,7 +2,6 @@ use mlua::ObjectLike;
 
 use crate::keymaps::Action;
 use crate::plugins::Plugins;
-use crate::theme::Color;
 use crate::{icons, require, table};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
