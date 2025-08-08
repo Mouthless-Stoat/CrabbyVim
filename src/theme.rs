@@ -1,4 +1,5 @@
 use crate::options::set_option;
+use nvim_oxi::api::set_var;
 
 mod syntax;
 
@@ -21,7 +22,24 @@ fn highlights() -> nvim_oxi::Result<()> {
     use Color::*;
 
     set_option("guicursor", "n-o:block-NCursor,i:ver20-ICursor,v-ve:block-VCursor,c-ci-cr:ver25-CCursor,r:hor15-RCursor")?;
-    
+
+    set_var("terminal_color_0", Bg0.to_str())?;
+    set_var("terminal_color_1", Red.to_str())?;
+    set_var("terminal_color_2", Green.to_str())?;
+    set_var("terminal_color_3", Yellow.to_str())?;
+    set_var("terminal_color_4", Blue.to_str())?;
+    set_var("terminal_color_5", Purple.to_str())?;
+    set_var("terminal_color_6", Cyan.to_str())?;
+    set_var("terminal_color_7", White.to_str())?;
+    set_var("terminal_color_8", Gray.to_str())?;
+    set_var("terminal_color_9", Red.to_str())?;
+    set_var("terminal_color_10", Green.to_str())?;
+    set_var("terminal_color_11", Yellow.to_str())?;
+    set_var("terminal_color_12", Blue.to_str())?;
+    set_var("terminal_color_13", Purple.to_str())?;
+    set_var("terminal_color_14", Cyan.to_str())?;
+    set_var("terminal_color_15", White.to_str())?;
+
     configure_highlights(vec![
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
         ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg1)),
@@ -93,7 +111,7 @@ macro_rules! colors {
             $($name,)*
         }
         impl Color {
-            fn to_str(self) -> &'static str {
+            pub fn to_str(self) -> &'static str {
                 match self {
                     $(Self::$name => $value,)*
                 }
