@@ -2,10 +2,9 @@
 local WIP = true
 
 local config_path = vim.fn.stdpath("config")
-local rust_config = vim.fs.joinpath(config_path, "/lua", "/config.dll")
+local rust_config = vim.fs.joinpath(config_path, "/lua", vim.fn.has("win32") == 1 and "config.dll" or "libconfig.so")
 
 if WIP then
-    -- TODO: replace config.dll with platform specific ending
     vim.fs.rm(rust_config, { force = true })
 end
 
@@ -16,4 +15,4 @@ if not vim.uv.fs_stat(rust_config) then
     vim.fn.system("just build")
     vim.cmd.cd(cwd)
 end
-require("config")
+require(vim.fn.has("win32") and "config" or "libconfig")
