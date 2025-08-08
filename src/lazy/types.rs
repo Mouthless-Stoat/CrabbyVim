@@ -80,7 +80,9 @@ impl Lazy {
                 .get::<mlua::Table>("fn")?
                 .call_function::<String>("stdpath", "data")?,
         )
-        .join("nvim-data/lazy/lazy.nvim");
+        .join("lazy/lazy.nvim");
+
+        let lazypath_str = lazypath.clone().into_os_string().into_string().unwrap();
 
         if !lazypath.exists() {
             std::process::Command::new("git")
@@ -89,7 +91,7 @@ impl Lazy {
                     "--filter=blob:none",
                     "--branch=stable",
                     "https://github.com/folke/lazy.nvim.git",
-                    lazypath.to_str().unwrap(),
+                    &lazypath_str
                 ])
                 .spawn()
                 .and_then(|mut c| c.wait())
@@ -105,7 +107,7 @@ impl Lazy {
             "runtimepath",
             format!(
                 "{old_rtp},{}",
-                lazypath.to_str().unwrap().replace('/', "\\")
+                lazypath_str
             ),
             &nvim_oxi::api::opts::OptionOpts::default(),
         )?;
