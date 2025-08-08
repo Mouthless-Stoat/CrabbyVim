@@ -45,8 +45,6 @@ icon_table! {
     HINT = "󰌵";
     INFO = "";
 
-    DOT = "";
-
     ADDED = "│";
     CHANGED = "│";
     DELETED = "";
