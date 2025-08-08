@@ -12,6 +12,7 @@ Some time ago I found out about [CatNvim](https://github.com/rewhile/CatNvim), a
 
 -   Neovim = 0.11
 -   Git (for lazy.nvim)
--   [Caskadyia Cove](https://github.com/eliheuer/caskaydia-cove) (font of choice)
+-   A Nerd Font ([Caskadyia Cove](https://github.com/eliheuer/caskaydia-cove) is used by default)
 -   [`just`](https://just.systems) (to build rust config)
+-   `make` (to build mlua)
 -   Rust
