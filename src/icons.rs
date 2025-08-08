@@ -41,6 +41,9 @@ icon_table! {
     BAD = "";
     PENDING = "";
 
+    INSTALLED = "󰋘";
+    UNINSTALLED = "󰋙";
+
     ERROR = "";
     WARN = "";
     HINT = "󰌵";
