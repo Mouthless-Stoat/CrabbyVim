@@ -20,12 +20,7 @@ pub fn plugins() -> Plugins {
                     .add_key(
                         LazyKey::new("<Leader>ss").action(snack_picker("lsp_workspace_symbols")),
                     )
-                    .add_key(LazyKey::new("<Leader>u").action(snack_picker("undo")))
-                    .add_key(LazyKey::new("<Leader>g").action(Action::Fn(Box::new(|| {
-                        Ok(require("snacks")?
-                            .get::<mlua::Table>("lazygit")?
-                            .call_function::<()>("open", ())?)
-                    })))),
+                    .add_key(LazyKey::new("<Leader>u").action(snack_picker("undo"))),
             ),
     ])
 }
