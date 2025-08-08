@@ -56,7 +56,7 @@ fn highlights() -> nvim_oxi::Result<()> {
         ("Question",HighlightOpt::with_fg(Green)),
 
         ("IncSearch",HighlightOpt::with_fg(Bg0).bg(Yellow)),
-        ("Subsitube",HighlightOpt::with_fg(Bg0).bg(Green)),
+        ("Substitute",HighlightOpt::with_fg(Bg0).bg(Purple)),
 
         ("Yank",HighlightOpt::default().reverse()),
 
