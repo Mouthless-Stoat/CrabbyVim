@@ -1,6 +1,6 @@
 use crate::keymaps::{Action, set_key};
-use crate::{Mode, table};
-use mlua::{Function, Table};
+use crate::{Mode, table, vim};
+use mlua::{Function, ObjectLike, Table};
 use nvim_oxi::conversion::ToObject;
 
 pub fn configure() -> nvim_oxi::Result<()> {
@@ -36,11 +36,15 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("backup", false)?;
     set_option(
         "undodir",
-        std::path::Path::new(&std::env::var("XDG_DATA_HOME").unwrap())
-            .join("nvim-data/undo")
-            .to_str()
-            .unwrap()
-            .replace('/', "\\"),
+        std::path::Path::new(
+            &vim()?
+                .get::<mlua::Table>("fn")?
+                .call_function::<String>("stdpath", "data")?,
+        )
+        .join("undo")
+        .into_os_string()
+        .into_string()
+        .unwrap(),
     )?;
     set_option("undofile", true)?;
 
