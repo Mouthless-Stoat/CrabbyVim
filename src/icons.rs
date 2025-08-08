@@ -9,7 +9,7 @@ icon_table! {
     TEXT = "󰉿";
     METHOD = "󰊕";
     FUNCTION = "󰊕";
-    CONSTRUCTOR = "󱌣";
+    CONSTRUCTOR = "";
 
     FIELD = "󰜢";
     VARIABLE = "󰀫";
@@ -17,7 +17,7 @@ icon_table! {
 
     CLASS = "󰠱";
     INTERFACE = "";
-    STRUCT = "󰅩";
+    STRUCT = "󰆼";
     MODULE = "";
 
     UNIT = "";
