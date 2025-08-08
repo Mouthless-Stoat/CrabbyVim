@@ -1,3 +1,5 @@
+use crate::lazy::{LazyLoad, LazyPlugin};
+
 macro_rules! plugin {
     ($mod:ident) => {
         mod $mod;
@@ -32,18 +34,20 @@ macro_rules! add_plugins {
                 $(paste::paste!([<$plugin _ $highlight>]()?;);)?
             )*
             $(
-                vec.push($expr);
+                vec.push($expr.into());
             )*
             Ok(vec)
         }
     };
 }
 
-pub type Plugins = nvim_oxi::Result<Vec<crate::lazy::LazyPlugin>>;
+pub type Plugins = nvim_oxi::Result<Vec<LazyPlugin>>;
 
 add_plugins! {
     snacks;
     conform;
     gitsigns;
     lsp;
+    ---
+    "wakatime/vim-wakatime";
 }
