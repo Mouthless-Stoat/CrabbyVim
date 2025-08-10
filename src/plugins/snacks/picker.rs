@@ -4,14 +4,6 @@ use crate::keymaps::Action;
 use crate::theme::{HighlightOpt, set_hl};
 use crate::{icons, lua_table, require, table};
 
-pub fn picker(picker: &'static str) -> Action {
-    Action::Fn(Box::new(|| {
-        Ok(require("snacks")?
-            .get::<mlua::Table>("picker")?
-            .call_function::<()>(picker, ())?)
-    }))
-}
-
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
     // TODO: replace layout lua spam with trust struct
@@ -106,6 +98,14 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     ])?;
 
     Ok(())
+}
+
+pub fn picker(picker: &'static str) -> Action {
+    Action::Fn(Box::new(|| {
+        Ok(require("snacks")?
+            .get::<mlua::Table>("picker")?
+            .call_function::<()>(picker, ())?)
+    }))
 }
 
 fn configure_picker_highligh(hls: Vec<(&'static str, HighlightOpt)>) -> nvim_oxi::Result<()> {
