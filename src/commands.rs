@@ -10,7 +10,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
         "enew | setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile",
     )?;
 
-    create_command("Common typo", "Q", ":q<cr>")?;
+    create_command("Common typo", "Q", "q")?;
 
     Ok(())
 }
