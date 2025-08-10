@@ -46,7 +46,7 @@ pub type Plugins = nvim_oxi::Result<Vec<LazyPlugin>>;
 add_plugins! {
     snacks with highlights;
     conform;
-    gitsigns;
+    gitsigns with highlights;
     lsp;
     treesitter;
     ---

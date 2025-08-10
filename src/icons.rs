@@ -49,12 +49,12 @@ icon_table! {
     HINT = "󰌵";
     INFO = "";
 
-    ADDED = "│";
-    CHANGED = "│";
+    ADDED = "▐";
+    CHANGED = "▐";
     DELETED = "";
     TOP_DELETED = "";
-    CHANGE_DELETED = "│";
-    UNTRACKED = "┊";
+    CHANGE_DELETED = "▐";
+    UNTRACKED = "▐";
 
     MAGNIFYING_GLASS = "";
 }
