@@ -9,26 +9,41 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
     // TODO: replace layout lua spam with trust struct
     Ok(table! {
         prompt = format!(" {MAGNIFYING_GLASS} "),
-        layout = lua_table!{
-            layout = {
-                box = "horizontal",
-                backdrop = false,
-                height = 0.6,
-                row = -1,
-                {
+        layouts = lua_table!{
+            default = {
+                layout = {
+                    box = "horizontal",
+                    backdrop = false,
+                    height = 0.6,
+                    row = -1,
+                    {
+                        box = "verticle",
+                        border = "top",
+                        title = "{title} {live} {flags}",
+                        title_pos = "left",
+                        { win = "input", height = 1},
+                        { win = "list", border = "top" },
+                    },
+                    {
+                        win = "preview",
+                        border = {"─", "─", "─", "", "", "", "", "│"},
+                        title = "{preview}",
+                        title_pos = "left",
+                        width = 0.65,
+                    },
+                },
+            },
+            select = {
+                layout = {
                     box = "verticle",
                     border = "top",
-                    title = "{title} {live} {flags}",
+                    backdrop = false,
+                    height = 0.6,
+                    row = -1,
+                    title = "{title}",
                     title_pos = "left",
                     { win = "input", height = 1},
                     { win = "list", border = "top" },
-                },
-                {
-                    win = "preview",
-                    border = {"─", "─", "─", "", "", "", "", "│"},
-                    title = "{preview}",
-                    title_pos = "left",
-                    width = 0.65,
                 },
             },
         },
