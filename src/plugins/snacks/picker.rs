@@ -14,8 +14,49 @@ pub fn picker(picker: &'static str) -> Action {
 
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
+    // TODO: replace layout lua spam with trust struct
     Ok(table! {
         prompt = format!(" {MAGNIFYING_GLASS} "),
+        layouts = lua_table!{
+            default = {
+                layout = {
+                    box = "horizontal",
+                    backdrop = false,
+                    height = 0.6,
+                    border = "top",
+                    title = "{title} {live} {flags} ({preview})",
+                    title_pos = "left",
+                    row = -1,
+                    {
+                        box = "verticle",
+                        border = "right",
+                        width = 0.35,
+                        { win = "input", height = 1},
+                        { win = "list", border = "top" },
+                    },
+                    { win = "preview" },
+                },
+            },
+            select = {
+                layout = {
+                    box = "verticle",
+                    backdrop = false,
+                    height = 0.6,
+                    border = "top",
+                    title = "{title}",
+                    title_pos = "left",
+                    row = -1,
+                    { win = "input", height = 1},
+                    { win = "list", border = "top" },
+                },
+            },
+        },
+        previewers = lua_table!{
+            diff = {
+                builtin = false,
+                cmd = { "delta" }
+            },
+        },
         icons = table! {
             kinds = table! {
                 Text = icons::TEXT,
