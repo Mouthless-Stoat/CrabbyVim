@@ -7,6 +7,7 @@ use super::Plugins;
 pub fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("j-hui/fidget.nvim")
+            // check again later to not have to pin fidget
             .version(LazyVersion::Semver("v1.*"))
             .opts(lua_table! {
                 progress = {
