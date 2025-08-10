@@ -49,6 +49,7 @@ add_plugins! {
     gitsigns with highlights;
     lsp;
     treesitter;
+    fidget with highlights;
     ---
     "brianhuster/unnest.nvim";
     "wakatime/vim-wakatime";
