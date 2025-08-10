@@ -105,11 +105,12 @@ pub fn highlights() -> nvim_oxi::Result<()> {
 }
 
 pub fn picker(picker: &'static str) -> Action {
-    Action::Fn(Box::new(|| {
+    (|| {
         Ok(require("snacks")?
             .get::<mlua::Table>("picker")?
             .call_function::<()>(picker, ())?)
-    }))
+    })
+    .into()
 }
 
 fn configure_picker_highligh(hls: Vec<(&'static str, HighlightOpt)>) -> nvim_oxi::Result<()> {

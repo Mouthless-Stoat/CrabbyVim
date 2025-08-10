@@ -98,6 +98,15 @@ impl From<&'static str> for Action {
     }
 }
 
+impl<F> From<F> for Action
+where
+    F: FnMut() -> nvim_oxi::Result<()> + 'static,
+{
+    fn from(f: F) -> Self {
+        Action::Fn(Box::new(f))
+    }
+}
+
 impl IntoLua for Action {
     fn into_lua(self, lua: &mlua::Lua) -> mlua::Result<mlua::Value> {
         match self {

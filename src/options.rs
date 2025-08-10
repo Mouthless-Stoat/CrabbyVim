@@ -81,26 +81,18 @@ fn configure_neovide() -> nvim_oxi::Result<()> {
     set_neovide_option("cursor_trail_size", 0.5)?;
     set_neovide_option("scroll_animation_length", 0.5)?;
 
-    set_key(
-        &[Mode::Normal],
-        "<C-=>",
-        Action::Fn(Box::new(|| {
-            set_neovide_option(
-                "scale_factor",
-                nvim_oxi::api::get_var::<f64>("neovide_scale_factor").unwrap() + 0.1,
-            )
-        })),
-    )?;
-    set_key(
-        &[Mode::Normal],
-        "<C-->",
-        Action::Fn(Box::new(|| {
-            set_neovide_option(
-                "scale_factor",
-                nvim_oxi::api::get_var::<f64>("neovide_scale_factor").unwrap() - 0.1,
-            )
-        })),
-    )?;
+    set_key(&[Mode::Normal], "<C-=>", || {
+        set_neovide_option(
+            "scale_factor",
+            nvim_oxi::api::get_var::<f64>("neovide_scale_factor").unwrap() + 0.1,
+        )
+    })?;
+    set_key(&[Mode::Normal], "<C-->", || {
+        set_neovide_option(
+            "scale_factor",
+            nvim_oxi::api::get_var::<f64>("neovide_scale_factor").unwrap() - 0.1,
+        )
+    })?;
 
     Ok(())
 }
