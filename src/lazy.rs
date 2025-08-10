@@ -58,12 +58,12 @@ impl Lazy {
     }
 
     /// Add a plugins for Lazy to managing and download.
-    pub fn add_plugin(&mut self, plugin: impl std::convert::Into<LazyPlugin>) {
+    pub fn add_plugin(&mut self, plugin: impl Into<LazyPlugin>) {
         self.0.push(plugin.into());
     }
 
     /// Add a plugins for Lazy to managing and download.
-    pub fn add_plugins(&mut self, plugins: Vec<impl std::convert::Into<LazyPlugin>>) {
+    pub fn add_plugins(&mut self, plugins: Vec<impl Into<LazyPlugin>>) {
         for plugin in plugins {
             self.0.push(plugin.into());
         }
