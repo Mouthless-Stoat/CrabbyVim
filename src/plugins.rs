@@ -48,6 +48,7 @@ add_plugins! {
     conform;
     gitsigns;
     lsp;
+    treesitter;
     ---
     "brianhuster/unnest.nvim";
     "wakatime/vim-wakatime";
