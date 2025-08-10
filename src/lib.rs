@@ -22,7 +22,10 @@ fn config() -> nvim_oxi::Result<()> {
 
     theme::configure()?;
 
-    lazy::setup_lazy()?;
+    let mut lazy = lazy::Lazy::new();
+    lazy.add_plugins(plugins()?);
+    lazy.setup()?;
+
     lsp::setup_lsp()?;
 
     diagnostic::configure()?;
