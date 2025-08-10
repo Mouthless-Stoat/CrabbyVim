@@ -9,39 +9,22 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
     // TODO: replace layout lua spam with trust struct
     Ok(table! {
         prompt = format!(" {MAGNIFYING_GLASS} "),
-        layouts = lua_table!{
-            default = {
-                layout = {
-                    box = "horizontal",
-                    backdrop = false,
-                    height = 0.6,
-                    border = "top",
-                    title = "{title} {live} {flags} ({preview})",
-                    title_pos = "left",
-                    row = -1,
-                    {
-                        box = "verticle",
-                        border = "right",
-                        width = 0.35,
-                        { win = "input", height = 1},
-                        { win = "list", border = "top" },
-                    },
-                    { win = "preview" },
-                },
-            },
-            select = {
-                layout = {
+        layout = lua_table!{
+            layout = {
+                box = "horizontal",
+                backdrop = false,
+                height = 0.6,
+                border = "top",
+                title = "{title} {live} {flags} ({preview})",
+                title_pos = "left",
+                row = -1,
+                {
                     box = "verticle",
-                    backdrop = false,
-                    height = 0.6,
-                    border = "top",
-                    title = "{title}",
-                    title_pos = "left",
-                    row = -1,
                     { win = "input", height = 1},
                     { win = "list", border = "top" },
                 },
-            },
+                { win = "preview", width = 0.65, border = "left" },
+            }
         },
         previewers = lua_table!{
             diff = {
