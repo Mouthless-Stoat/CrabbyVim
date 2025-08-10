@@ -44,7 +44,7 @@ macro_rules! add_plugins {
 pub type Plugins = nvim_oxi::Result<Vec<LazyPlugin>>;
 
 add_plugins! {
-    snacks;
+    snacks with highlights;
     conform;
     gitsigns;
     lsp;

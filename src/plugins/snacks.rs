@@ -12,7 +12,7 @@ pub fn plugins() -> Plugins {
         LazyPlugin::new("folke/snacks.nvim")
             .opts(table! {
                 picker = picker::config()?,
-                terminal = table!{}
+                lazygit = table!{ }
             })
             .lazy_load(
                 LazyLoad::new(false)
@@ -22,4 +22,9 @@ pub fn plugins() -> Plugins {
                     .add_key(LazyKey::new("<Leader>su").action(picker("undo"))),
             ),
     ])
+}
+
+pub fn highlights() -> nvim_oxi::Result<()> {
+    picker::highlights()?;
+    Ok(())
 }
