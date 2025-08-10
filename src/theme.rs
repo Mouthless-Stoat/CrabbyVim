@@ -42,7 +42,7 @@ fn highlights() -> nvim_oxi::Result<()> {
 
     configure_highlights(vec![
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
-        ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg1)),
+        ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg0)),
 
         ("NCursor",HighlightOpt::with_bg(Blue)),
         ("ICursor",HighlightOpt::with_bg(Green)),
@@ -60,7 +60,7 @@ fn highlights() -> nvim_oxi::Result<()> {
 
         ("Yank",HighlightOpt::default().reverse()),
 
-        ("Visual",HighlightOpt::with_fg(Bg0).bg(Purple)),
+        ("Visual",HighlightOpt::with_bg(Bg2)),
         ("EndOfBuffer",HighlightOpt::with_fg(Bg0)),
 
         ("LineNr",HighlightOpt::with_fg(Gray).bg(Bg1)),
@@ -133,10 +133,10 @@ colors! {
     White = "#829bcd";
     Gray = "#68687a";
 
-    Bg0 = "#1F1F28"; // default bg
-    Bg1 = "#2A2A37";
-    Bg2 = "#363646";
-    Bg3 = "#454556"; // lightest
+    Bg0 = "#101010"; // default bg
+    Bg1 = "#242424";
+    Bg2 = "#404040";
+    Bg3 = "#5e5e5e"; // lightest
 }
 
 // Not using SetHighlightOpts by nvim_oxi because it is too complex with too many feature that we
