@@ -14,17 +14,23 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                 box = "horizontal",
                 backdrop = false,
                 height = 0.6,
-                border = "top",
-                title = "{title} {live} {flags} ({preview})",
-                title_pos = "left",
                 row = -1,
                 {
                     box = "verticle",
+                    border = "top",
+                    title = "{title} {live} {flags}",
+                    title_pos = "left",
                     { win = "input", height = 1},
                     { win = "list", border = "top" },
                 },
-                { win = "preview", width = 0.65, border = "left" },
-            }
+                {
+                    win = "preview",
+                    border = {"─", "─", "─", "", "", "", "", "│"},
+                    title = "{preview}",
+                    title_pos = "left",
+                    width = 0.65,
+                },
+            },
         },
         previewers = lua_table!{
             diff = {
@@ -73,7 +79,7 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     use crate::theme::Color::*;
     #[rustfmt::skip]
     configure_picker_highligh(vec![
-        ("Title", HighlightOpt::with_fg(Green)),
+        ("Title", HighlightOpt::with_bg(Green).fg(Bg0)),
 
         ("PreviewTitle", HighlightOpt::with_bg(Blue).fg(Bg0)),
         ("ListTitle", HighlightOpt::with_bg(Yellow).fg(Bg0)),

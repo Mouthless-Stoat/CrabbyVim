@@ -1,9 +1,11 @@
+use crate::keymaps::Action;
 use crate::plugins::Plugins;
-use crate::table;
+use crate::{lua_table, require, table};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 
 mod picker;
+use mlua::{ObjectLike, Table};
 use picker::picker;
 
 pub fn plugins() -> Plugins {
@@ -12,14 +14,24 @@ pub fn plugins() -> Plugins {
         LazyPlugin::new("folke/snacks.nvim")
             .opts(table! {
                 picker = picker::config()?,
-                lazygit = table!{ }
+                lazygit = lua_table!{
+                    config = {
+                        os = { editPreset = "" }
+                    },
+                }
             })
             .lazy_load(
                 LazyLoad::new(false)
                     .add_key(LazyKey::new("<Leader>sf").action(picker("files")))
                     .add_key(LazyKey::new("<Leader>st").action(picker("grep")))
                     .add_key(LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols")))
-                    .add_key(LazyKey::new("<Leader>su").action(picker("undo"))),
+                    .add_key(LazyKey::new("<Leader>su").action(picker("undo")))
+                    .add_key(LazyKey::new("<Leader>g").action(Action::Fn(Box::new(|| {
+                        require("snacks")?
+                            .get::<Table>("lazygit")?
+                            .call_function::<()>("open", ())?;
+                        Ok(())
+                    })))),
             ),
     ])
 }
