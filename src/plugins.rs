@@ -51,6 +51,7 @@ add_plugins! {
     treesitter;
     fidget with highlights;
     ---
+    "nvim-tree/nvim-web-devicons";
     "brianhuster/unnest.nvim";
     "wakatime/vim-wakatime";
 }

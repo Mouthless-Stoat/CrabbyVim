@@ -12,6 +12,7 @@ pub fn plugins() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")
+            .depend(&["nvim-tree/nvim-web-devicons"])
             .opts(table! {
                 picker = picker::config()?,
                 lazygit = lua_table!{
