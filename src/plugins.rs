@@ -50,6 +50,7 @@ add_plugins! {
     lsp;
     treesitter;
     fidget with highlights;
+    oil;
     ---
     "nvim-tree/nvim-web-devicons";
     "brianhuster/unnest.nvim";

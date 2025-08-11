@@ -44,6 +44,8 @@ fn highlights() -> nvim_oxi::Result<()> {
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
         ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg0)),
 
+        ("Directory", HighlightOpt::with_fg(Blue)),
+
         ("NCursor",HighlightOpt::with_bg(Blue)),
         ("ICursor",HighlightOpt::with_bg(Green)),
         ("VCursor",HighlightOpt::with_bg(Purple)),
