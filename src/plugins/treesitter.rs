@@ -22,7 +22,8 @@ pub fn plugins() -> Plugins {
                     "gitignore",
                     "git_rebase",
                     "git_config",
-                    "markdown"
+                    "markdown",
+                    "diff"
                 ],
                 auto_install = true,
                 highlight = table! {
