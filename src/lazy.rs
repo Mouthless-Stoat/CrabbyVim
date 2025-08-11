@@ -319,10 +319,12 @@ impl IntoLua for LazyPlugin {
         if let Some(callback) = self.callback {
             spec.set(
                 "config",
-                lua.create_function(move |_, opt: mlua::Table| match callback(opt) {
-                    Ok(()) => Ok(()),
-                    Err(err) => panic!("Error in config function of {}: {err}", self.url),
-                })?,
+                lua.create_function(
+                    move |_, (_, opt): (mlua::Table, mlua::Table)| match callback(opt) {
+                        Ok(()) => Ok(()),
+                        Err(err) => panic!("Error in config function of {}: {err}", self.url),
+                    },
+                )?,
             )?;
         }
 
