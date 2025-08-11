@@ -36,10 +36,9 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
             select = {
                 layout = {
                     box = "verticle",
-                    border = "top",
+                    border = "single",
                     backdrop = false,
-                    height = 0.6,
-                    row = -1,
+                    width = 0.6,
                     title = "{title}",
                     title_pos = "left",
                     { win = "input", height = 1},
