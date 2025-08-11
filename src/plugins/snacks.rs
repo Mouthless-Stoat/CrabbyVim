@@ -1,6 +1,6 @@
 use crate::keymaps::Action;
 use crate::plugins::Plugins;
-use crate::{lua_table, require, table};
+use crate::{lua_table, require, require_setup, table};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 
@@ -12,7 +12,10 @@ pub fn plugins() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")
-            .depend(&["nvim-tree/nvim-web-devicons"])
+            .depend(&[
+                "nvim-tree/nvim-web-devicons",
+                "aznhe21/actions-preview.nvim",
+            ])
             .opts(table! {
                 picker = picker::config()?,
                 lazygit = lua_table!{
@@ -34,6 +37,11 @@ pub fn plugins() -> Plugins {
                         Ok(())
                     })))),
             ),
+        LazyPlugin::new("aznhe21/actions-preview.nvim").opts(lua_table! {
+            highlight_command = {
+                function() return require("actions-preview.highlight").delta("delta --paging=never") end
+            }
+        }),
     ])
 }
 

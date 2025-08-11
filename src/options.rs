@@ -50,8 +50,11 @@ pub fn configure() -> nvim_oxi::Result<()> {
 
     set_option("scrolloff", 8)?;
     set_option("guifont", "CaskaydiaCove Nerd Font Mono:h10:#h-none")?;
+
     set_option("shell", "powershell")?;
     set_option("shellcmdflag", "-c")?;
+    set_option("shellquote", "")?;
+    set_option("shellxquote", "")?;
 
     let yank_callback = |_args| {
         crate::vim()?
