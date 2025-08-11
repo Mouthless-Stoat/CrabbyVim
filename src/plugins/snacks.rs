@@ -1,6 +1,5 @@
-use crate::keymaps::Action;
 use crate::plugins::Plugins;
-use crate::{lua_table, require, require_setup, table};
+use crate::{lua_table, require, table};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 
@@ -30,16 +29,23 @@ pub fn plugins() -> Plugins {
                     .add_key(LazyKey::new("<Leader>st").action(picker("grep")))
                     .add_key(LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols")))
                     .add_key(LazyKey::new("<Leader>su").action(picker("undo")))
-                    .add_key(LazyKey::new("<Leader>g").action(Action::Fn(Box::new(|| {
+                    .add_key(LazyKey::new("<Leader>g").action(|| {
                         require("snacks")?
                             .get::<Table>("lazygit")?
                             .call_function::<()>("open", ())?;
                         Ok(())
-                    })))),
+                    }))
+                    .add_key(LazyKey::new("<Leader>c").action(|| {
+                        require("actions-preview")?.call_function::<()>("code_actions", ())?;
+                        Ok(())
+                    }))
             ),
         LazyPlugin::new("aznhe21/actions-preview.nvim").opts(lua_table! {
             highlight_command = {
                 function() return require("actions-preview.highlight").delta("delta --paging=never") end
+            },
+            snacks = {
+                focus = "list"
             }
         }),
     ])
