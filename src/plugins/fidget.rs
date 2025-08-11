@@ -1,6 +1,9 @@
+use mlua::Function;
+
 use crate::lazy::{LazyPlugin, LazyVersion};
-use crate::lua_table;
+use crate::options::set_option;
 use crate::theme::{HighlightOpt, configure_highlights};
+use crate::{lua_table, require, require_setup, vim};
 
 use super::Plugins;
 
@@ -31,6 +34,14 @@ pub fn plugins() -> Plugins {
                         y_padding = 1,
                     },
                 },
+            })
+            .callback(|opts| {
+                require_setup("fidget", opts)?;
+                vim()?.set(
+                    "notify",
+                    require("fidget.notification")?.get::<Function>("notify")?,
+                )?;
+                Ok(())
             }),
     ])
 }
