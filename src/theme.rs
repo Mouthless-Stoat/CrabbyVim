@@ -44,6 +44,11 @@ fn highlights() -> nvim_oxi::Result<()> {
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
         ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg0)),
 
+        ("MoreMsg", HighlightOpt::with_fg(Green)),
+        ("QuickFixLine", HighlightOpt::with_fg(Blue)),
+
+        ("Title", HighlightOpt::with_fg(Blue)),
+
         ("Directory", HighlightOpt::with_fg(Blue)),
 
         ("NCursor",HighlightOpt::with_bg(Blue)),

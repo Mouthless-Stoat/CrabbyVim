@@ -1,7 +1,6 @@
 use mlua::Function;
 
 use crate::lazy::{LazyPlugin, LazyVersion};
-use crate::options::set_option;
 use crate::theme::{HighlightOpt, configure_highlights};
 use crate::{lua_table, require, require_setup, vim};
 
@@ -29,7 +28,7 @@ pub fn plugins() -> Plugins {
                 notification = {
                     window = {
                         normal_hl = "FidgetNormal",
-                        winblend = 50,
+                        winblend = 100,
                         x_padding = 1,
                         y_padding = 1,
                     },
