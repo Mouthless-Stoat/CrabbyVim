@@ -36,6 +36,7 @@ pub fn plugins() -> Plugins {
 
                 conf.border = { "", "─", "", "", "", "", "", "" }
                 conf.style = "minimal"
+
                 return conf
             end,
         },
@@ -51,13 +52,13 @@ pub fn plugins() -> Plugins {
     };
 
     Ok(vec![
-        LazyPlugin::new("stevearc/oil.nvim")
-            .opts(opts)
-            .lazy_load(
-                LazyLoad::new(false).add_key(LazyKey::new("<Leader>f").action(|| {
+        LazyPlugin::new("stevearc/oil.nvim").opts(opts).lazy_load(
+            LazyLoad::new(true)
+                .add_key(LazyKey::new("<Leader>f").action(|| {
                     require("oil")?.call_function::<()>("toggle_float", ())?;
                     Ok(())
-                })),
-            ),
+                }))
+                .cmd(&["Oil"]),
+        ),
     ])
 }
