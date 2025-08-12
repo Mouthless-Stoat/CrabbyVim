@@ -14,8 +14,7 @@ pub fn plugins() -> Plugins {
                 skip_confirm_for_simple_edits = true,
 
                 keymaps = {
-                    ["<space>"] = { "actions.select" },
-                    ["q"] = { "actions.close", mode = "n" },
+                    ["q"] = { "actions.close" },
                 },
                 view_options = {
                     show_hidden = true,
@@ -23,6 +22,15 @@ pub fn plugins() -> Plugins {
                         local _, hl = require("nvim-web-devicons").get_icon(entry.name, vim.fn.fnamemodify(entry.name, ":e"))
                         return hl
                     end
+                },
+                float = {
+                    padding = 10,
+                    border = "single",
+                    preview_split = "right",
+                    override = function(conf)
+                        conf.style = "minimal"
+                        return conf
+                    end,
                 },
                 preview_win = {
                     border = "single"
@@ -37,7 +45,7 @@ pub fn plugins() -> Plugins {
             .lazy_load(
                 LazyLoad::new(true)
                     .add_key(LazyKey::new("<Leader>f").action(|| {
-                        require("oil")?.call_function::<()>("open", ())?;
+                        require("oil")?.call_function::<()>("toggle_float", ())?;
                         Ok(())
                     })),
             ),
