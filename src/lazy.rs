@@ -233,6 +233,12 @@ impl LazyLoad {
         self.keys.push(key.into());
         self
     }
+
+    /// Lazy load on key map. Equivalent to `keys` in spec.
+    pub fn add_keys(mut self, key: Vec<LazyKey>) -> Self {
+        self.keys.extend(key);
+        self
+    }
 }
 
 impl LazyKey {

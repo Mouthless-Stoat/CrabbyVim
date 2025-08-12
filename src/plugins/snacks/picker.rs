@@ -1,6 +1,7 @@
 use mlua::ObjectLike;
 
 use crate::keymaps::Action;
+use crate::lazy::LazyKey;
 use crate::theme::{HighlightOpt, set_hl};
 use crate::{icons, lua_table, require, table};
 
@@ -100,6 +101,15 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     ])?;
 
     Ok(())
+}
+
+pub fn key() -> Vec<LazyKey> {
+    vec![
+        LazyKey::new("<Leader>sf").action(picker("files")),
+        LazyKey::new("<Leader>st").action(picker("grep")),
+        LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols")),
+        LazyKey::new("<Leader>su").action(picker("undo")),
+    ]
 }
 
 pub fn picker(picker: &'static str) -> Action {

@@ -24,10 +24,7 @@ pub fn plugins() -> Plugins {
             })
             .lazy_load(
                 LazyLoad::new(false)
-                    .add_key(LazyKey::new("<Leader>sf").action(picker::picker("files")))
-                    .add_key(LazyKey::new("<Leader>st").action(picker::picker("grep")))
-                    .add_key(LazyKey::new("<Leader>ss").action(picker::picker("lsp_workspace_symbols")))
-                    .add_key(LazyKey::new("<Leader>su").action(picker::picker("undo")))
+                    .add_keys(picker::key())
                     .add_key(LazyKey::new("<Leader>g").action(|| {
                         require("snacks")?
                             .get::<Table>("lazygit")?
