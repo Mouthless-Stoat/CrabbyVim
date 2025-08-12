@@ -229,8 +229,8 @@ impl LazyLoad {
     }
 
     /// Lazy load on key map. Equivalent to `keys` in spec.
-    pub fn add_key(mut self, key: LazyKey) -> Self {
-        self.keys.push(key);
+    pub fn add_key(mut self, key: impl Into<LazyKey>) -> Self {
+        self.keys.push(key.into());
         self
     }
 }
@@ -329,5 +329,11 @@ impl IntoLua for LazyPlugin {
         }
 
         Ok(mlua::Value::Table(spec))
+    }
+}
+
+impl From<&'static str> for LazyKey {
+    fn from(str: &'static str) -> Self {
+        Self::new(str)
     }
 }
