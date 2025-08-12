@@ -22,10 +22,19 @@ pub fn plugins() -> Plugins {
             end
         },
         float = {
-            padding = 10,
+            padding = 0,
             border = "single",
             preview_split = "right",
             override = function(conf)
+                local uis = vim.api.nvim_list_uis()[1]
+                local height = uis.height
+                local width = uis.width
+
+                conf.height = math.floor(height * 0.4)
+                conf.width = width
+                conf.row = height - conf.height
+
+                conf.border = { "", "─", "", "", "", "", "", "" }
                 conf.style = "minimal"
                 return conf
             end,
