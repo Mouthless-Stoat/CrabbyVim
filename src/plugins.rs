@@ -49,6 +49,7 @@ plugin! {
     treesitter;
     fidget with highlights;
     oil;
+    mini;
     ---
     "nvim-tree/nvim-web-devicons";
     "brianhuster/unnest.nvim";
