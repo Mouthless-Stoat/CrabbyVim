@@ -271,9 +271,14 @@ impl IntoLua for LazyPlugin {
 
         spec.push(self.url)?;
 
-        if let Some(opts) = self.opts {
-            spec.set("opts", opts)?;
-        }
+        spec.set(
+            "opts",
+            if let Some(opts) = self.opts {
+                opts
+            } else {
+                table! {}
+            },
+        )?;
 
         if let Some(dependencies) = self.dependencies {
             spec.set("dependencies", dependencies)?;

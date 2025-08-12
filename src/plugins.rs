@@ -55,7 +55,6 @@ plugin! {
     "nvim-tree/nvim-web-devicons";
     "wakatime/vim-wakatime";
     LazyPlugin::new("kylechui/nvim-surround")
-        .opts(table!{})
         .lazy_load(
             LazyLoad::new(true)
                 .add_key("ys")
