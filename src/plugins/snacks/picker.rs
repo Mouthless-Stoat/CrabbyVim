@@ -103,20 +103,20 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-pub fn key() -> Vec<LazyKey> {
-    vec![
-        LazyKey::new("<Leader>sf").action(picker("files")),
-        LazyKey::new("<Leader>st").action(picker("grep")),
-        LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols")),
-        LazyKey::new("<Leader>su").action(picker("undo")),
-    ]
+pub fn key() -> nvim_oxi::Result<Vec<LazyKey>> {
+    Ok(vec![
+        LazyKey::new("<Leader>sf")
+            .action(picker("files", lua_table! {layout={hidden={"preview"}}})),
+        LazyKey::new("<Leader>st").action(picker("grep", table! {})),
+        LazyKey::new("<Leader>su").action(picker("undo", table! {})),
+    ])
 }
 
-pub fn picker(picker: &'static str) -> Action {
-    (|| {
+pub fn picker(picker: &'static str, opt: mlua::Table) -> Action {
+    (move || {
         Ok(require("snacks")?
             .get::<mlua::Table>("picker")?
-            .call_function::<()>(picker, ())?)
+            .call_function::<()>(picker, opt.clone())?)
     })
     .into()
 }

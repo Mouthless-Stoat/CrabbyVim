@@ -24,7 +24,7 @@ pub fn plugins() -> Plugins {
             })
             .lazy_load(
                 LazyLoad::new(false)
-                    .add_keys(picker::key())
+                    .add_keys(picker::key()?)
                     .add_key(LazyKey::new("<Leader>g").action(|| {
                         require("snacks")?
                             .get::<Table>("lazygit")?
