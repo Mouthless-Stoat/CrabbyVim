@@ -14,7 +14,7 @@ These are todo for the project not code todo and clean up, those are inline comm
         -   [x] Code actions preview
 -   [ ] `floaterm.nvim` or use a custom implementation or use `snacks.terminal`
 -   [ ] Status line configuration
--   [ ] A surround plugin for surrounding
+-   [x] A surround plugin for surrounding
 -   [ ] Dialing plugin
 -   [x] Loading icon for lsp with `fidget.nvim`
 -   [ ] Quicker movement with `flash.nvim` or `hop.nvim`

@@ -1,4 +1,5 @@
-use crate::lazy::LazyPlugin;
+use crate::lazy::{LazyLoad, LazyPlugin};
+use crate::table;
 
 macro_rules! plugin {
     ($mod:ident) => {
@@ -52,6 +53,14 @@ plugin! {
     mini;
     ---
     "nvim-tree/nvim-web-devicons";
-    "brianhuster/unnest.nvim";
     "wakatime/vim-wakatime";
+    LazyPlugin::new("kylechui/nvim-surround")
+        .opts(table!{})
+        .lazy_load(
+            LazyLoad::new(true)
+                .add_key("ys")
+                .add_key("cs")
+                .add_key("ds")
+                .add_key("V")
+        );
 }
