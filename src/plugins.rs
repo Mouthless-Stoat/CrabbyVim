@@ -24,15 +24,17 @@ macro_rules! plugin {
     ($($plugin:ident $($with:ident $highlight:ident)?;)*---$($expr:expr;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
         pub fn plugins() -> $crate::plugins::Plugins {
-            let mut vec = vec![];
+            let mut vec = vec![$($expr.into()),*];
             $(
                 vec.extend($plugin()?);
                 $(paste::paste!([<$plugin _ $highlight>]()?;);)?
             )*
-            $(
-                vec.push($expr.into());
-            )*
             Ok(vec)
+        }
+    };
+    ($($expr:expr;)*) => {
+        pub fn plugins() -> $crate::plugins::Plugins {
+            Ok(vec![$($expr.into()),*])
         }
     };
 }
