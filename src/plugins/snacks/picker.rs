@@ -14,6 +14,7 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                     box = "horizontal",
                     backdrop = false,
                     height = 0.6,
+                    row = -1,
                     {
                         box = "verticle",
                         border = "top",
