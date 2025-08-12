@@ -6,7 +6,6 @@ use crate::{icons, lua_table, require, table};
 
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
-    // TODO: replace layout lua spam with trust struct
     Ok(table! {
         prompt = format!(" {MAGNIFYING_GLASS} "),
         layouts = lua_table!{
@@ -15,7 +14,6 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                     box = "horizontal",
                     backdrop = false,
                     height = 0.6,
-                    row = -1,
                     {
                         box = "verticle",
                         border = "top",
