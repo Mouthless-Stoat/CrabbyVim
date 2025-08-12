@@ -18,3 +18,4 @@ These are todo for the project not code todo and clean up, those are inline comm
 -   [ ] Dialing plugin
 -   [x] Loading icon for lsp with `fidget.nvim`
 -   [ ] Quicker movement with `flash.nvim` or `hop.nvim`
+-   [ ] Lazy load plugins
