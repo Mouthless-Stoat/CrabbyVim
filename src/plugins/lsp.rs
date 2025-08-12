@@ -2,7 +2,7 @@ use crate::icons;
 use crate::lazy::{LazyPlugin, LazyVersion};
 use crate::table;
 
-add_plugins! {
+plugin! {
     blink_cmp with highlights;
     ---
     LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*"));

@@ -10,10 +10,6 @@ macro_rules! plugin {
         paste::paste!(use $mod::highlights as [<$mod _highlights>];);
         use $mod::plugins as $mod;
     };
-}
-
-#[macro_export]
-macro_rules! add_plugins {
     ($($plugin:ident $($with:ident $highlight:ident)?;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
         pub fn plugins() -> $crate::plugins::Plugins {
@@ -43,7 +39,7 @@ macro_rules! add_plugins {
 
 pub type Plugins = nvim_oxi::Result<Vec<LazyPlugin>>;
 
-add_plugins! {
+plugin! {
     snacks with highlights;
     conform;
     gitsigns with highlights;
