@@ -1,5 +1,5 @@
 use crate::lazy::{LazyPlugin, LazyVersion};
-use crate::table;
+use crate::lua_table;
 
 use super::Plugins;
 
@@ -12,8 +12,8 @@ pub fn plugins() -> Plugins {
             .main("nvim-treesitter.configs")
             .version(LazyVersion::Branch("master"))
             .build(":TSUpdate")
-            .opts(table! {
-                ensure_installed = [
+            .opts(lua_table! {
+                ensure_installed = {
                     "python",
                     "javascript",
                     "typescript",
@@ -24,13 +24,13 @@ pub fn plugins() -> Plugins {
                     "git_config",
                     "markdown",
                     "diff"
-                ],
+                },
                 auto_install = true,
-                highlight = table! {
+                highlight = {
                     enable = true,
                     additional_vim_regex_highlighting = false
                 },
-                indent = table! { enable = true }
+                indent = { enable = true }
             }),
     ])
 }
