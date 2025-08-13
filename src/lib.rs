@@ -12,6 +12,9 @@ mod macros;
 mod options;
 mod theme;
 
+mod vim;
+pub use vim::*;
+
 mod plugins;
 pub use plugins::*;
 
@@ -101,8 +104,4 @@ pub fn require_setup(module: &str, opts: impl mlua::IntoLua) -> nvim_oxi::Result
         .call::<()>(opts)?;
 
     Ok(())
-}
-
-pub fn vim() -> mlua::Result<mlua::Table> {
-    nvim_oxi::mlua::lua().globals().get::<mlua::Table>("vim")
 }

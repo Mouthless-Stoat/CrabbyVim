@@ -1,7 +1,7 @@
 use mlua::{IntoLua, ObjectLike};
 
 use crate::keymaps::Action;
-use crate::{table, vim};
+use crate::{table, vim, vim_fn};
 
 pub struct Lazy(Vec<LazyPlugin>);
 
@@ -75,12 +75,8 @@ impl Lazy {
         // error report when lazy could not be install.
         // Refer to https://lazy.folke.io/installation for more info
 
-        let lazypath = std::path::Path::new(
-            &vim()?
-                .get::<mlua::Table>("fn")?
-                .call_function::<String>("stdpath", "data")?,
-        )
-        .join("lazy/lazy.nvim");
+        let lazypath =
+            std::path::Path::new(&vim_fn::<String>("stdpath", "data")?).join("lazy/lazy.nvim");
 
         let lazypath_str = lazypath.clone().into_os_string().into_string().unwrap();
 

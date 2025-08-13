@@ -1,5 +1,5 @@
 use crate::keymaps::{Action, set_key};
-use crate::{Mode, table, vim};
+use crate::{Mode, table, vim, vim_fn};
 use mlua::{Function, ObjectLike, Table};
 use nvim_oxi::conversion::ToObject;
 
@@ -38,22 +38,18 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("backup", false)?;
     set_option(
         "undodir",
-        std::path::Path::new(
-            &vim()?
-                .get::<mlua::Table>("fn")?
-                .call_function::<String>("stdpath", "data")?,
-        )
-        .join("undo")
-        .into_os_string()
-        .into_string()
-        .unwrap(),
+        std::path::Path::new(&vim_fn::<String>("stdpath", "data")?)
+            .join("undo")
+            .into_os_string()
+            .into_string()
+            .unwrap(),
     )?;
     set_option("undofile", true)?;
 
     set_option("scrolloff", 8)?;
     set_option("guifont", "CaskaydiaCove Nerd Font Mono:h10:#h-none")?;
 
-    if vim()?.get::<Table>("fn")?.call_function::<bool>("has", "win32")? {
+    if vim_fn("has", "win32")? {
         set_option("shell", "powershell")?;
         set_option("shellcmdflag", "-c")?;
         set_option("shellquote", "")?;
