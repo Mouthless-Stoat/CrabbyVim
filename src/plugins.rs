@@ -1,5 +1,4 @@
 use crate::lazy::{LazyLoad, LazyPlugin};
-use crate::table;
 
 macro_rules! plugin {
     ($mod:ident) => {

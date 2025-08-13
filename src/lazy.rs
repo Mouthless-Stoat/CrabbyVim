@@ -1,7 +1,7 @@
-use mlua::{IntoLua, ObjectLike};
+use mlua::IntoLua;
 
 use crate::keymaps::Action;
-use crate::{table, vim, vim_fn};
+use crate::{table, vim_fn};
 
 pub struct Lazy(Vec<LazyPlugin>);
 
@@ -65,7 +65,7 @@ impl Lazy {
     /// Add a plugins for Lazy to managing and download.
     pub fn add_plugins(&mut self, plugins: Vec<impl Into<LazyPlugin>>) {
         for plugin in plugins {
-            self.0.push(plugin.into());
+            self.add_plugin(plugin);
         }
     }
 

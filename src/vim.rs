@@ -1,11 +1,13 @@
 use mlua::{IntoLuaMulti, ObjectLike, Table};
+use nvim_oxi::Dictionary;
+use nvim_oxi::api::types::LogLevel;
 
 pub fn vim() -> mlua::Result<mlua::Table> {
     nvim_oxi::mlua::lua().globals().get::<mlua::Table>("vim")
 }
 
-pub fn vim_notify(msg: String) -> nvim_oxi::Result<()> {
-    vim()?.call_function::<()>("notify", msg)?;
+pub fn vim_notify(msg: &str, level: LogLevel) -> nvim_oxi::Result<()> {
+    nvim_oxi::api::notify(msg, level, &Dictionary::new())?;
     Ok(())
 }
 

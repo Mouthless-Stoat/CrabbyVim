@@ -1,4 +1,7 @@
+use nvim_oxi::api::types::LogLevel;
+
 use crate::options::set_local_option;
+use crate::{vim_fn, vim_notify};
 
 pub fn configure() -> nvim_oxi::Result<()> {
     create_autocmd(&["BufEnter"], &["*.md"], |_| {
@@ -7,6 +10,14 @@ pub fn configure() -> nvim_oxi::Result<()> {
         set_local_option("spell", true)?;
         set_local_option("breakindent", true)?;
         set_local_option("showbreak", "| ")?;
+        Ok(())
+    })?;
+
+    create_autocmd(&["BufWritePost"], &["*"], |_| {
+        vim_notify(
+            format!("{} saved", vim_fn::<String>("expand", "<afile>:t")?).as_str(),
+            LogLevel::Info,
+        )?;
         Ok(())
     })?;
 

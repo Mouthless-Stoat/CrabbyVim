@@ -1,6 +1,6 @@
-use crate::keymaps::{Action, set_key};
-use crate::{Mode, table, vim, vim_fn};
-use mlua::{Function, ObjectLike, Table};
+use crate::keymaps::set_key;
+use crate::{Mode, table, vim_fn};
+use mlua::{Function, Table};
 use nvim_oxi::conversion::ToObject;
 
 pub fn configure() -> nvim_oxi::Result<()> {
