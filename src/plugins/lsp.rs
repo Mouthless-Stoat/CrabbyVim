@@ -5,7 +5,6 @@ use crate::table;
 plugin! {
     blink_cmp with highlights;
     ---
-    LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*"));
     LazyPlugin::new("mason-org/mason.nvim").opts(table! {
         ui = table! {
             icons = table!{

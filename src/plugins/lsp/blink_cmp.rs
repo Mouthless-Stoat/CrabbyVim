@@ -77,6 +77,7 @@ pub fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
             .version(LazyVersion::Semver("1.*"))
             .opts_extend(&["sources.default"])
             .opts(blink_opt),
+        LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*")),
     ])
 }
 
