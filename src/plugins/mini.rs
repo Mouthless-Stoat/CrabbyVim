@@ -7,7 +7,7 @@ macro_rules! mini {
 }
 
 plugin! {
-    mini!(ai).lazy_load(LazyLoad::new(true));
+    mini!(ai);
     mini!(move).lazy_load(
         LazyLoad::new(true)
             .add_key("<M-h>")
