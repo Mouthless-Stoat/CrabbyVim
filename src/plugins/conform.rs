@@ -23,6 +23,6 @@ pub fn plugins() -> Plugins {
                     lsp_format = "fallback"
                 }
             })
-            .lazy_load(LazyLoad::new(true)),
+            .lazy_load(LazyLoad::new(true).events(&["BufWritePre"])),
     ])
 }
