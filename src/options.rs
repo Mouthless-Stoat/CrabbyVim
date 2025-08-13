@@ -29,6 +29,8 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("cursorline", true)?;
     set_option("cursorlineopt", "number")?;
 
+    set_option("virtualedit", "block")?;
+
     set_option("list", true)?;
     set_option("listchars", "multispace:·,tab:<->")?;
 
