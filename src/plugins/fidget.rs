@@ -1,6 +1,6 @@
 use crate::lazy::{LazyPlugin, LazyVersion};
-use crate::theme::{HighlightOpt, configure_highlights};
 use crate::lua_table;
+use crate::theme::{HighlightOpt, configure_highlights};
 
 use super::Plugins;
 
@@ -44,7 +44,7 @@ pub fn highlights() -> nvim_oxi::Result<()> {
         ("FidgetProgress", HighlightOpt::with_fg(Green).italic()),
         ("FidgetGroup", HighlightOpt::with_fg(Yellow).italic()),
         ("FidgetIcon", HighlightOpt::with_fg(Green)),
-        ("FidgetNormal", HighlightOpt::with_fg(Purple).bg(Bg1)),
+        ("FidgetNormal", HighlightOpt::with_fg(Gray).bg(Bg1)),
     ])?;
 
     Ok(())
