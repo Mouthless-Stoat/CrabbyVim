@@ -9,6 +9,9 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
     Ok(table! {
         prompt = format!(" {MAGNIFYING_GLASS} "),
+        layout = lua_table! {
+            preset = "default"
+        },
         layouts = lua_table!{
             default = {
                 layout = {
