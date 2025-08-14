@@ -111,7 +111,12 @@ pub fn key() -> nvim_oxi::Result<Vec<LazyKey>> {
         LazyKey::new("<Leader>sf")
             .action(picker("files", lua_table! {layout={hidden={"preview"}}})),
         LazyKey::new("<Leader>st").action(picker("grep", table! {})),
-        LazyKey::new("<Leader>su").action(picker("undo", table! {})),
+        LazyKey::new("<Leader>sr").action(picker("recent", table! {})),
+        LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols", table! {})),
+        LazyKey::new("<Leader>sS").action(picker("lsp_symbols", table! {})),
+        LazyKey::new("gd").action(picker("lsp_definitions", table! {})),
+        LazyKey::new("gD").action(picker("lsp_declarations", table! {})),
+        LazyKey::new("gr").action(picker("lsp_references", table! {})),
     ])
 }
 
