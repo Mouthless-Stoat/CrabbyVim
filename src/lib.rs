@@ -23,13 +23,12 @@ fn config() -> nvim_oxi::Result<()> {
     options::configure()?;
     keymaps::configure()?;
 
-    theme::configure()?;
-
     let mut lazy = lazy::Lazy::new();
     lazy.add_plugins(plugins()?);
     lazy.setup()?;
 
     lsp::setup_lsp()?;
+    theme::configure()?;
 
     diagnostic::configure()?;
     commands::configure()?;
