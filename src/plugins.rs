@@ -53,12 +53,4 @@ plugin! {
     ---
     "nvim-tree/nvim-web-devicons";
     "wakatime/vim-wakatime";
-    LazyPlugin::new("kylechui/nvim-surround")
-        .lazy_load(
-            LazyLoad::new(true)
-                .add_key("ys")
-                .add_key("cs")
-                .add_key("ds")
-                .add_key("V")
-        );
 }
