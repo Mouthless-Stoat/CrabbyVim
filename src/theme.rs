@@ -43,6 +43,7 @@ fn highlights() -> nvim_oxi::Result<()> {
     configure_highlights(vec![
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
         ("NormalFloat",HighlightOpt::with_fg(White).bg(Bg0)),
+        ("FloatBorder", HighlightOpt::with_fg(Gray)),
 
         ("MoreMsg", HighlightOpt::with_fg(Green)),
         ("QuickFixLine", HighlightOpt::with_fg(Blue)),
