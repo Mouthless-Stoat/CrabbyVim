@@ -32,7 +32,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("virtualedit", "block")?;
 
     set_option("list", true)?;
-    set_option("listchars", "multispace:·,tab:<->")?;
+    set_option("listchars", "lead: ,multispace:·,tab:<->")?;
 
     set_option("swapfile", false)?;
     set_option("backup", false)?;

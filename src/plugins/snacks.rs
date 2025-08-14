@@ -2,6 +2,7 @@ use mlua::{ObjectLike, Table};
 
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 use crate::plugins::Plugins;
+use crate::theme::{HighlightOpt, configure_highlights};
 use crate::{lua_table, require, table};
 
 mod picker;
@@ -15,6 +16,19 @@ pub fn plugins() -> Plugins {
                 "aznhe21/actions-preview.nvim",
             ])
             .opts(table! {
+                indent = lua_table!{ 
+                    scope = {
+                        hl = {
+                            "SnacksIndent1",
+                            "SnacksIndent2",
+                            "SnacksIndent3",
+                            "SnacksIndent4",
+                            "SnacksIndent5",
+                            "SnacksIndent6",
+                            "SnacksIndent7"
+                        }
+                    }
+                },
                 picker = picker::config()?,
                 lazygit = lua_table!{
                     config = {
@@ -51,6 +65,17 @@ pub fn plugins() -> Plugins {
 }
 
 pub fn highlights() -> nvim_oxi::Result<()> {
+    use crate::theme::Color::*;
+
     picker::highlights()?;
+    configure_highlights(vec![
+        ("SnacksIndent1", HighlightOpt::with_fg(Red)),
+        ("SnacksIndent2", HighlightOpt::with_fg(Orange)),
+        ("SnacksIndent3", HighlightOpt::with_fg(Yellow)),
+        ("SnacksIndent4", HighlightOpt::with_fg(Green)),
+        ("SnacksIndent5", HighlightOpt::with_fg(Cyan)),
+        ("SnacksIndent6", HighlightOpt::with_fg(Blue)),
+        ("SnacksIndent7", HighlightOpt::with_fg(Purple)),
+    ])      ?;
     Ok(())
 }
