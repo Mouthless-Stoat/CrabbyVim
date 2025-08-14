@@ -11,6 +11,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_key(&[Terminal], "<esc>", "<C-\\><C-n>")?; // escape in terminal mode
 
     set_key(&[Normal], "Q", "<nop>")?; // Eat shit and die
+    set_key(&[Normal], "<C-s>", "<cmd>w<cr>")?;
 
     // center when paging
     set_key(&[Normal], "<C-d>", "<C-d>zz")?;
