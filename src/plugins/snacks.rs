@@ -20,6 +20,9 @@ pub fn plugins() -> Plugins {
                     config = {
                         os = { editPreset = "" }
                     },
+                    win = {
+                        backdrop = false
+                    }
                 }
             })
             .lazy_load(
