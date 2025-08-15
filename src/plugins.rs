@@ -50,6 +50,8 @@ plugin! {
     fidget with highlights;
     oil;
     mini;
+    matchup;
+    delimiters with highlights;
     ---
     "nvim-tree/nvim-web-devicons";
     "wakatime/vim-wakatime";

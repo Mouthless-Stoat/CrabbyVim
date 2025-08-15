@@ -85,7 +85,7 @@ fn highlights() -> nvim_oxi::Result<()> {
 
         ("WinSeparator",HighlightOpt::with_fg(Blue).bg(Bg1)),
 
-        ("MatchParen",HighlightOpt::with_fg(Blue).bg(Bg1)),
+        ("MatchParen",HighlightOpt::link("Visual")),
 
         ("MsgArea",HighlightOpt::with_fg(Yellow).bg(Bg0)),
 

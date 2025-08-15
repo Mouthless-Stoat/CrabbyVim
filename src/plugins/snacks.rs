@@ -5,6 +5,8 @@ use crate::plugins::Plugins;
 use crate::theme::{HighlightOpt, configure_highlights};
 use crate::{lua_table, require, table};
 
+use super::delimiters::delimiter_highlights;
+
 mod picker;
 
 pub fn plugins() -> Plugins {
@@ -16,17 +18,9 @@ pub fn plugins() -> Plugins {
                 "aznhe21/actions-preview.nvim",
             ])
             .opts(table! {
-                indent = lua_table!{ 
-                    scope = {
-                        hl = {
-                            "SnacksIndent1",
-                            "SnacksIndent2",
-                            "SnacksIndent3",
-                            "SnacksIndent4",
-                            "SnacksIndent5",
-                            "SnacksIndent6",
-                            "SnacksIndent7"
-                        }
+                indent = table!{ 
+                    scope = table!{
+                        hl = delimiter_highlights()
                     }
                 },
                 picker = picker::config()?,
