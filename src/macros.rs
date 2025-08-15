@@ -28,6 +28,7 @@ macro_rules! lua_table {
     };
 }
 
+/// straight up embed a lua expression
 #[macro_export]
 macro_rules! expr {
     (return $ty:ty; $($tk:tt)*) => {
