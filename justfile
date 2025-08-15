@@ -21,3 +21,9 @@ build:
     @mkdir -p lua
     @mv "./target/release/{{bin}}" "./lua/config{{bin_end}}"
     @echo "{{GREEN}}ALL DONE{{NORMAL}}"
+
+quick_build:
+    cargo build --release
+    rm -f "./lua/config{{bin_end}}"
+    mkdir -p lua
+    mv "./target/release/{{bin}}" "./lua/config{{bin_end}}"

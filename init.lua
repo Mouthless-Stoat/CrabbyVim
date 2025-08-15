@@ -12,7 +12,7 @@ end
 if not vim.uv.fs_stat(rust_config) then
     local cwd = vim.fn.getcwd()
     vim.cmd.cd(config_path)
-    vim.fn.system("just build")
+    vim.fn.system("just quick_build")
     vim.cmd.cd(cwd)
 end
 require("config")
