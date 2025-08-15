@@ -8,7 +8,8 @@ pub fn plugins() -> Plugins {
         lua_table! {
             matchparen = {
                 deferred = 1,
-                hi_surround_always = 1
+                hi_surround_always = 1,
+                offscreen = {}
             },
             // conflict with mini.ai
             text_obj = {
