@@ -114,6 +114,7 @@ pub fn key() -> nvim_oxi::Result<Vec<LazyKey>> {
         LazyKey::new("<Leader>sr").action(picker("recent", table! {})),
         LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols", table! {})),
         LazyKey::new("<Leader>sS").action(picker("lsp_symbols", table! {})),
+        LazyKey::new("<Leader>sd").action(picker("diagnostics", table! {})),
         LazyKey::new("gd").action(picker("lsp_definitions", table! {})),
         LazyKey::new("gD").action(picker("lsp_declarations", table! {})),
         LazyKey::new("gr").action(picker("lsp_references", table! {})),
