@@ -256,3 +256,43 @@ pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi
 
     Ok(())
 }
+
+pub fn get_hl(name: impl Into<String>) -> nvim_oxi::Result<HighlightOpt> {
+    // TODO: Use nvim_oxi::api::get_hl when that is fixed
+
+    let hl = vim()?
+        .get::<Table>("api")?
+        .call_function::<Table>("nvim_get_hl", (0, table! {name = name.into()}))?;
+
+    let mut hl_opt = HighlightOpt::default();
+
+    if hl.contains_key("fg")? {
+        hl_opt = hl_opt.fg(hl.get::<Color>("fg")?);
+    }
+
+    if hl.contains_key("bg")? {
+        hl_opt = hl_opt.bg(hl.get::<Color>("bg")?);
+    }
+
+    if hl.contains_key("underline")? {
+        hl_opt = hl_opt.underline();
+    }
+
+    if hl.contains_key("bold")? {
+        hl_opt = hl_opt.bold();
+    }
+
+    if hl.contains_key("italic")? {
+        hl_opt = hl_opt.italic();
+    }
+
+    if hl.contains_key("reverse")? {
+        hl_opt = hl_opt.italic();
+    }
+
+    if hl.contains_key("strikethrough")? {
+        hl_opt = hl_opt.strike();
+    }
+
+    Ok(hl_opt)
+}
