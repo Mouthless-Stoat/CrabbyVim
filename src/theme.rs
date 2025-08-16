@@ -1,5 +1,8 @@
-use crate::options::set_option;
+use mlua::{Function, ObjectLike, Table};
 use nvim_oxi::api::set_var;
+
+use crate::options::set_option;
+use crate::{table, vim};
 
 mod syntax;
 
@@ -125,6 +128,26 @@ macro_rules! colors {
                 }
             }
         }
+
+        impl mlua::FromLua for Color {
+            fn from_lua(value: mlua::Value, _: &mlua::Lua) -> mlua::Result<Self> {
+                match value {
+                    mlua::Value::String(str) => match &*str.to_str()? {
+                        $($value => Ok(Self::$name),)*
+                        _ => Err(mlua::Error::FromLuaConversionError {
+                            from: "String",
+                            to: String::from("Color"),
+                            message: None
+                        })
+                    },
+                    _ => Err(mlua::Error::FromLuaConversionError {
+                        from: "String",
+                        to: String::from("Color"),
+                        message: None
+                    })
+                }
+            }
+        }
     }
 }
 
@@ -149,7 +172,7 @@ colors! {
 
 // Not using SetHighlightOpts by nvim_oxi because it is too complex with too many feature that we
 // never use
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Default)]
 pub struct HighlightOpt {
     fg: Option<Color>,
     bg: Option<Color>,
@@ -157,7 +180,7 @@ pub struct HighlightOpt {
     bold: bool,
     italic: bool,
     reverse: bool,
-    link: Option<&'static str>,
+    link: Option<String>,
     strike: bool,
 }
 
@@ -170,7 +193,7 @@ impl HighlightOpt {
         Self::default().bg(color)
     }
 
-    pub fn link(link: impl Into<&'static str>) -> Self {
+    pub fn link(link: impl Into<String>) -> Self {
         Self {
             link: Some(link.into()),
             ..Self::default()
@@ -207,13 +230,13 @@ impl HighlightOpt {
     }
 }
 
-pub fn set_hl<'a>(name: impl Into<&'a str>, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
+pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
     let opt = opt.into();
 
     let mut opt_builder = nvim_oxi::api::opts::SetHighlightOpts::builder();
 
     if let Some(link) = opt.link {
-        opt_builder.link(link);
+        opt_builder.link(link.as_str());
     } else {
         if let Some(fg) = opt.fg {
             opt_builder.foreground(fg.to_str());
@@ -225,10 +248,11 @@ pub fn set_hl<'a>(name: impl Into<&'a str>, opt: impl Into<HighlightOpt>) -> nvi
         opt_builder.underline(opt.underline);
         opt_builder.bold(opt.bold);
         opt_builder.italic(opt.italic);
+        opt_builder.strikethrough(opt.strike);
     }
     opt_builder.force(true);
 
-    nvim_oxi::api::set_hl(0, name.into(), &opt_builder.build())?;
+    nvim_oxi::api::set_hl(0, name.into().as_str(), &opt_builder.build())?;
 
     Ok(())
 }

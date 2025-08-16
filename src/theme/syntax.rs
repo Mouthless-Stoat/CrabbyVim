@@ -69,28 +69,28 @@ pub enum SyntaxGroup {
     Delimiter,
 }
 
-impl From<SyntaxGroup> for &'static str {
+impl From<SyntaxGroup> for String {
     fn from(val: SyntaxGroup) -> Self {
         match val {
-            SyntaxGroup::Comment => "Comment",
-            SyntaxGroup::String => "String",
-            SyntaxGroup::Number => "Number",
-            SyntaxGroup::Float => "Float",
-            SyntaxGroup::Boolean => "Boolean",
-            SyntaxGroup::Character => "Character",
-            SyntaxGroup::Structure => "Struture",
-            SyntaxGroup::Identifier => "Identifier",
-            SyntaxGroup::Constant => "Constant",
-            SyntaxGroup::Member => "Member",
-            SyntaxGroup::Builtin => "Builtin",
-            SyntaxGroup::Function => "Function",
-            SyntaxGroup::Statement => "Statement",
-            SyntaxGroup::Keyword => "Keyword",
-            SyntaxGroup::Preproc => "Preproc",
-            SyntaxGroup::Type => "Type",
-            SyntaxGroup::Operator => "Operator",
-            SyntaxGroup::Special => "Special",
-            SyntaxGroup::Delimiter => "Delimiter",
+            SyntaxGroup::Comment => "Comment".to_string(),
+            SyntaxGroup::String => "String".to_string(),
+            SyntaxGroup::Number => "Number".to_string(),
+            SyntaxGroup::Float => "Float".to_string(),
+            SyntaxGroup::Boolean => "Boolean".to_string(),
+            SyntaxGroup::Character => "Character".to_string(),
+            SyntaxGroup::Structure => "Struture".to_string(),
+            SyntaxGroup::Identifier => "Identifier".to_string(),
+            SyntaxGroup::Constant => "Constant".to_string(),
+            SyntaxGroup::Member => "Member".to_string(),
+            SyntaxGroup::Builtin => "Builtin".to_string(),
+            SyntaxGroup::Function => "Function".to_string(),
+            SyntaxGroup::Statement => "Statement".to_string(),
+            SyntaxGroup::Keyword => "Keyword".to_string(),
+            SyntaxGroup::Preproc => "Preproc".to_string(),
+            SyntaxGroup::Type => "Type".to_string(),
+            SyntaxGroup::Operator => "Operator".to_string(),
+            SyntaxGroup::Special => "Special".to_string(),
+            SyntaxGroup::Delimiter => "Delimiter".to_string(),
         }
     }
 }
