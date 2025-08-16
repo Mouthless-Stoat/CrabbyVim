@@ -10,6 +10,7 @@ mod lazy;
 mod lsp;
 mod macros;
 mod options;
+mod status;
 mod theme;
 
 mod vim;
@@ -29,6 +30,7 @@ fn config() -> nvim_oxi::Result<()> {
 
     lsp::setup_lsp()?;
     theme::configure()?;
+    status::configure()?;
 
     diagnostic::configure()?;
     commands::configure()?;
