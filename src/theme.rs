@@ -174,14 +174,14 @@ colors! {
 // never use
 #[derive(Clone, Default)]
 pub struct HighlightOpt {
-    fg: Option<Color>,
-    bg: Option<Color>,
-    underline: bool,
-    bold: bool,
-    italic: bool,
-    reverse: bool,
-    link: Option<String>,
-    strike: bool,
+    pub fg: Option<Color>,
+    pub bg: Option<Color>,
+    pub underline: bool,
+    pub bold: bool,
+    pub italic: bool,
+    pub reverse: bool,
+    pub link: Option<String>,
+    pub strike: bool,
 }
 
 impl HighlightOpt {
