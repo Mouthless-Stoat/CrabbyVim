@@ -97,7 +97,7 @@ impl Line {
                             cont = tile.content()?
                         )),
                         TileStyle::Icon => {
-                            assert!(tile.icon()?.is_empty());
+                            assert!(!tile.icon()?.is_empty());
 
                             Ok(format!(
                                 "%#{rev}#%#{norm}#{icon} %#{rev}# {cont}%*%*",
