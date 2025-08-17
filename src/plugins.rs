@@ -55,5 +55,5 @@ plugin! {
     ---
     "nvim-tree/nvim-web-devicons";
     "wakatime/vim-wakatime";
-    LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
+    // LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
 }
