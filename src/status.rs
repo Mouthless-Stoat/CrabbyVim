@@ -11,13 +11,13 @@ pub fn configure() -> nvim_oxi::Result<()> {
     let mut statusline = Line::new();
 
     nvim_oxi::mlua::lua().globals().set(
-        "MkStatus",
+        "statusline",
         nvim_oxi::mlua::lua().create_function(move |_, ()| {
             Ok(statusline.render().expect("Can't render statusline"))
         })?,
     )?;
 
-    set_option("statusline", "%!v:lua.MkStatus()")?;
+    set_option("statusline", "%!v:lua.statusline()")?;
 
     Ok(())
 }
