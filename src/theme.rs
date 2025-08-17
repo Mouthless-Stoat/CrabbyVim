@@ -139,11 +139,21 @@ macro_rules! colors {
                             to: String::from("Color"),
                             message: None
                         })
-                    },
-                    _ => Err(mlua::Error::FromLuaConversionError {
-                        from: "String",
+                    }
+                    mlua::Value::Integer(int) => {
+                        match format!("#{int:06x}").as_str() {
+                            $($value => Ok(Self::$name),)*
+                            v => Err(mlua::Error::FromLuaConversionError {
+                                from: "Integer",
+                                to: String::from("Color"),
+                                message: Some(format!("Can't convert from {v:?}"))
+                            })
+                        }
+                    }
+                    v => Err(mlua::Error::FromLuaConversionError {
+                        from: v.type_name(),
                         to: String::from("Color"),
-                        message: None
+                        message: Some(format!("Can't convert from {v:?}"))
                     })
                 }
             }
