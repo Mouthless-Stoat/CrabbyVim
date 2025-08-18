@@ -1,10 +1,13 @@
 use std::fmt::Debug;
 
 use crate::options::set_option;
-use crate::theme::{HighlightOpt, configure_highlights, get_hl, set_hl};
+use crate::theme::{HighlightOpt, get_hl, set_hl};
 
 pub fn configure() -> nvim_oxi::Result<()> {
-    highlights()?;
+    set_hl(
+        "statusline",
+        HighlightOpt::with_bg(crate::theme::Color::Bg1).fg(crate::theme::Color::Bg2),
+    )?;
 
     set_option("laststatus", 3)?;
 
@@ -34,12 +37,17 @@ trait Tile: Debug {
         Ok(String::new())
     }
 
-    ///
-    /// This should return the background being colored and foreground being normal
-    fn highlights(&self) -> nvim_oxi::Result<&'static str>;
+    /// This just compute the highlights name. The default highlight color should be set by using
+    /// the `highlight_opt()` function and updating the highlights color using the
+    /// `update_highlight()` method. This should return a group that the background is colored
+    /// and the foreground being normal
+    fn highlight_name(&self) -> nvim_oxi::Result<&'static str>;
+    /// This return the highlight group that is use by default. This function is only run once on
+    /// setup and never again. Use `update_highlight` to update the highlight group later.
+    fn highlight_opt(&self) -> HighlightOpt;
 
     /// Function to update the highlight group
-    fn update_highlights(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+    fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
         Ok(old_opt)
     }
 
@@ -50,7 +58,7 @@ trait Tile: Debug {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct Line {
     left: Tiles,
     center: Tiles,
@@ -60,10 +68,23 @@ struct Line {
 impl Line {
     fn new() -> Self {
         Line {
-            left: vec![],
-            center: vec![],
-            right: vec![],
+            ..Default::default()
         }
+    }
+
+    fn setup(&self) -> nvim_oxi::Result<()> {
+        fn setup_section(section: &Tiles) -> nvim_oxi::Result<()> {
+            for tile in section {
+                set_hl(tile.highlight_name()?, tile.highlight_opt())?;
+            }
+            Ok(())
+        }
+
+        setup_section(&self.left)?;
+        setup_section(&self.center)?;
+        setup_section(&self.right)?;
+
+        Ok(())
     }
 
     fn render(&self) -> nvim_oxi::Result<String> {
@@ -72,10 +93,13 @@ impl Line {
                 .iter()
                 .map(|tile| {
                     // highlight group name
-                    let norm = tile.highlights()?;
+                    let norm = tile.highlight_name()?;
                     let rev = format!("{norm}Rev");
 
-                    tile.update_highlights(get_hl(tile.highlights()?)?)?;
+                    set_hl(
+                        tile.highlight_name()?,
+                        tile.update_highlight(get_hl(tile.highlight_name()?)?)?,
+                    )?;
 
                     // set the separator highlights to be opposite of normal hl
                     let main_hl = get_hl(norm)?;
@@ -139,14 +163,4 @@ impl Line {
     {
         self.right.push(Box::new(tile));
     }
-}
-
-pub fn highlights() -> nvim_oxi::Result<()> {
-    use crate::theme::Color::*;
-
-    configure_highlights(vec![
-        ("StatusMode", HighlightOpt::with_bg(Blue).fg(Bg2)),
-        ("StatusCwd", HighlightOpt::with_bg(Blue).fg(Bg1)),
-        ("StatusLine", HighlightOpt::with_bg(Bg1).fg(Bg2)),
-    ])
 }
