@@ -31,7 +31,7 @@ macro_rules! lua_table {
 /// straight up embed a lua expression
 #[macro_export]
 macro_rules! expr {
-    (return $ty:ty; $($tk:tt)*) => {
+    (return $ty:ident; $($tk:tt)*) => {
         nvim_oxi::mlua::lua().load(stringify!($($tk)*)).eval::<mlua::$ty>()?
     };
 }
