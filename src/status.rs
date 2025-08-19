@@ -1,21 +1,27 @@
-use std::fmt::Debug;
-
 use crate::options::set_option;
-use crate::theme::{HighlightOpt, get_hl, set_hl};
+use crate::theme::{Color, HighlightOpt, set_hl};
+
+mod tiles;
+use tiles::*;
+
+const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
+const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
 
 pub fn configure() -> nvim_oxi::Result<()> {
     set_hl(
         "statusline",
-        HighlightOpt::with_bg(crate::theme::Color::Bg1).fg(crate::theme::Color::Bg2),
+        HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
     )?;
 
-    set_option("laststatus", 3)?;
+    set_option("laststatus", 2)?;
 
     let mut statusline = Line::new();
 
+    statusline.setup()?;
+
     nvim_oxi::mlua::lua().globals().set(
         "statusline",
-        nvim_oxi::mlua::lua().create_function(move |_, ()| {
+        nvim_oxi::mlua::lua().create_function_mut(move |_, ()| {
             Ok(statusline.render().expect("Can't render statusline"))
         })?,
     )?;
@@ -25,25 +31,35 @@ pub fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-type Tiles = Vec<Box<dyn Tile>>;
 enum TileStyle {
     Bubble,
     Icon,
 }
 
-trait Tile: Debug {
+trait Tile {
     /// Return the icons to be used with the [`TileStyle::Icon`] style
     fn icon(&self) -> nvim_oxi::Result<String> {
         Ok(String::new())
     }
 
     /// This just compute the highlights name. The default highlight color should be set by using
-    /// the `highlight_opt()` function and updating the highlights color using the
-    /// `update_highlight()` method. This should return a group that the background is colored
+    /// the [`Tile::highlight_opt()`] function and updating the highlights color using the
+    /// [`Tile::update_highlight()`] method. This should return a group that the background is colored
     /// and the foreground being normal
     fn highlight_name(&self) -> nvim_oxi::Result<&'static str>;
+    /// This method return the name for the reverse highlights group.
+    fn highlight_rev_name(&self, norm_hl: &'static str) -> nvim_oxi::Result<String> {
+        Ok(format!("{norm_hl}Rev"))
+    }
+    /// This method return the name for the separator highlights group used for
+    /// [`TileStyle::Icon`].
+    fn highlight_sep_name(&self, norm_hl: &'static str) -> nvim_oxi::Result<String> {
+        Ok(format!("{norm_hl}Sep"))
+    }
+
     /// This return the highlight group that is use by default. This function is only run once on
-    /// setup and never again. Use `update_highlight` to update the highlight group later.
+    /// setup and never again. Use [`Tile::update_highlight()`] to update the highlight group later.
+    /// [`TileStyle::Icon`] should just return the colored background.
     fn highlight_opt(&self) -> HighlightOpt;
 
     /// Function to update the highlight group
@@ -58,7 +74,8 @@ trait Tile: Debug {
     }
 }
 
-#[derive(Debug, Default)]
+type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
+#[derive(Default)]
 struct Line {
     left: Tiles,
     center: Tiles,
@@ -74,8 +91,34 @@ impl Line {
 
     fn setup(&self) -> nvim_oxi::Result<()> {
         fn setup_section(section: &Tiles) -> nvim_oxi::Result<()> {
-            for tile in section {
-                set_hl(tile.highlight_name()?, tile.highlight_opt())?;
+            if !section.is_empty() {
+                for (tile, _) in section {
+                    let highlight_opt = tile.highlight_opt();
+                    let norm_hl = tile.highlight_name()?;
+                    match tile.style() {
+                        TileStyle::Bubble => {
+                            set_hl(tile.highlight_name()?, highlight_opt.clone())?;
+                            set_hl(
+                                tile.highlight_rev_name(norm_hl)?,
+                                highlight_opt.reverse_fg_bg(),
+                            )?;
+                        }
+                        TileStyle::Icon => {
+                            set_hl(
+                                tile.highlight_name()?,
+                                highlight_opt.clone().fg(STATUS_LINE_BG),
+                            )?;
+                            set_hl(
+                                tile.highlight_rev_name(norm_hl)?,
+                                highlight_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
+                            )?;
+                            set_hl(
+                                tile.highlight_sep_name(norm_hl)?,
+                                highlight_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
+                            )?;
+                        }
+                    }
+                }
             }
             Ok(())
         }
@@ -87,59 +130,72 @@ impl Line {
         Ok(())
     }
 
-    fn render(&self) -> nvim_oxi::Result<String> {
-        fn process_section(section: &Tiles) -> nvim_oxi::Result<String> {
-            Ok(section
-                .iter()
-                .map(|tile| {
-                    // highlight group name
-                    let norm = tile.highlight_name()?;
-                    let rev = format!("{norm}Rev");
+    fn render(&mut self) -> nvim_oxi::Result<String> {
+        fn process_section(section: &mut Tiles) -> nvim_oxi::Result<String> {
+            if section.is_empty() {
+                return Ok(String::new());
+            }
+            let mut sections: Vec<String> = vec![];
 
-                    set_hl(
-                        tile.highlight_name()?,
-                        tile.update_highlight(get_hl(tile.highlight_name()?)?)?,
-                    )?;
+            for tile in section {
+                let norm = tile.0.highlight_name()?;
+                let rev = tile.0.highlight_rev_name(norm)?;
 
-                    // set the separator highlights to be opposite of normal hl
-                    let main_hl = get_hl(norm)?;
-                    let mut hl = HighlightOpt::default();
-
-                    if let Some(fg) = main_hl.fg {
-                        hl = hl.bg(fg);
-                    }
-                    if let Some(bg) = main_hl.bg {
-                        hl = hl.fg(bg);
-                    }
-
-                    set_hl(&rev, hl)?;
-
-                    // push the tile to the statusline
-                    match tile.style() {
-                        TileStyle::Bubble => Ok(format!(
-                            "%#{rev}#%#{norm}#{cont}%#{rev}#%*",
-                            cont = tile.content()?
-                        )),
+                // We can use clone here without much performance issue because all of the
+                // highlights group shouldn't be link to anything so we never have to clone a
+                // string.
+                // This code only make the set_hl call when it is actually necessary for better
+                // performance by caching the value.
+                let old_hl = tile.1.clone();
+                tile.1 = tile.0.update_highlight(tile.1.clone())?;
+                if old_hl != tile.1 {
+                    match tile.0.style() {
+                        TileStyle::Bubble => {
+                            set_hl(norm, tile.1.clone())?;
+                            set_hl(rev.clone(), tile.1.clone().reverse_fg_bg())?;
+                        }
                         TileStyle::Icon => {
-                            assert!(!tile.icon()?.is_empty());
-
-                            Ok(format!(
-                                "%#{rev}#%#{norm}#{icon} %#{rev}# {cont}%*%*",
-                                icon = tile.icon()?,
-                                cont = tile.content()?
-                            ))
+                            set_hl(tile.0.highlight_name()?, tile.1.clone().fg(STATUS_LINE_BG))?;
+                            set_hl(
+                                tile.0.highlight_rev_name(norm)?,
+                                tile.1.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
+                            )?;
+                            set_hl(
+                                tile.0.highlight_sep_name(norm)?,
+                                tile.1.clone().bg(STATUS_LINE_BG),
+                            )?;
                         }
                     }
-                })
-                .collect::<nvim_oxi::Result<Vec<_>>>()?
-                .join(" "))
+                }
+
+                let tile = match tile.0.style() {
+                    TileStyle::Bubble => format!(
+                        "%#{rev}#%#{norm}#{cont}%#{rev}#%*",
+                        cont = tile.0.content()?
+                    ),
+                    TileStyle::Icon => {
+                        assert!(!tile.0.icon()?.is_empty());
+                        let sep = tile.0.highlight_sep_name(norm)?;
+
+                        format!(
+                            "%#{sep}#%#{norm}#{icon} %#{rev}# {cont}%*%*",
+                            icon = tile.0.icon()?,
+                            cont = tile.0.content()?
+                        )
+                    }
+                };
+
+                sections.push(tile);
+            }
+
+            Ok(sections.join(" "))
         }
 
         Ok(format!(
             "{}%={}%={}",
-            process_section(&self.left)?,
-            process_section(&self.center)?,
-            process_section(&self.right)?
+            process_section(&mut self.left)?,
+            process_section(&mut self.center)?,
+            process_section(&mut self.right)?
         ))
     }
 
@@ -147,20 +203,23 @@ impl Line {
     where
         T: Tile + 'static,
     {
-        self.left.push(Box::new(tile));
+        let opt = tile.highlight_opt();
+        self.left.push((Box::new(tile), opt));
     }
 
     fn add_center<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
-        self.center.push(Box::new(tile));
+        let opt = tile.highlight_opt();
+        self.center.push((Box::new(tile), opt));
     }
 
     fn add_right<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
-        self.right.push(Box::new(tile));
+        let opt = tile.highlight_opt();
+        self.right.push((Box::new(tile), opt));
     }
 }

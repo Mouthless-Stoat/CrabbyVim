@@ -117,7 +117,7 @@ fn highlights() -> nvim_oxi::Result<()> {
 // It just annoying to type pub const over and over and over and over...
 macro_rules! colors {
     ($($name:ident = $value:literal;)*) => {
-        #[derive(Clone, Copy)]
+        #[derive(Clone, Copy, PartialEq, Eq)]
         pub enum Color {
             $($name,)*
         }
@@ -182,7 +182,7 @@ colors! {
 
 // Not using SetHighlightOpts by nvim_oxi because it is too complex with too many feature that we
 // never use
-#[derive(Clone, Default)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct HighlightOpt {
     pub fg: Option<Color>,
     pub bg: Option<Color>,
@@ -234,6 +234,10 @@ impl HighlightOpt {
         self.reverse = true;
         self
     }
+    pub fn reverse_fg_bg(mut self) -> Self {
+        (self.fg, self.bg) = (self.bg, self.fg);
+        self
+    }
     pub fn strike(mut self) -> Self {
         self.strike = true;
         self
@@ -241,7 +245,7 @@ impl HighlightOpt {
 }
 
 pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
-    let opt = opt.into();
+    let opt: HighlightOpt = opt.into();
 
     let mut opt_builder = nvim_oxi::api::opts::SetHighlightOpts::builder();
 
