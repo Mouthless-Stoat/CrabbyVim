@@ -13,7 +13,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
         HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
     )?;
 
-    set_option("laststatus", 2)?;
+    set_option("laststatus", 3)?;
 
     let mut statusline = Line::new();
 
