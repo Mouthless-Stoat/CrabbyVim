@@ -191,12 +191,35 @@ impl Line {
             Ok(sections.join(" "))
         }
 
-        Ok(format!(
-            "{}%={}%={}",
+        let (left, cent, right) = (
             process_section(&mut self.left)?,
             process_section(&mut self.center)?,
-            process_section(&mut self.right)?
-        ))
+            process_section(&mut self.right)?,
+        );
+
+        let (left_len, right_len) = (
+            nvim_oxi::api::eval_statusline(
+                &left,
+                &nvim_oxi::api::opts::EvalStatuslineOpts::default(),
+            )?
+            .str
+            .len(),
+            nvim_oxi::api::eval_statusline(
+                &right,
+                &nvim_oxi::api::opts::EvalStatuslineOpts::default(),
+            )?
+            .str
+            .len(),
+        );
+
+        let left = format!("{}{}", left, " ".repeat(right_len.saturating_sub(left_len)));
+        let right = format!(
+            "{}{}",
+            " ".repeat(left_len.saturating_sub(right_len)),
+            right,
+        );
+
+        Ok(format!("{left}%={cent}%={right}",))
     }
 
     fn add_left<T>(&mut self, tile: T)
