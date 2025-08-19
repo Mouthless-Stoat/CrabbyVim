@@ -131,7 +131,7 @@ impl Line {
     }
 
     fn render(&mut self) -> nvim_oxi::Result<String> {
-        fn process_section(section: &mut Tiles) -> nvim_oxi::Result<String> {
+        fn render_section(section: &mut Tiles) -> nvim_oxi::Result<String> {
             if section.is_empty() {
                 return Ok(String::new());
             }
@@ -192,11 +192,13 @@ impl Line {
         }
 
         let (left, cent, right) = (
-            process_section(&mut self.left)?,
-            process_section(&mut self.center)?,
-            process_section(&mut self.right)?,
+            render_section(&mut self.left)?,
+            render_section(&mut self.center)?,
+            render_section(&mut self.right)?,
         );
 
+        // pad the left and right section with space so that the center section is actually center
+        // align to the window.
         let (left_len, right_len) = (
             nvim_oxi::api::eval_statusline(
                 &left,
