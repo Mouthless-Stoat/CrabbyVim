@@ -1,4 +1,4 @@
-use mlua::{Function, ObjectLike, Table};
+use mlua::{ObjectLike, Table};
 use nvim_oxi::api::set_var;
 
 use crate::options::set_option;
