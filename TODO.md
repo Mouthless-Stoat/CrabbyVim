@@ -7,7 +7,7 @@ These are todo for the project not code todo and clean up, those are inline comm
 -   [ ] Set up various snacks
     -   [ ] Dashboard?
     -   [x] `lazygit`
-    -   [ ] Indent (or try `hlclunk.nvim`)
+    -   [x] Indent (or try `hlclunk.nvim`)
     -   [x] Picker
         -   [x] File picker using file type icon provided by devicon
         -   [x] Icon for lsp workspace
@@ -19,3 +19,4 @@ These are todo for the project not code todo and clean up, those are inline comm
 -   [x] Loading icon for lsp with `fidget.nvim`
 -   [ ] Quicker movement with `flash.nvim` or `hop.nvim`
 -   [x] Lazy load plugins
+-   [ ] Configure quickfix along with `nvim-bqf` or `quicker.nvim`
