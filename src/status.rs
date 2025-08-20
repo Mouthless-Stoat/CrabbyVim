@@ -17,6 +17,12 @@ pub fn configure() -> nvim_oxi::Result<()> {
 
     let mut statusline = Line::new();
 
+    statusline.add_left(Mode::new());
+    statusline.add_left(Git);
+
+    statusline.add_right(Loc);
+    statusline.add_right(Zoom);
+
     statusline.setup()?;
 
     nvim_oxi::mlua::lua().globals().set(
