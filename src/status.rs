@@ -36,6 +36,16 @@ enum TileStyle {
     Icon,
 }
 
+/// Trait for a tile to implement. Each tile need to implement:
+/// [`Tile::content()`], [`Tile::highlight_name`] and [`Tile::highlight_opt`].
+/// - [`Tile::content`] return what need to be render within each tile
+/// - [`Tile::highlight_name`] return the highlight group that will be use to highlight the tile.
+///   This should only color the the background of the highlight group, the foreground and everything
+///   else will be calculate by the render.
+/// - [`Tile::highlight_opt`] return the option to setup the highlight group for the first time.
+///
+/// Other important method like [`Tile::setup`] and [`Tile::update`] use to create or update the
+/// value.
 trait Tile {
     fn style(&self) -> TileStyle {
         TileStyle::Bubble
