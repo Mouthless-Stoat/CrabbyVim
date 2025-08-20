@@ -37,14 +37,20 @@ enum TileStyle {
 }
 
 trait Tile {
+    fn style(&self) -> TileStyle {
+        TileStyle::Bubble
+    }
+
     /// Return the icons to be used with the [`TileStyle::Icon`] style
     fn icon(&self) -> nvim_oxi::Result<String> {
         Ok(String::new())
     }
 
+    fn content(&self) -> nvim_oxi::Result<String>;
+
     /// This just compute the highlights name. The default highlight color should be set by using
-    /// the [`Tile::highlight_opt()`] function and updating the highlights color using the
-    /// [`Tile::update_highlight()`] method. This should return a group that the background is colored
+    /// the [`Tile::highlight_opt`] function and updating the highlights color using the
+    /// [`Tile::update_highlight`] method. This should return a group that the background is colored
     /// and the foreground being normal
     fn highlight_name(&self) -> nvim_oxi::Result<&'static str>;
     /// This method return the name for the reverse highlights group.
@@ -58,19 +64,23 @@ trait Tile {
     }
 
     /// This return the highlight group that is use by default. This function is only run once on
-    /// setup and never again. Use [`Tile::update_highlight()`] to update the highlight group later.
+    /// setup and never again. Use [`Tile::update_highlight`] to update the highlight group later.
     /// [`TileStyle::Icon`] should just return the colored background.
     fn highlight_opt(&self) -> HighlightOpt;
+
+    /// This setup other highlights group that the tile might need.
+    fn setup(&self) -> nvim_oxi::Result<()> {
+        Ok(())
+    }
+
+    /// This is run to update any field that the tile might need to update to use.
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        Ok(())
+    }
 
     /// Function to update the highlight group
     fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
         Ok(old_opt)
-    }
-
-    fn content(&self) -> nvim_oxi::Result<String>;
-
-    fn style(&self) -> TileStyle {
-        TileStyle::Bubble
     }
 }
 
@@ -89,35 +99,45 @@ impl Line {
         }
     }
 
-    fn setup(&self) -> nvim_oxi::Result<()> {
+    fn set_hl(tile: &dyn Tile) -> nvim_oxi::Result<()> {
+        let highlight_opt = tile.highlight_opt();
+        let norm_hl = tile.highlight_name()?;
+        match tile.style() {
+            TileStyle::Bubble => {
+                set_hl(
+                    tile.highlight_name()?,
+                    highlight_opt.clone().fg(STATUS_LINE_BG),
+                )?;
+                set_hl(
+                    tile.highlight_rev_name(norm_hl)?,
+                    highlight_opt.fg(STATUS_LINE_BG).reverse_fg_bg(),
+                )?;
+            }
+            TileStyle::Icon => {
+                set_hl(
+                    tile.highlight_name()?,
+                    highlight_opt.clone().fg(STATUS_LINE_BG),
+                )?;
+                set_hl(
+                    tile.highlight_rev_name(norm_hl)?,
+                    highlight_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
+                )?;
+                set_hl(
+                    tile.highlight_sep_name(norm_hl)?,
+                    highlight_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
+                )?;
+            }
+        }
+        Ok(())
+    }
+
+    /// Don't call this method twice
+    fn setup(&mut self) -> nvim_oxi::Result<()> {
         fn setup_section(section: &Tiles) -> nvim_oxi::Result<()> {
             if !section.is_empty() {
                 for (tile, _) in section {
-                    let highlight_opt = tile.highlight_opt();
-                    let norm_hl = tile.highlight_name()?;
-                    match tile.style() {
-                        TileStyle::Bubble => {
-                            set_hl(tile.highlight_name()?, highlight_opt.clone())?;
-                            set_hl(
-                                tile.highlight_rev_name(norm_hl)?,
-                                highlight_opt.reverse_fg_bg(),
-                            )?;
-                        }
-                        TileStyle::Icon => {
-                            set_hl(
-                                tile.highlight_name()?,
-                                highlight_opt.clone().fg(STATUS_LINE_BG),
-                            )?;
-                            set_hl(
-                                tile.highlight_rev_name(norm_hl)?,
-                                highlight_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
-                            )?;
-                            set_hl(
-                                tile.highlight_sep_name(norm_hl)?,
-                                highlight_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
-                            )?;
-                        }
-                    }
+                    Line::set_hl(&**tile)?;
+                    tile.setup()?;
                 }
             }
             Ok(())
@@ -126,6 +146,7 @@ impl Line {
         setup_section(&self.left)?;
         setup_section(&self.center)?;
         setup_section(&self.right)?;
+        self.right.reverse();
 
         Ok(())
     }
@@ -141,6 +162,8 @@ impl Line {
                 let norm = tile.0.highlight_name()?;
                 let rev = tile.0.highlight_rev_name(norm)?;
 
+                tile.0.update()?;
+
                 // We can use clone here without much performance issue because all of the
                 // highlights group shouldn't be link to anything so we never have to clone a
                 // string.
@@ -149,23 +172,7 @@ impl Line {
                 let old_hl = tile.1.clone();
                 tile.1 = tile.0.update_highlight(tile.1.clone())?;
                 if old_hl != tile.1 {
-                    match tile.0.style() {
-                        TileStyle::Bubble => {
-                            set_hl(norm, tile.1.clone())?;
-                            set_hl(rev.clone(), tile.1.clone().reverse_fg_bg())?;
-                        }
-                        TileStyle::Icon => {
-                            set_hl(tile.0.highlight_name()?, tile.1.clone().fg(STATUS_LINE_BG))?;
-                            set_hl(
-                                tile.0.highlight_rev_name(norm)?,
-                                tile.1.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
-                            )?;
-                            set_hl(
-                                tile.0.highlight_sep_name(norm)?,
-                                tile.1.clone().bg(STATUS_LINE_BG),
-                            )?;
-                        }
-                    }
+                    Line::set_hl(&*tile.0)?;
                 }
 
                 let tile = match tile.0.style() {
