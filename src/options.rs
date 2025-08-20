@@ -50,8 +50,21 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_option("guifont", "CaskaydiaCove Nerd Font Mono:h10:#h-none")?;
 
     if vim_fn("has", "win32")? {
-        set_option("shell", "powershell")?;
-        set_option("shellcmdflag", "-c")?;
+        // god bless this soul https://www.reddit.com/r/neovim/comments/1crdv93/comment/lolujpr
+        set_option("shell", "pwsh.exe")?;
+        set_option(
+            "shellcmdflag",
+            "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command $PSStyle.OutputRendering = 'PlainText';",
+        )?;
+
+        set_option(
+            "shellredir",
+            "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+        )?;
+        set_option(
+            "shellpipe",
+            "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+        )?;
         set_option("shellquote", "")?;
         set_option("shellxquote", "")?;
     }
