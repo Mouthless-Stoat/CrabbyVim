@@ -1,8 +1,6 @@
-use mlua::{ObjectLike, Table};
 use nvim_oxi::api::set_var;
 
 use crate::options::set_option;
-use crate::{table, vim};
 
 mod syntax;
 
