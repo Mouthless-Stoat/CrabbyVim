@@ -57,4 +57,9 @@ icon_table! {
     UNTRACKED = "▐";
 
     MAGNIFYING_GLASS = "";
+
+    CODE_CWD = "";
+    DESKTOP_CWD = "";
+    HOME_CWD = "";
+    NVIM_CWD = "";
 }

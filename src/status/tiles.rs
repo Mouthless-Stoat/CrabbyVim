@@ -2,7 +2,12 @@
 // https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
 
 use mlua::Table;
+use nvim_oxi::Dictionary;
+use nvim_oxi::api::Buffer;
+use nvim_oxi::api::get_var;
 
+use crate::icons;
+use crate::theme::Color;
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
 use crate::theme::set_hl;
@@ -45,6 +50,55 @@ impl Tile for Mode {
 
     fn update(&mut self) -> nvim_oxi::Result<()> {
         self.0 = crate::Mode::current_mode()?;
+        Ok(())
+    }
+}
+
+pub struct Cwd(String);
+
+impl Cwd {
+    pub fn new() -> Self {
+        Cwd(String::new())
+    }
+
+    fn map_path(&self) -> (&'static str, String, Color) {
+        match self.0.as_str() {
+            r"D:\OneDrive\Desktop\Code" => (icons::CODE_CWD, "code".into(), Blue),
+            r"D:\OneDrive\Desktop" => (icons::DESKTOP_CWD, "desktop".into(), Orange),
+            r"D:\config\nvim" => (icons::NVIM_CWD, "nvim".into(), Green),
+            r"C:\Users\nphuy" => (icons::HOME_CWD, "home".into(), Yellow),
+            p => (icons::FOLDER, p.into(), Yellow),
+        }
+    }
+}
+
+impl Tile for Cwd {
+    fn style(&self) -> TileStyle {
+        TileStyle::Icon
+    }
+
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok(self.map_path().0.into())
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(self.map_path().1)
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
+        Ok("StatusCwd")
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Yellow)
+    }
+
+    fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(old_opt.bg(self.map_path().2))
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = nvim_oxi::api::call_function("getcwd", ((),))?;
         Ok(())
     }
 }
