@@ -1,9 +1,14 @@
+// If you want a lua version of this to include in your config check out
+// https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
+
 use mlua::Table;
 
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
+use crate::theme::set_hl;
 use crate::vim;
 
+use super::STATUS_LINE_FG;
 use super::{Tile, TileStyle};
 
 pub struct Mode(crate::Mode);
@@ -56,14 +61,48 @@ impl Tile for Git {
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
-        match vim()?.get::<Table>("g")?.get::<String>("gitsigns_head") {
-            Ok(head) if head.is_empty() => Ok("n/a".into()),
-            Ok(head) => Ok(head),
-            Err(err) => match err {
-                mlua::Error::FromLuaConversionError { from: "nil", .. } => Ok(String::new()),
-                _ => todo!(),
-            },
+        let head = match vim()?.get::<Table>("g")?.get::<String>("gitsigns_head") {
+            Ok(head) if head.is_empty() => return Ok(String::new()),
+            Ok(head) => head,
+            Err(mlua::Error::FromLuaConversionError { from: "nil", .. }) => {
+                return Ok(String::new());
+            }
+            Err(err) => return Err(nvim_oxi::Error::Mlua(err)),
+        };
+
+        let (added, changed, removed) = match vim()?
+            .get::<Table>("b")?
+            .get::<Table>("gitsigns_status_dict")
+        {
+            Ok(dict) => (
+                dict.get::<usize>("added").unwrap_or(0),
+                dict.get::<usize>("changed").unwrap_or(0),
+                dict.get::<usize>("removed").unwrap_or(0),
+            ),
+            Err(mlua::Error::FromLuaConversionError { from: "nil", .. }) => {
+                return Ok(String::new());
+            }
+            Err(err) => return Err(nvim_oxi::Error::Mlua(err)),
+        };
+
+        let mut out = vec![];
+
+        if added > 0 {
+            out.push(format!("%#StatusGitAdd#+{added}"));
         }
+        if changed > 0 {
+            out.push(format!("%#StatusGitChange#+{changed}"));
+        }
+        if removed > 0 {
+            out.push(format!("%#StatusGitRemove#+{removed}"));
+        }
+
+        let mut diff = out.join(" ");
+        if !diff.is_empty() {
+            diff.insert(0, ' ');
+        }
+
+        Ok(format!("{head}{diff}"))
     }
 
     fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
@@ -73,21 +112,21 @@ impl Tile for Git {
     fn highlight_opt(&self) -> HighlightOpt {
         HighlightOpt::with_bg(Orange)
     }
-}
 
-pub struct GitChange;
-
-impl Tile for GitChange {
-    fn content(&self) -> nvim_oxi::Result<String> {
-        todo!()
-    }
-
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        todo!()
-    }
-
-    fn highlight_opt(&self) -> HighlightOpt {
-        todo!()
+    fn setup(&self) -> nvim_oxi::Result<()> {
+        set_hl(
+            "StatusGitAdd",
+            HighlightOpt::with_fg(Green).bg(STATUS_LINE_FG),
+        )?;
+        set_hl(
+            "StatusGitChange",
+            HighlightOpt::with_fg(Yellow).bg(STATUS_LINE_FG),
+        )?;
+        set_hl(
+            "StatusGitRemove",
+            HighlightOpt::with_fg(Red).bg(STATUS_LINE_FG),
+        )?;
+        Ok(())
     }
 }
 
