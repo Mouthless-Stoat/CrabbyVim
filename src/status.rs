@@ -175,6 +175,12 @@ impl Line {
             let mut sections: Vec<String> = vec![];
 
             for tile in section {
+                let content = tile.0.content()?;
+
+                if content.is_empty() {
+                    continue;
+                }
+
                 let norm = tile.0.highlight_name()?;
                 let rev = tile.0.highlight_rev_name(norm)?;
 
@@ -192,18 +198,14 @@ impl Line {
                 }
 
                 let tile = match tile.0.style() {
-                    TileStyle::Bubble => format!(
-                        "%#{rev}#%#{norm}#{cont}%#{rev}#%*",
-                        cont = tile.0.content()?
-                    ),
+                    TileStyle::Bubble => format!("%#{rev}#%#{norm}#{content}%#{rev}#%*",),
                     TileStyle::Icon => {
                         assert!(!tile.0.icon()?.is_empty());
                         let sep = tile.0.highlight_sep_name(norm)?;
 
                         format!(
-                            "%#{sep}#%#{norm}#{icon} %#{rev}# {cont}%*%*",
+                            "%#{sep}#%#{norm}#{icon} %#{rev}# {content}%*%*",
                             icon = tile.0.icon()?,
-                            cont = tile.0.content()?
                         )
                     }
                 };
