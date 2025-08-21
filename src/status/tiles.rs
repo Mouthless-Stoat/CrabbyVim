@@ -80,7 +80,7 @@ impl Tile for Git {
                 dict.get::<usize>("removed").unwrap_or(0),
             ),
             Err(mlua::Error::FromLuaConversionError { from: "nil", .. }) => {
-                return Ok(String::new());
+                return Ok(head);
             }
             Err(err) => return Err(nvim_oxi::Error::Mlua(err)),
         };
