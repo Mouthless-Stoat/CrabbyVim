@@ -129,7 +129,7 @@ impl Tile for Git {
                     dict.get("removed")
                         .map_or(0, |o| unsafe { o.as_integer_unchecked() }),
                 ),
-                Err(_) => return Ok(String::new()),
+                Err(_) => (0, 0, 0),
             };
 
         let mut out = vec![];
