@@ -115,32 +115,25 @@ impl Line {
         }
     }
 
-    fn set_hl(tile: &dyn Tile) -> nvim_oxi::Result<()> {
-        let highlight_opt = tile.highlight_opt();
+    fn set_hl(tile: &dyn Tile, hl_opt: HighlightOpt) -> nvim_oxi::Result<()> {
         let norm_hl = tile.highlight_name()?;
         match tile.style() {
             TileStyle::Bubble => {
-                set_hl(
-                    tile.highlight_name()?,
-                    highlight_opt.clone().fg(STATUS_LINE_BG),
-                )?;
+                set_hl(tile.highlight_name()?, hl_opt.clone().fg(STATUS_LINE_BG))?;
                 set_hl(
                     tile.highlight_rev_name(norm_hl)?,
-                    highlight_opt.fg(STATUS_LINE_BG).reverse_fg_bg(),
+                    hl_opt.fg(STATUS_LINE_BG).reverse_fg_bg(),
                 )?;
             }
             TileStyle::Icon => {
-                set_hl(
-                    tile.highlight_name()?,
-                    highlight_opt.clone().fg(STATUS_LINE_BG),
-                )?;
+                set_hl(tile.highlight_name()?, hl_opt.clone().fg(STATUS_LINE_BG))?;
                 set_hl(
                     tile.highlight_rev_name(norm_hl)?,
-                    highlight_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
+                    hl_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
                 )?;
                 set_hl(
                     tile.highlight_sep_name(norm_hl)?,
-                    highlight_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
+                    hl_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
                 )?;
             }
         }
@@ -152,7 +145,7 @@ impl Line {
         fn setup_section(section: &Tiles) -> nvim_oxi::Result<()> {
             if !section.is_empty() {
                 for (tile, _) in section {
-                    Line::set_hl(&**tile)?;
+                    Line::set_hl(&**tile, tile.highlight_opt())?;
                     tile.setup()?;
                 }
             }
@@ -175,6 +168,8 @@ impl Line {
             let mut sections: Vec<String> = vec![];
 
             for tile in section {
+                tile.0.update()?;
+
                 let content = tile.0.content()?;
 
                 if content.is_empty() {
@@ -184,8 +179,6 @@ impl Line {
                 let norm = tile.0.highlight_name()?;
                 let rev = tile.0.highlight_rev_name(norm)?;
 
-                tile.0.update()?;
-
                 // We can use clone here without much performance issue because all of the
                 // highlights group shouldn't be link to anything so we never have to clone a
                 // string.
@@ -194,7 +187,7 @@ impl Line {
                 let old_hl = tile.1.clone();
                 tile.1 = tile.0.update_highlight(tile.1.clone())?;
                 if old_hl != tile.1 {
-                    Line::set_hl(&*tile.0)?;
+                    Line::set_hl(&*tile.0, tile.1.clone())?;
                 }
 
                 let tile = match tile.0.style() {
