@@ -61,29 +61,22 @@ impl Tile for Git {
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
-        let head = match vim()?.get::<Table>("g")?.get::<String>("gitsigns_head") {
-            Ok(head) if head.is_empty() => return Ok(String::new()),
-            Ok(head) => head,
-            Err(mlua::Error::FromLuaConversionError { from: "nil", .. }) => {
-                return Ok(String::new());
-            }
-            Err(err) => return Err(nvim_oxi::Error::Mlua(err)),
+        let Ok(head) = get_var::<String>("gitsigns_head") else {
+            return Ok(String::new());
         };
 
-        let (added, changed, removed) = match vim()?
-            .get::<Table>("b")?
-            .get::<Table>("gitsigns_status_dict")
-        {
-            Ok(dict) => (
-                dict.get::<usize>("added").unwrap_or(0),
-                dict.get::<usize>("changed").unwrap_or(0),
-                dict.get::<usize>("removed").unwrap_or(0),
-            ),
-            Err(mlua::Error::FromLuaConversionError { from: "nil", .. }) => {
-                return Ok(head);
-            }
-            Err(err) => return Err(nvim_oxi::Error::Mlua(err)),
-        };
+        let (added, changed, removed) =
+            match Buffer::current().get_var::<Dictionary>("gitsigns_status_dict") {
+                Ok(dict) => (
+                    dict.get("added")
+                        .map_or(0, |o| unsafe { o.as_integer_unchecked() }),
+                    dict.get("changed")
+                        .map_or(0, |o| unsafe { o.as_integer_unchecked() }),
+                    dict.get("removed")
+                        .map_or(0, |o| unsafe { o.as_integer_unchecked() }),
+                ),
+                Err(_) => return Ok(String::new()),
+            };
 
         let mut out = vec![];
 
