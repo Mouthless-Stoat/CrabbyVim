@@ -6,10 +6,11 @@ use nvim_oxi::api::Buffer;
 use nvim_oxi::api::get_var;
 
 use crate::icons;
-use crate::options::get_option;
+use crate::plugins::devicons::get_icon;
 use crate::theme::Color;
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
+use crate::theme::get_hl;
 use crate::theme::set_hl;
 
 use super::STATUS_LINE_FG;
@@ -29,8 +30,8 @@ impl Tile for Mode {
         Ok(self.0.as_str().into())
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        Ok("StatusMode")
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok("StatusMode".into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -85,8 +86,8 @@ impl Tile for Cwd {
         Ok(self.map_path().1)
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        Ok("StatusCwd")
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok("StatusCwd".into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -152,8 +153,8 @@ impl Tile for Git {
         Ok(format!("{head}{diff}"))
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        Ok("StatusGit")
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok("StatusGit".into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -184,7 +185,7 @@ impl Tile for Loc {
         Ok("%3.c:%-3.l".into())
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
         Mode(crate::Mode::Normal).highlight_name()
     }
 
@@ -211,8 +212,8 @@ impl Tile for Zoom {
         ))
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        Ok("StatusZoom")
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok("StatusZoom".into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -220,18 +221,41 @@ impl Tile for Zoom {
     }
 }
 
-pub struct FileNameWin;
+pub struct FileNameWin(String);
+
+impl FileNameWin {
+    pub fn new() -> Self {
+        Self(String::new())
+    }
+}
 
 impl Tile for FileNameWin {
-    fn content(&self) -> nvim_oxi::Result<String> {
-        Ok(eval_status("%t")?.str)
+    fn style(&self) -> TileStyle {
+        TileStyle::Icon
     }
 
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
-        Ok("StatusFileName")
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok(get_icon(&self.0)?.0)
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(self.0.clone())
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(format!("Status{}", get_icon(&self.0)?.1))
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
-        HighlightOpt::with_bg(STATUS_LINE_FG).fg(Blue)
+        HighlightOpt::with_bg(Blue)
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = eval_status("%t")?.str;
+        Ok(())
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
     }
 }
