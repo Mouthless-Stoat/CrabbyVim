@@ -104,6 +104,7 @@ trait Tile {
 type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
 #[derive(Default)]
 struct Line {
+    not_setup: bool,
     left: Tiles,
     center: Tiles,
     right: Tiles,
@@ -112,6 +113,7 @@ struct Line {
 impl Line {
     fn new() -> Self {
         Line {
+            not_setup: true,
             ..Default::default()
         }
     }
@@ -157,6 +159,8 @@ impl Line {
         setup_section(&self.center)?;
         setup_section(&self.right)?;
         self.right.reverse();
+
+        self.not_setup = false;
 
         Ok(())
     }
@@ -208,6 +212,10 @@ impl Line {
             }
 
             Ok(sections.join(" "))
+        }
+
+        if self.not_setup {
+            self.setup()?;
         }
 
         let (left, cent, right) = (
