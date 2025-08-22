@@ -25,6 +25,7 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+#[must_use]
 pub fn delimiter_highlights() -> [&'static str; 7] {
     [
         "Delimit1", "Delimit2", "Delimit3", "Delimit4", "Delimit5", "Delimit6", "Delimit7",
