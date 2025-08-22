@@ -122,14 +122,20 @@ impl Line {
         let norm_hl = tile.highlight_name()?;
         match tile.style() {
             TileStyle::Bubble => {
-                set_hl(tile.highlight_name()?, hl_opt.clone().fg(STATUS_LINE_BG))?;
+                set_hl(
+                    tile.highlight_name()?,
+                    hl_opt.clone().fg_if_none(STATUS_LINE_BG),
+                )?;
                 set_hl(
                     tile.highlight_rev_name(norm_hl)?,
-                    hl_opt.fg(STATUS_LINE_BG).reverse_fg_bg(),
+                    hl_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
                 )?;
             }
             TileStyle::Icon => {
-                set_hl(tile.highlight_name()?, hl_opt.clone().fg(STATUS_LINE_BG))?;
+                set_hl(
+                    tile.highlight_name()?,
+                    hl_opt.clone().fg_if_none(STATUS_LINE_BG),
+                )?;
                 set_hl(
                     tile.highlight_rev_name(norm_hl)?,
                     hl_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
