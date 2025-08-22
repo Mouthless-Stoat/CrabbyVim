@@ -24,22 +24,22 @@ fn highlights() -> nvim_oxi::Result<()> {
 
     set_option("guicursor", "n-o:block-NCursor,i:ver20-ICursor,v-ve:block-VCursor,c-ci-cr:ver25-CCursor,r:hor15-RCursor")?;
 
-    set_var("terminal_color_0", Bg0.to_str())?;
-    set_var("terminal_color_1", Red.to_str())?;
-    set_var("terminal_color_2", Green.to_str())?;
-    set_var("terminal_color_3", Yellow.to_str())?;
-    set_var("terminal_color_4", Blue.to_str())?;
-    set_var("terminal_color_5", Purple.to_str())?;
-    set_var("terminal_color_6", Cyan.to_str())?;
-    set_var("terminal_color_7", White.to_str())?;
-    set_var("terminal_color_8", Gray.to_str())?;
-    set_var("terminal_color_9", Red.to_str())?;
-    set_var("terminal_color_10", Green.to_str())?;
-    set_var("terminal_color_11", Yellow.to_str())?;
-    set_var("terminal_color_12", Blue.to_str())?;
-    set_var("terminal_color_13", Purple.to_str())?;
-    set_var("terminal_color_14", Cyan.to_str())?;
-    set_var("terminal_color_15", White.to_str())?;
+    set_var("terminal_color_0", Bg0.to_string())?;
+    set_var("terminal_color_1", Red.to_string())?;
+    set_var("terminal_color_2", Green.to_string())?;
+    set_var("terminal_color_3", Yellow.to_string())?;
+    set_var("terminal_color_4", Blue.to_string())?;
+    set_var("terminal_color_5", Purple.to_string())?;
+    set_var("terminal_color_6", Cyan.to_string())?;
+    set_var("terminal_color_7", White.to_string())?;
+    set_var("terminal_color_8", Gray.to_string())?;
+    set_var("terminal_color_9", Red.to_string())?;
+    set_var("terminal_color_10", Green.to_string())?;
+    set_var("terminal_color_11", Yellow.to_string())?;
+    set_var("terminal_color_12", Blue.to_string())?;
+    set_var("terminal_color_13", Purple.to_string())?;
+    set_var("terminal_color_14", Cyan.to_string())?;
+    set_var("terminal_color_15", White.to_string())?;
 
     configure_highlights(vec![
         ("Normal",HighlightOpt::with_fg(White).bg(Bg0)),
@@ -116,14 +116,25 @@ fn highlights() -> nvim_oxi::Result<()> {
 // It just annoying to type pub const over and over and over and over...
 macro_rules! colors {
     ($($name:ident = $value:literal;)*) => {
-        #[derive(Clone, Copy, PartialEq, Eq)]
+        #[derive(Debug, Clone, PartialEq, Eq)]
         pub enum Color {
             $($name,)*
+            Other(String)
         }
         impl Color {
-            pub fn to_str(self) -> &'static str {
+            pub fn to_string(&self) -> String {
                 match self {
-                    $(Self::$name => $value,)*
+                    $(Self::$name => $value.into(),)*
+                    Self::Other(str) => str.into()
+                }
+            }
+        }
+
+        impl From<u32> for Color {
+            fn from(value: u32) -> Self {
+                match format!("#{value:06x}").as_str() {
+                    $($value => Self::$name,)*
+                    col => Self::Other(col.into())
                 }
             }
         }
@@ -181,7 +192,7 @@ colors! {
 
 // Not using SetHighlightOpts by nvim_oxi because it is too complex with too many feature that we
 // never use
-#[derive(Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct HighlightOpt {
     pub fg: Option<Color>,
     pub bg: Option<Color>,
@@ -267,10 +278,10 @@ pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi
         opt_builder.link(link.as_str());
     } else {
         if let Some(fg) = opt.fg {
-            opt_builder.foreground(fg.to_str());
+            opt_builder.foreground(&fg.to_string());
         }
         if let Some(bg) = opt.bg {
-            opt_builder.background(bg.to_str());
+            opt_builder.background(&bg.to_string());
         }
 
         opt_builder.underline(opt.underline);
