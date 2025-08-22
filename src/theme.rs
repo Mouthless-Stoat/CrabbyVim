@@ -296,42 +296,46 @@ pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi
     Ok(())
 }
 
-// pub fn get_hl(name: impl Into<String>) -> nvim_oxi::Result<HighlightOpt> {
-//     // TODO: Use nvim_oxi::api::get_hl when that is fixed
-//
-//     let hl = vim()?
-//         .get::<Table>("api")?
-//         .call_function::<Table>("nvim_get_hl", (0, table! {name = name.into()}))?;
-//
-//     let mut hl_opt = HighlightOpt::default();
-//
-//     if hl.contains_key("fg")? {
-//         hl_opt = hl_opt.fg(hl.get::<Color>("fg")?);
-//     }
-//
-//     if hl.contains_key("bg")? {
-//         hl_opt = hl_opt.bg(hl.get::<Color>("bg")?);
-//     }
-//
-//     if hl.contains_key("underline")? {
-//         hl_opt = hl_opt.underline();
-//     }
-//
-//     if hl.contains_key("bold")? {
-//         hl_opt = hl_opt.bold();
-//     }
-//
-//     if hl.contains_key("italic")? {
-//         hl_opt = hl_opt.italic();
-//     }
-//
-//     if hl.contains_key("reverse")? {
-//         hl_opt = hl_opt.italic();
-//     }
-//
-//     if hl.contains_key("strikethrough")? {
-//         hl_opt = hl_opt.strike();
-//     }
-//
-//     Ok(hl_opt)
-// }
+pub fn get_hl(name: impl Into<String>) -> nvim_oxi::Result<HighlightOpt> {
+    let nvim_oxi::api::types::GetHlInfos::Single(hl) = nvim_oxi::api::get_hl(
+        0,
+        &nvim_oxi::api::opts::GetHighlightOpts::builder()
+            .name(name.into())
+            .build(),
+    )?
+    else {
+        unreachable!()
+    };
+
+    let mut hl_opt = HighlightOpt::default();
+
+    if let Some(fg) = hl.foreground {
+        hl_opt = hl_opt.fg(fg.into());
+    }
+
+    if let Some(bg) = hl.background {
+        hl_opt = hl_opt.bg(bg.into());
+    }
+
+    if hl.underline.is_some() {
+        hl_opt = hl_opt.underline();
+    }
+
+    if hl.bold.is_some() {
+        hl_opt = hl_opt.bold();
+    }
+
+    if hl.italic.is_some() {
+        hl_opt = hl_opt.italic();
+    }
+
+    if hl.reverse.is_some() {
+        hl_opt = hl_opt.italic();
+    }
+
+    if hl.strikethrough.is_some() {
+        hl_opt = hl_opt.strike();
+    }
+
+    Ok(hl_opt)
+}
