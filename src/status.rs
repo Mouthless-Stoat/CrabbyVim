@@ -275,3 +275,10 @@ impl Line {
         self.right.push((Box::new(tile), opt));
     }
 }
+
+pub fn eval_status(str: impl Into<String>) -> nvim_oxi::Result<StatuslineInfos> {
+    Ok(nvim_oxi::api::eval_statusline(
+        &str.into(),
+        &nvim_oxi::api::opts::EvalStatuslineOpts::default(),
+    )?)
+}
