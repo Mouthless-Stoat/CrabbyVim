@@ -6,12 +6,14 @@ use nvim_oxi::api::Buffer;
 use nvim_oxi::api::get_var;
 
 use crate::icons;
+use crate::options::get_option;
 use crate::theme::Color;
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
 use crate::theme::set_hl;
 
 use super::STATUS_LINE_FG;
+use super::eval_status;
 use super::{Tile, TileStyle};
 
 pub struct Mode(crate::Mode);
@@ -215,5 +217,21 @@ impl Tile for Zoom {
 
     fn highlight_opt(&self) -> HighlightOpt {
         HighlightOpt::with_bg(Yellow)
+    }
+}
+
+pub struct FileNameWin;
+
+impl Tile for FileNameWin {
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(eval_status("%t")?.str)
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<&'static str> {
+        Ok("StatusFileName")
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(STATUS_LINE_FG).fg(Blue)
     }
 }

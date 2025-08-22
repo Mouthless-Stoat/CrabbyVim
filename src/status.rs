@@ -1,17 +1,28 @@
 use crate::options::set_option;
-use crate::theme::{Color, HighlightOpt, set_hl};
+use crate::theme::{Color, HighlightOpt, configure_highlights, set_hl};
 
 mod tiles;
+use nvim_oxi::api::types::StatuslineInfos;
 use tiles::*;
 
 const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
 const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
 
 pub fn configure() -> nvim_oxi::Result<()> {
-    set_hl(
-        "statusline",
-        HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
-    )?;
+    configure_highlights(vec![
+        (
+            "StatusLine",
+            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
+        ),
+        (
+            "WinBar",
+            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
+        ),
+        (
+            "WinBarNc",
+            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
+        ),
+    ])?;
 
     set_option("laststatus", 3)?;
 
@@ -24,7 +35,9 @@ pub fn configure() -> nvim_oxi::Result<()> {
     statusline.add_right(Loc);
     statusline.add_right(Zoom);
 
-    statusline.setup()?;
+    let mut winbar = Line::new();
+
+    winbar.add_center(FileNameWin);
 
     nvim_oxi::mlua::lua().globals().set(
         "statusline",
@@ -32,8 +45,14 @@ pub fn configure() -> nvim_oxi::Result<()> {
             Ok(statusline.render().expect("Can't render statusline"))
         })?,
     )?;
+    nvim_oxi::mlua::lua().globals().set(
+        "winbar",
+        nvim_oxi::mlua::lua()
+            .create_function_mut(move |_, ()| Ok(winbar.render().expect("Can't render winbar")))?,
+    )?;
 
-    set_option("statusline", "%!v:lua.statusline()")?;
+    // set_option("statusline", "%!v:lua.statusline()")?;
+    set_option("winbar", "%{%v:lua.winbar()%}")?;
 
     Ok(())
 }
@@ -232,25 +251,31 @@ impl Line {
 
         // pad the left and right section with space so that the center section is actually center
         // align to the window.
+
+        // Janky fix for nvim_oxi bug:
+        // https://github.com/noib3/nvim-oxi/issues/267
+        // TODO: update nvim_oxi when this bug is fix
         let (left_len, right_len) = (
-            nvim_oxi::api::eval_statusline(
-                &left,
-                &nvim_oxi::api::opts::EvalStatuslineOpts::default(),
-            )?
-            .str
-            .len(),
-            nvim_oxi::api::eval_statusline(
-                &right,
-                &nvim_oxi::api::opts::EvalStatuslineOpts::default(),
-            )?
-            .str
-            .len(),
+            if left.is_empty() {
+                0
+            } else {
+                eval_status(&right)?.width
+            },
+            if right.is_empty() {
+                0
+            } else {
+                eval_status(&left)?.width
+            },
         );
 
-        let left = format!("{}{}", left, " ".repeat(right_len.saturating_sub(left_len)));
+        let left = format!(
+            "{}{}",
+            left,
+            " ".repeat(right_len.saturating_sub(left_len).try_into().unwrap())
+        );
         let right = format!(
             "{}{}",
-            " ".repeat(left_len.saturating_sub(right_len)),
+            " ".repeat(left_len.saturating_sub(right_len).try_into().unwrap()),
             right,
         );
 
