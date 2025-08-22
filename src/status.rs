@@ -88,14 +88,14 @@ trait Tile {
     /// the [`Tile::highlight_opt`] function and updating the highlights color using the
     /// [`Tile::update_highlight`] method. This should return a group that the background is colored
     /// and the foreground being normal
-    fn highlight_name(&self) -> nvim_oxi::Result<&'static str>;
+    fn highlight_name(&self) -> nvim_oxi::Result<String>;
     /// This method return the name for the reverse highlights group.
-    fn highlight_rev_name(&self, norm_hl: &'static str) -> nvim_oxi::Result<String> {
+    fn highlight_rev_name(&self, norm_hl: String) -> nvim_oxi::Result<String> {
         Ok(format!("{norm_hl}Rev"))
     }
     /// This method return the name for the separator highlights group used for
     /// [`TileStyle::Icon`].
-    fn highlight_sep_name(&self, norm_hl: &'static str) -> nvim_oxi::Result<String> {
+    fn highlight_sep_name(&self, norm_hl: String) -> nvim_oxi::Result<String> {
         Ok(format!("{norm_hl}Sep"))
     }
 
@@ -146,7 +146,7 @@ impl Line {
                     hl_opt.clone().fg_if_none(STATUS_LINE_BG),
                 )?;
                 set_hl(
-                    tile.highlight_rev_name(norm_hl)?,
+                    tile.highlight_rev_name(norm_hl.clone())?,
                     hl_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
                 )?;
             }
@@ -156,11 +156,11 @@ impl Line {
                     hl_opt.clone().fg_if_none(STATUS_LINE_BG),
                 )?;
                 set_hl(
-                    tile.highlight_rev_name(norm_hl)?,
+                    tile.highlight_rev_name(norm_hl.clone())?,
                     hl_opt.clone().reverse_fg_bg().bg(STATUS_LINE_FG),
                 )?;
                 set_hl(
-                    tile.highlight_sep_name(norm_hl)?,
+                    tile.highlight_sep_name(norm_hl.clone())?,
                     hl_opt.reverse_fg_bg().bg(STATUS_LINE_BG),
                 )?;
             }
@@ -207,7 +207,7 @@ impl Line {
                 }
 
                 let norm = tile.0.highlight_name()?;
-                let rev = tile.0.highlight_rev_name(norm)?;
+                let rev = tile.0.highlight_rev_name(norm.clone())?;
 
                 // We can use clone here without much performance issue because all of the
                 // highlights group shouldn't be link to anything so we never have to clone a
@@ -224,7 +224,7 @@ impl Line {
                     TileStyle::Bubble => format!("%#{rev}#%#{norm}#{content}%#{rev}#%*",),
                     TileStyle::Icon => {
                         assert!(!tile.0.icon()?.is_empty());
-                        let sep = tile.0.highlight_sep_name(norm)?;
+                        let sep = tile.0.highlight_sep_name(norm.clone())?;
 
                         format!(
                             "%#{sep}#%#{norm}#{icon} %#{rev}# {content}%*%*",
