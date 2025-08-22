@@ -32,15 +32,15 @@ pub fn create_autocmd<T>(
 where
     T: Fn(nvim_oxi::api::types::AutocmdCallbackArgs) -> nvim_oxi::Result<()> + 'static,
 {
-    let mut opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder();
-
-    opts.patterns(patterns.iter().copied());
-    opts.callback(move |args| -> nvim_oxi::Result<bool> {
-        callback(args)?;
-        Ok(false)
-    });
-
-    nvim_oxi::api::create_autocmd(events.iter().copied(), &opts.build())?;
-
+    nvim_oxi::api::create_autocmd(
+        events.iter().copied(),
+        &nvim_oxi::api::opts::CreateAutocmdOpts::builder()
+            .patterns(patterns.iter().copied())
+            .callback(move |args| -> nvim_oxi::Result<bool> {
+                callback(args)?;
+                Ok(false)
+            })
+            .build(),
+    )?;
     Ok(())
 }
