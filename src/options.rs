@@ -1,7 +1,8 @@
+use mlua::{Function, Table};
+use nvim_oxi::conversion::{FromObject, ToObject};
+
 use crate::keymaps::set_key;
 use crate::{Mode, table, vim_fn};
-use mlua::{Function, Table};
-use nvim_oxi::conversion::ToObject;
 
 pub fn configure() -> nvim_oxi::Result<()> {
     set_option("number", true)?;
@@ -132,4 +133,11 @@ pub fn set_local_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<(
 fn set_neovide_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_var(format!("neovide_{name}").as_str(), value)?;
     Ok(())
+}
+
+pub fn get_option<T: FromObject>(name: &str) -> nvim_oxi::Result<T> {
+    Ok(nvim_oxi::api::get_option_value(
+        name,
+        &nvim_oxi::api::opts::OptionOpts::default(),
+    )?)
 }
