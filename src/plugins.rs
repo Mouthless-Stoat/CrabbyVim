@@ -2,11 +2,11 @@ use crate::lazy::LazyPlugin;
 
 macro_rules! plugin {
     ($mod:ident) => {
-        mod $mod;
+        pub mod $mod;
         use $mod::plugins as $mod;
     };
     ($mod:ident with highlights) => {
-        mod $mod;
+        pub mod $mod;
         paste::paste!(use $mod::highlights as [<$mod _highlights>];);
         use $mod::plugins as $mod;
     };
@@ -52,8 +52,8 @@ plugin! {
     mini;
     matchup;
     delimiters with highlights;
+    devicons;
     ---
-    "nvim-tree/nvim-web-devicons";
     "wakatime/vim-wakatime";
     LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
 }
