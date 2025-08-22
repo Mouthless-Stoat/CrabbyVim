@@ -16,8 +16,7 @@ mod theme;
 mod vim;
 pub use vim::*;
 
-mod plugins;
-pub use plugins::*;
+pub mod plugins;
 
 #[nvim_oxi::plugin]
 fn config() -> nvim_oxi::Result<()> {
@@ -25,7 +24,7 @@ fn config() -> nvim_oxi::Result<()> {
     keymaps::configure()?;
 
     let mut lazy = lazy::Lazy::new();
-    lazy.add_plugins(plugins()?);
+    lazy.add_plugins(plugins::plugins()?);
     lazy.setup()?;
 
     lsp::setup_lsp()?;
