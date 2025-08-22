@@ -6,8 +6,8 @@ pub fn vim() -> mlua::Result<mlua::Table> {
     nvim_oxi::mlua::lua().globals().get::<mlua::Table>("vim")
 }
 
-pub fn vim_notify(msg: impl Into<String>, level: LogLevel) -> nvim_oxi::Result<()> {
-    nvim_oxi::api::notify(&msg.into(), level, &Dictionary::new())?;
+pub fn vim_notify(msg: &str, level: LogLevel) -> nvim_oxi::Result<()> {
+    nvim_oxi::api::notify(msg, level, &Dictionary::new())?;
     Ok(())
 }
 
