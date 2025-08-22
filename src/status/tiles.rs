@@ -1,7 +1,6 @@
 // If you want a lua version of this to include in your config check out
 // https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
 
-use mlua::Table;
 use nvim_oxi::Dictionary;
 use nvim_oxi::api::Buffer;
 use nvim_oxi::api::get_var;
@@ -11,7 +10,6 @@ use crate::theme::Color;
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
 use crate::theme::set_hl;
-use crate::vim;
 
 use super::STATUS_LINE_FG;
 use super::{Tile, TileStyle};
