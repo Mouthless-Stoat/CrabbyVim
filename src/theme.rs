@@ -193,6 +193,7 @@ pub struct HighlightOpt {
     pub strike: bool,
 }
 
+#[allow(dead_code)]
 impl HighlightOpt {
     pub fn with_fg(color: Color) -> Self {
         Self::default().fg(color)
@@ -217,6 +218,20 @@ impl HighlightOpt {
         self.bg = Some(color);
         self
     }
+
+    pub fn bg_if_none(self, color: Color) -> Self {
+        if self.bg.is_none() {
+            return self.bg(color);
+        }
+        self
+    }
+    pub fn fg_if_none(self, color: Color) -> Self {
+        if self.fg.is_none() {
+            return self.fg(color);
+        }
+        self
+    }
+
     pub fn underline(mut self) -> Self {
         self.underline = true;
         self
