@@ -17,6 +17,9 @@ wildcard_imports = "allow"
 crate-type = ["cdylib"]
 
 [dependencies]
-mlua = { version = "0.10.5", features = ["luajit", "vendored", "macros"] }
-nvim-oxi = {version = "0.6.0", features = ["neovim-0-11", "mlua"]}
+mlua = { version = "0.11", features = ["luajit", "vendored", "macros"] }
+nvim-oxi = { git = "https://github.com/noib3/nvim-oxi", branch = "main", default-features = false, features = [
+  "neovim-0-11",
+  "mlua",
+] }
 paste = "1.0.15"

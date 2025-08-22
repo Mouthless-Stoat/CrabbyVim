@@ -51,7 +51,7 @@ pub enum Mode {
 
 impl Mode {
     pub fn current_mode() -> nvim_oxi::Result<Self> {
-        Ok(match nvim_oxi::api::get_mode()?.mode.to_str().unwrap() {
+        Ok(match nvim_oxi::api::get_mode().mode.to_str().unwrap() {
             "n" | "niI" | "niR" | "niV" | "nt" | "ntT" => Self::Normal,
             "i" | "ic" | "ix" => Self::Insert,
             "v" | "vs" | "V" | "Vs" | "\u{16}" | "\u{16}s" | "s" | "S" | "\u{13}" => Self::Visual,
