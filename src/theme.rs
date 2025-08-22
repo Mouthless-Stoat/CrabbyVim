@@ -288,6 +288,7 @@ pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi
         opt_builder.bold(opt.bold);
         opt_builder.italic(opt.italic);
         opt_builder.strikethrough(opt.strike);
+        opt_builder.reverse(opt.reverse);
     }
     opt_builder.force(true);
 
