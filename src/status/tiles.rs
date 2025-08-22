@@ -220,15 +220,15 @@ impl Tile for Zoom {
     }
 }
 
-pub struct FileNameWin(String);
+pub struct FileName(String);
 
-impl FileNameWin {
+impl FileName {
     pub fn new() -> Self {
         Self(String::new())
     }
 }
 
-impl Tile for FileNameWin {
+impl Tile for FileName {
     fn style(&self) -> TileStyle {
         TileStyle::Icon
     }
