@@ -105,7 +105,6 @@ impl Tile for Cwd {
 }
 
 pub struct Git;
-
 impl Tile for Git {
     fn style(&self) -> TileStyle {
         TileStyle::Icon
@@ -139,10 +138,10 @@ impl Tile for Git {
             out.push(format!("%#StatusGitAdd#+{added}"));
         }
         if changed > 0 {
-            out.push(format!("%#StatusGitChange#+{changed}"));
+            out.push(format!("%#StatusGitChange#~{changed}"));
         }
         if removed > 0 {
-            out.push(format!("%#StatusGitRemove#+{removed}"));
+            out.push(format!("%#StatusGitRemove#-{removed}"));
         }
 
         let mut diff = out.join(" ");
