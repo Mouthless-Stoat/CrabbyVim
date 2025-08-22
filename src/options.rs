@@ -1,6 +1,7 @@
 use mlua::{Function, Table};
 use nvim_oxi::conversion::{FromObject, ToObject};
 
+use crate::autocmds::create_autocmd;
 use crate::keymaps::set_key;
 use crate::{Mode, table, vim_fn};
 
@@ -70,19 +71,14 @@ pub fn configure() -> nvim_oxi::Result<()> {
         set_option("shellxquote", "")?;
     }
 
-    let yank_callback = |_args| {
+    create_autocmd(&["TextYankPost"], &["*"], |_| {
         crate::vim()?
             .get::<Table>("hl")?
             .get::<Function>("on_yank")?
-            .call::<bool>(table! { higroup = "Yank" })
-    };
+            .call::<bool>(table! { higroup = "Yank" })?;
 
-    let opts = nvim_oxi::api::opts::CreateAutocmdOpts::builder()
-        .patterns(["*"])
-        .callback(yank_callback)
-        .build();
-
-    nvim_oxi::api::create_autocmd(["TextYankPost"], &opts)?;
+        Ok(())
+    })?;
 
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
         configure_neovide()?;
