@@ -51,7 +51,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
             .create_function_mut(move |_, ()| Ok(winbar.render().expect("Can't render winbar")))?,
     )?;
 
-    // set_option("statusline", "%!v:lua.statusline()")?;
+    set_option("statusline", "%!v:lua.statusline()")?;
     set_option("winbar", "%{%v:lua.winbar()%}")?;
 
     Ok(())
