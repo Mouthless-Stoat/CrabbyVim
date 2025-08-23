@@ -179,7 +179,9 @@ impl Line {
         }
 
         setup_section(&self.left)?;
+        setup_section(&self.left_center)?;
         setup_section(&self.center)?;
+        setup_section(&self.right_center)?;
         setup_section(&self.right)?;
         self.right.reverse();
 
