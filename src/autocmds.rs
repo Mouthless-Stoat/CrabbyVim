@@ -44,3 +44,18 @@ where
     )?;
     Ok(())
 }
+
+pub fn create_autocmd_cmd(
+    events: &'static [&'static str],
+    patterns: &'static [&'static str],
+    cmd: &'static str,
+) -> nvim_oxi::Result<()> {
+    nvim_oxi::api::create_autocmd(
+        events.iter().copied(),
+        &nvim_oxi::api::opts::CreateAutocmdOpts::builder()
+            .patterns(patterns.iter().copied())
+            .command(cmd)
+            .build(),
+    )?;
+    Ok(())
+}
