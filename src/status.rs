@@ -27,7 +27,9 @@ pub fn configure() -> nvim_oxi::Result<()> {
     statusline.add_left(Git);
 
     statusline.add_right(Loc);
-    statusline.add_right(Zoom);
+    if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
+        statusline.add_right(Zoom);
+    }
 
     let mut winbar = Line::new();
 
