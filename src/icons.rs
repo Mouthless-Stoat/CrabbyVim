@@ -1,6 +1,7 @@
+#![allow(dead_code)]
+
 macro_rules! icon_table {
     ($($name:ident = $icon:literal;)*) => {$(
-        #[allow(unused)]
         pub const $name: &'static str = $icon;
     )*};
 }

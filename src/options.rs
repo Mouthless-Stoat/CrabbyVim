@@ -131,7 +131,6 @@ fn set_neovide_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()>
     Ok(())
 }
 
-#[allow(unused)]
 pub fn get_option<T: FromObject>(name: &str) -> nvim_oxi::Result<T> {
     Ok(nvim_oxi::api::get_option_value(
         name,
