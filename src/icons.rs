@@ -63,4 +63,9 @@ icon_table! {
     DESKTOP_CWD = "";
     HOME_CWD = "";
     NVIM_CWD = "";
+
+    LSP = "";
+    FORMATTER = "";
+    GIT_BRANCH = "";
+    GIT_DIFF = "";
 }

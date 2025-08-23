@@ -112,7 +112,7 @@ impl Tile for Git {
     }
 
     fn icon(&self) -> nvim_oxi::Result<String> {
-        Ok("".into())
+        Ok(icons::GIT_BRANCH.into())
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
@@ -139,7 +139,7 @@ impl Tile for GitDiff {
     }
 
     fn icon(&self) -> nvim_oxi::Result<String> {
-        Ok("".into())
+        Ok(icons::GIT_DIFF.into())
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
@@ -220,7 +220,7 @@ impl Tile for Zoom {
     }
 
     fn icon(&self) -> nvim_oxi::Result<String> {
-        Ok("󰍉".into())
+        Ok(icons::MAGNIFYING_GLASS.into())
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
