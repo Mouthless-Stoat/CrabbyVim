@@ -1,6 +1,8 @@
 // If you want a lua version of this to include in your config check out
 // https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
 
+use mlua::ObjectLike;
+use mlua::Table;
 use nvim_oxi::Dictionary;
 use nvim_oxi::api::Buffer;
 use nvim_oxi::api::get_var;
@@ -8,11 +10,14 @@ use nvim_oxi::api::get_var;
 use crate::icons;
 use crate::options::get_option;
 use crate::plugins::devicons::get_icon;
+use crate::require;
+use crate::table;
 use crate::theme::Color;
 use crate::theme::Color::*;
 use crate::theme::HighlightOpt;
 use crate::theme::get_hl;
 use crate::theme::set_hl;
+use crate::vim;
 
 use super::STATUS_LINE_FG;
 use super::eval_status;
@@ -333,5 +338,97 @@ impl Tile for FileStatus {
         };
 
         Ok(())
+    }
+}
+
+pub struct Lsp(String);
+
+impl Lsp {
+    pub fn new() -> Self {
+        Self(String::new())
+    }
+}
+
+impl Tile for Lsp {
+    fn style(&self) -> TileStyle {
+        TileStyle::Icon
+    }
+
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok(icons::LSP.into())
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(vim()?
+            .get::<Table>("lsp")?
+            .call_function::<Table>(
+                "get_clients",
+                table! {
+                    bufnr = Buffer::current().handle()
+                },
+            )?
+            .get::<Table>(1)
+            .map(|t| t.get::<String>("name").unwrap())
+            .unwrap_or_default())
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(format!("Status{}", get_icon(&self.0)?.1))
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Blue)
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = eval_status("%t")?.str;
+        Ok(())
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
+    }
+}
+
+pub struct Formatter(String);
+
+impl Formatter {
+    pub fn new() -> Self {
+        Self(String::new())
+    }
+}
+
+impl Tile for Formatter {
+    fn style(&self) -> TileStyle {
+        TileStyle::Icon
+    }
+
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok(icons::FORMATTER.into())
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(require("conform")?
+            .call_function::<Table>("list_formatters", ())?
+            .get::<Table>(1)
+            .map(|t| t.get::<String>("name").unwrap())
+            .unwrap_or_default())
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(format!("Status{}", get_icon(&self.0)?.1))
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Blue)
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = eval_status("%t")?.str;
+        Ok(())
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
     }
 }

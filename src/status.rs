@@ -33,9 +33,11 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     let mut winbar = Line::new();
 
+    winbar.add_left(Lsp::new());
     winbar.add_left(GitDiff);
     winbar.add_center(FileName::new());
     winbar.add_right_center(FileStatus::new());
+    winbar.add_right(Formatter::new());
 
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
