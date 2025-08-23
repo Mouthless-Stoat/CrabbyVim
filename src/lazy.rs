@@ -77,7 +77,7 @@ impl Lazy {
         let lazypath =
             std::path::Path::new(&vim_fn::<String>("stdpath", "data")?).join("lazy/lazy.nvim");
 
-        let lazypath_str = lazypath.clone().into_os_string().into_string().unwrap();
+        let lazypath_str = lazypath.clone().into_os_string().into_string().unwrap().replace('/',"\\");
 
         if !lazypath.exists() {
             std::process::Command::new("git")
