@@ -116,10 +116,33 @@ impl Tile for Git {
     }
 
     fn content(&self) -> nvim_oxi::Result<String> {
-        let Ok(head) = get_var::<String>("gitsigns_head") else {
-            return Ok(String::new());
-        };
+        match get_var::<String>("gitsigns_head") {
+            Ok(head) => Ok(head),
+            _ => Ok(String::new()),
+        }
+    }
 
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok("StatusGit".into())
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Orange)
+    }
+}
+
+pub struct GitDiff;
+
+impl Tile for GitDiff {
+    fn style(&self) -> TileStyle {
+        TileStyle::Icon
+    }
+
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok("".into())
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
         let (added, changed, removed) =
             match Buffer::current().get_var::<Dictionary>("gitsigns_status_dict") {
                 Ok(dict) => (
@@ -145,16 +168,11 @@ impl Tile for Git {
             out.push(format!("%#StatusGitRemove#-{removed}"));
         }
 
-        let mut diff = out.join(" ");
-        if !diff.is_empty() {
-            diff.insert(0, ' ');
-        }
-
-        Ok(format!("{head}{diff}"))
+        Ok(out.join(" "))
     }
 
     fn highlight_name(&self) -> nvim_oxi::Result<String> {
-        Ok("StatusGit".into())
+        Ok("StatusGitDiff".into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {

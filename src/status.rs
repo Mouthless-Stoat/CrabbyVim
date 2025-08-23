@@ -29,6 +29,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
 
     let mut winbar = Line::new();
 
+    winbar.add_left(GitDiff);
     winbar.add_center(FileName::new());
     winbar.add_right_center(FileStatus);
 
