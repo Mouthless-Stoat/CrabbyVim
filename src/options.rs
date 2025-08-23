@@ -1,3 +1,5 @@
+//! Configure and setup built in neovim options
+
 use mlua::{Function, Table};
 use nvim_oxi::conversion::{FromObject, ToObject};
 
@@ -5,7 +7,7 @@ use crate::autocmds::create_autocmd;
 use crate::keymaps::set_key;
 use crate::{Mode, table, vim_fn};
 
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     set_option("number", true)?;
     set_option("relativenumber", true)?;
 
@@ -110,11 +112,38 @@ fn configure_neovide() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+/// Helper to set a neovim option with the given `name` to `value`.
+///
+/// # Examples
+/// ```rust
+/// set_option("number", true)?;
+/// set_option("relativenumber", true)?;
+///
+/// set_option("ignorecase", true)?;
+/// set_option("smartcase", true)?;
+///
+/// set_option("tabstop", 4)?;
+/// set_option("shiftwidth", 4)?;
+/// set_option("expandtab", true)?;
+/// ```
 pub fn set_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_option_value::<T>(name, value, &nvim_oxi::api::opts::OptionOpts::default())?;
     Ok(())
 }
 
+/// Set a local option like window local and buffer local with the given `name` to `value`.
+///
+/// # Examples
+/// ```rust
+/// create_autocmd(&["BufEnter"], &["*.md"], |_| {
+///     set_local_option("wrap", true)?;
+///     set_local_option("linebreak", true)?;
+///     set_local_option("spell", true)?;
+///     set_local_option("breakindent", true)?;
+///     set_local_option("showbreak", "| ")?;
+///     Ok(())
+/// })?;
+/// ```
 pub fn set_local_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()> {
     nvim_oxi::api::set_option_value::<T>(
         name,
@@ -131,6 +160,7 @@ fn set_neovide_option<T: ToObject>(name: &str, value: T) -> nvim_oxi::Result<()>
     Ok(())
 }
 
+/// Get the value for a given `name` option.
 pub fn get_option<T: FromObject>(name: &str) -> nvim_oxi::Result<T> {
     Ok(nvim_oxi::api::get_option_value(
         name,

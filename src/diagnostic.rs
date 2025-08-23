@@ -1,7 +1,8 @@
+//! Configure diagnostic for Neovim
 use crate::{icons, table};
 use mlua::{Function, Integer, Table};
 
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     let config = crate::vim()?
         .get::<Table>("diagnostic")?
         .get::<Function>("config")?;
@@ -29,7 +30,9 @@ pub fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-enum DiagnosticSeverity {
+/// Enum representing the level of severity for each Neovim diagnostic
+#[allow(missing_docs)]
+pub enum DiagnosticSeverity {
     Error,
     Warn,
     Hint,

@@ -10,7 +10,7 @@ use tiles::*;
 const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
 const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
 
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     #[rustfmt::skip]
     configure_highlights(vec![
         ("StatusLine", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
@@ -60,8 +60,12 @@ pub fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-enum TileStyle {
+/// Style for a given statusline tile.
+pub enum TileStyle {
+    /// Content of the tile wrap in a little bubble all with the same background color
     Bubble,
+    /// Content of the tile next to an icon with background color while the main contain only have
+    /// it foreground be colored.
     Icon,
 }
 
@@ -75,57 +79,69 @@ enum TileStyle {
 ///
 /// Other important method like [`Tile::setup`] and [`Tile::update`] use to create or update the
 /// value.
-trait Tile {
+pub trait Tile {
+    /// The style of this tile.
+    ///
+    /// If this option return [`TileStyle::Icon`], [`Tile::icon`] must be
+    /// implemented as well to have an icon to render.
     fn style(&self) -> TileStyle {
         TileStyle::Bubble
     }
 
-    /// Return the icons to be used with the [`TileStyle::Icon`] style
+    /// Return the icons to be used with the [`TileStyle::Icon`] style.
     fn icon(&self) -> nvim_oxi::Result<String> {
         Ok(String::new())
     }
 
+    /// Return the content to be render of this tile.
     fn content(&self) -> nvim_oxi::Result<String>;
 
-    /// This just compute the highlights name. The default highlight color should be set by using
+    /// Return the highlight group name to be use for the tile.
+    ///
+    /// The default highlight color should be set by using
     /// the [`Tile::highlight_opt`] function and updating the highlights color using the
     /// [`Tile::update_highlight`] method. This should return a group that the background is colored
-    /// and the foreground being normal
     fn highlight_name(&self) -> nvim_oxi::Result<String>;
-    /// This method return the name for the reverse highlights group.
+
+    /// Return the name for the reverse highlights group.
     fn highlight_rev_name(&self, norm_hl: String) -> nvim_oxi::Result<String> {
         Ok(format!("{norm_hl}Rev"))
     }
-    /// This method return the name for the separator highlights group used for
+    /// Return the name for the separator highlights group.
     /// [`TileStyle::Icon`].
     fn highlight_sep_name(&self, norm_hl: String) -> nvim_oxi::Result<String> {
         Ok(format!("{norm_hl}Sep"))
     }
 
-    /// This return the highlight group that is use by default. This function is only run once on
+    /// Return the highlight group option that is use by default.
+    ///
+    /// This function is only run once on
     /// setup and never again. Use [`Tile::update_highlight`] to update the highlight group later.
     /// [`TileStyle::Icon`] should just return the colored background.
     fn highlight_opt(&self) -> HighlightOpt;
 
-    /// This setup other highlights group that the tile might need.
+    /// Setup other information/components that a tiles might need.
     fn setup(&self) -> nvim_oxi::Result<()> {
         Ok(())
     }
 
-    /// This is run to update any field that the tile might need to update to use.
+    /// Update any field that the tile might need to compute it's value.
     fn update(&mut self) -> nvim_oxi::Result<()> {
         Ok(())
     }
 
-    /// Function to update the highlight group
+    /// Update the highlight group based on the old highlight group.
     fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
         Ok(old_opt)
     }
 }
 
-type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
+/// Type alias for a collection of [`Tile`] as well as their [`HighlightOpt`] caches
+pub type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
+
+/// A line of [`Tile`] separated into section to be align.
 #[derive(Default)]
-struct Line {
+pub struct Line {
     not_setup: bool,
     left: Tiles,
     left_center: Tiles,
@@ -135,7 +151,9 @@ struct Line {
 }
 
 impl Line {
-    fn new() -> Self {
+    /// Create a new [`Line`] builder to add tile to.
+    #[must_use]
+    pub fn new() -> Self {
         Line {
             not_setup: true,
             ..Default::default()
@@ -173,7 +191,7 @@ impl Line {
         Ok(())
     }
 
-    /// Don't call this method twice
+    /// Don't call this method manually
     fn setup(&mut self) -> nvim_oxi::Result<()> {
         fn setup_section(section: &Tiles) -> nvim_oxi::Result<()> {
             if !section.is_empty() {
@@ -197,7 +215,8 @@ impl Line {
         Ok(())
     }
 
-    fn render(&mut self) -> nvim_oxi::Result<String> {
+    /// Return the rendered version of this line.
+    pub fn render(&mut self) -> nvim_oxi::Result<String> {
         fn render_section(section: &mut Tiles) -> nvim_oxi::Result<String> {
             if section.is_empty() {
                 return Ok(String::new());
@@ -298,7 +317,8 @@ impl Line {
         Ok(format!("{left}%={lcent} {cent} {rcent}%={right}",))
     }
 
-    fn add_left<T>(&mut self, tile: T)
+    /// Add a tile to the left section of this line.
+    pub fn add_left<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
@@ -306,8 +326,11 @@ impl Line {
         self.left.push((Box::new(tile), opt));
     }
 
+    /// Add a tile to the left center section of this line.
+    ///
+    /// This tile will be render left of the absolute center.
     #[allow(dead_code)]
-    fn add_left_center<T>(&mut self, tile: T)
+    pub fn add_left_center<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
@@ -315,7 +338,10 @@ impl Line {
         self.left_center.push((Box::new(tile), opt));
     }
 
-    fn add_center<T>(&mut self, tile: T)
+    /// Add a tile to the center section of this line.
+    ///
+    /// This tile will be render at the absolute center.
+    pub fn add_center<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
@@ -323,7 +349,10 @@ impl Line {
         self.center.push((Box::new(tile), opt));
     }
 
-    fn add_right_center<T>(&mut self, tile: T)
+    /// Add a tile to the right center section of this line.
+    ///
+    /// This tile will be render right of the absolute center.
+    pub fn add_right_center<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
@@ -331,7 +360,8 @@ impl Line {
         self.right_center.push((Box::new(tile), opt));
     }
 
-    fn add_right<T>(&mut self, tile: T)
+    /// Add a tile to the right section of this line.
+    pub fn add_right<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
@@ -340,6 +370,7 @@ impl Line {
     }
 }
 
+/// Helper to evaluate a statusline string.
 pub fn eval_status(str: impl Into<String>) -> nvim_oxi::Result<StatuslineInfos> {
     Ok(nvim_oxi::api::eval_statusline(
         &str.into(),

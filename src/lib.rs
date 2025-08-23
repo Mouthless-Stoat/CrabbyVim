@@ -1,17 +1,22 @@
+//! This is the main crate for `CrabbyVim`. [`crate::config`] is the main entry of the config that
+//! configure everything from the options to keymaps to plugins and lsp. Each of the module
+//! configure a different part of the config and can be enable/disable simply by commenting the
+//! `configure()` call out. Each module also contain helper for configure them.
+
 use mlua::{Function, Table};
 use nvim_oxi::api::types::Mode as OxiMode;
 
-mod autocmds;
-mod commands;
-mod diagnostic;
-mod icons;
-mod keymaps;
-mod lazy;
-mod lsp;
-mod macros;
-mod options;
-mod status;
-mod theme;
+pub mod autocmds;
+pub mod commands;
+pub mod diagnostic;
+pub mod icons;
+pub mod keymaps;
+pub mod lazy;
+pub mod lsp;
+pub mod macros;
+pub mod options;
+pub mod status;
+pub mod theme;
 
 mod vim;
 pub use vim::*;
@@ -19,7 +24,9 @@ pub use vim::*;
 pub mod plugins;
 
 #[nvim_oxi::plugin]
-fn config() -> nvim_oxi::Result<()> {
+/// The main entry point of the config. This function configure everything simple comment out each
+/// module `configure()` call to disable it.
+pub fn config() -> nvim_oxi::Result<()> {
     options::configure()?;
     keymaps::configure()?;
 
@@ -27,7 +34,7 @@ fn config() -> nvim_oxi::Result<()> {
     lazy.add_plugins(plugins::plugins()?);
     lazy.setup()?;
 
-    lsp::setup_lsp()?;
+    lsp::configure()?;
     theme::configure()?;
     status::configure()?;
 
@@ -39,6 +46,8 @@ fn config() -> nvim_oxi::Result<()> {
 }
 
 #[derive(Clone, Copy)]
+/// An enum to for which mode Neovim is in.
+#[allow(missing_docs)]
 pub enum Mode {
     Normal,
     Insert,
@@ -49,6 +58,7 @@ pub enum Mode {
 }
 
 impl Mode {
+    /// Fetch the current mode of the neovim instance
     pub fn current_mode() -> nvim_oxi::Result<Self> {
         Ok(match nvim_oxi::api::get_mode().mode.to_str().unwrap() {
             "n" | "niI" | "niR" | "niV" | "nt" | "ntT" => Self::Normal,
@@ -61,6 +71,7 @@ impl Mode {
     }
 
     #[must_use]
+    /// Convert the enum into a string representing which mode it is.
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Normal => "normal",
@@ -86,7 +97,7 @@ impl From<Mode> for OxiMode {
     }
 }
 
-/// Helper for require and setup method
+/// Helper for require method.
 pub fn require(module: &str) -> nvim_oxi::Result<Table> {
     Ok(nvim_oxi::mlua::lua()
         .globals()
@@ -94,7 +105,7 @@ pub fn require(module: &str) -> nvim_oxi::Result<Table> {
         .call::<Table>(module)?)
 }
 
-/// Helper for require and setup method
+/// Helper for require and setup method.
 pub fn require_setup(module: &str, opts: impl mlua::IntoLua) -> nvim_oxi::Result<()> {
     nvim_oxi::mlua::lua()
         .globals()

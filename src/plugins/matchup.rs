@@ -3,7 +3,7 @@ use crate::lua_table;
 
 use super::Plugins;
 
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec![LazyPlugin::new("andymass/vim-matchup").opts(
         lua_table! {
             matchparen = {

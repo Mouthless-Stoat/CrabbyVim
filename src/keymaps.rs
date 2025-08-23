@@ -1,9 +1,11 @@
+//! Configure keymap and export helper to set new keymap easier.
+
 use mlua::IntoLua;
 
 use crate::Mode;
 
 #[rustfmt::skip]
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     use Mode::*;
 
     nvim_oxi::api::set_var("mapleader", " ")?;
@@ -32,7 +34,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
     set_key(&[Normal], "j", "gj")?;
 
     // easier bind pasting from system clip
-    set_key(&[Normal], "+", "\"+")?;
+    set_key(&[Normal, Visual], "+", "\"+")?;
 
     // keybind to go to first and last 
     set_key(&[Normal], "H", "^")?;
@@ -52,11 +54,29 @@ pub fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+/// Enum for an action that a keymap can execute.
+///
+/// This enum implement a few `Into` and `From` so you can create this enum using just a closure
+/// and a string representing the keypress.
 pub enum Action {
+    /// Map to a collection of keypress like normal `:map` command
     Map(&'static str),
+    /// Map to a callback
     Fn(Box<dyn FnMut() -> nvim_oxi::Result<()>>),
 }
 
+/// Helper to create a new keymap that bind in `mode` to `key` that execute `action`.
+///
+/// # Examples
+/// ```rust
+/// set_key(&[Normal], "Q", "<nop>")?;
+/// set_key(&[Normal], "<C-s>", "<cmd>w<cr>")?;
+///
+/// set_key(&[Normal], "<C-d>", "<C-d>zz")?;
+/// set_key(&[Normal], "<C-u>", "<C-u>zz")?;
+///
+/// set_key(&[Normal, Visual], "+", "\"+")?;
+/// ```
 pub fn set_key(
     modes: &'static [Mode],
     key: &'static str,
@@ -65,6 +85,13 @@ pub fn set_key(
     set_key_desc("", modes, key, action)
 }
 
+/// Like [`set_key`] but also set a description for the keymap.
+/// ```rust
+/// set_key_desc("Make new split left", &[Normal], "<Leader>h", "<cmd>top vnew<cr>")?;
+/// set_key_desc("Make new split down", &[Normal], "<Leader>j", "<cmd>bot new<cr>")?;
+/// set_key_desc("Make new split up", &[Normal], "<Leader>k", "<cmd>top new<cr>")?;
+/// set_key_desc("Make new split right", &[Normal], "<Leader>l", "<cmd>bot vnew<cr>")?;
+/// ```
 pub fn set_key_desc(
     desc: &'static str,
     modes: &'static [Mode],

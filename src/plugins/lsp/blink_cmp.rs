@@ -2,7 +2,7 @@ use crate::lazy::{LazyPlugin, LazyVersion};
 use crate::theme::{Color, HighlightOpt, set_hl};
 use crate::{icons, lua_table, table};
 
-pub(crate) fn plugins()() -> nvim_oxi::Result<Vec<LazyPlugin>> {
+pub(crate) fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
     let blink_opt = lua_table! {
         keymap = { preset = "super-tab" },
         completion = {

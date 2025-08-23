@@ -3,7 +3,7 @@ use crate::table;
 use crate::lazy::{LazyLoad, LazyPlugin};
 use crate::plugins::Plugins;
 
-pub fn plugins() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("stevearc/conform.nvim")
             .opts(table! {

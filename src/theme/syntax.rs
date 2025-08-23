@@ -1,6 +1,6 @@
 use super::{Color, HighlightOpt, set_hl};
 
-pub fn highlights() -> nvim_oxi::Result<()> {
+pub(crate) fn highlights() -> nvim_oxi::Result<()> {
     use SyntaxGroup::*;
 
     // Recommended neovim highlight group
@@ -47,6 +47,8 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+/// Enum for built in Neovim syntax group.
+#[allow(missing_docs)]
 pub enum SyntaxGroup {
     Comment,
     String,

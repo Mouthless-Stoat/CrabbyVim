@@ -5,7 +5,7 @@ use crate::{lua_table, require};
 
 use super::Plugins;
 
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     let opts = lua_table! {
         default_file_explorer = true,
         delete_to_trash = true,

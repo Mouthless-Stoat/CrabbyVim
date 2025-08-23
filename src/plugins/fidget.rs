@@ -4,7 +4,7 @@ use crate::theme::{HighlightOpt, configure_highlights};
 
 use super::Plugins;
 
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("j-hui/fidget.nvim")
             // check again later to not have to pin fidget

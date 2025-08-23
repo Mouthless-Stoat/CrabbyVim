@@ -6,7 +6,7 @@ use super::Plugins;
 // The actually treesitter highlights are set in theme::syntax not here because it is cummbersome to
 // move here with all the type and custom highlight group.
 
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")
             .main("nvim-treesitter.configs")

@@ -14,7 +14,7 @@ macro_rules! plugin {
     };
     ($($plugin:ident $($with:ident $highlight:ident)?;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
-        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins() -> $crate::plugins::Plugins {
             let mut vec = vec![];
             $(
                 vec.extend($plugin()?);
@@ -25,7 +25,7 @@ macro_rules! plugin {
     };
     ($($plugin:ident $($with:ident $highlight:ident)?;)*---$($expr:expr;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
-        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins() -> $crate::plugins::Plugins {
             let mut vec = vec![$($expr.into()),*];
             $(
                 vec.extend($plugin()?);
@@ -35,7 +35,7 @@ macro_rules! plugin {
         }
     };
     ($($expr:expr;)*) => {
-        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins() -> $crate::plugins::Plugins {
             Ok(vec![$($expr.into()),*])
         }
     };

@@ -1,9 +1,10 @@
+//! Configure autocmd and export helper to create new autocmd easier.
 use nvim_oxi::api::types::LogLevel;
 
 use crate::options::set_local_option;
 use crate::{vim_fn, vim_notify};
 
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     create_autocmd(&["BufEnter"], &["*.md"], |_| {
         set_local_option("wrap", true)?;
         set_local_option("linebreak", true)?;
@@ -24,6 +25,28 @@ pub fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+/// Helper to create an autocmd that fire on `events` that match `patterns` which then call
+/// `callback`. This `callback` does not need to return a `bool` because a one shot autocmd is
+/// rarely useful in this context.
+/// # Examples
+///```rust
+/// create_autocmd(&["BufEnter"], &["*.md"], |_| {
+///     set_local_option("wrap", true)?;
+///     set_local_option("linebreak", true)?;
+///     set_local_option("spell", true)?;
+///     set_local_option("breakindent", true)?;
+///     set_local_option("showbreak", "| ")?;
+///     Ok(())
+/// })?;
+///
+/// create_autocmd(&["BufWritePost"], &["*"], |_| {
+///     vim_notify(
+///         format!("{} saved", vim_fn::<String>("expand", "<afile>:t")?).as_str(),
+///         LogLevel::Info,
+///     )?;
+///     Ok(())
+/// })?;
+/// ```
 pub fn create_autocmd<T>(
     events: &'static [&'static str],
     patterns: &'static [&'static str],
@@ -45,6 +68,12 @@ where
     Ok(())
 }
 
+/// Helper to create an autocmd that fire on `events` that match `patterns` which then execute a
+/// vim comment as a callback.
+/// # Examples
+/// ```rust
+/// create_autocmd_cmd(&["User"], &["GitSignsUpdate"], "redrawstatus!")?;
+/// ```
 pub fn create_autocmd_cmd(
     events: &'static [&'static str],
     patterns: &'static [&'static str],

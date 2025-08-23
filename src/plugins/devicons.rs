@@ -5,7 +5,7 @@ use crate::{require, table};
 use super::Plugins;
 
 #[allow(clippy::unnecessary_wraps)]
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec!["nvim-tree/nvim-web-devicons".into()])
 }
 

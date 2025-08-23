@@ -1,23 +1,119 @@
+//! Configure and interface with [`lazy.nvim`](https://github.com/folke/lazy.nvim).
+//!
+//! Configuring is done using the main [`Lazy`] struct.
+//!
+//! # Examples
+//! ```rust
+//! use crate::lazy::*;
+//! use crate::{lua_table, table};
+//!
+//! let mut lazty = Lazy::new();
+//! lazy.add_plugin("nvim-tree/nvim-web-devicons")
+//! lazy.add_plugin(
+//!     lazyplugin::new("stevearc/conform.nvim")
+//!         .opts(table! {
+//!             formatters_by_ft = table! {
+//!                 lua = ["stylua"],
+//!                 python = ["black"],
+//!                 javascript = ["prettier"],
+//!                 typescript = ["prettier"],
+//!                 json = ["prettier"],
+//!                 markdown = ["prettier"],
+//!                 rust = ["rustfmt"],
+//!                 yaml = ["prettier"],
+//!                 toml = ["taplo"]
+//!             },
+//!             format_on_save = table! {
+//!                 timeout_ms = 5000,
+//!                 lsp_format = "fallback"
+//!             }
+//!         })
+//!         .lazy_load(lazyload::new(true).events(&["BufWritePre"]))
+//! );
+//! lazy.add_plugin(
+//!     LazyPlugin::new("folke/snacks.nvim")
+//!         .depend(&[
+//!             "nvim-tree/nvim-web-devicons",
+//!             "aznhe21/actions-preview.nvim",
+//!         ])
+//!         .opts(table! {
+//!             indent = table! {},
+//!             picker = table! {},
+//!             lazygit = table! {}
+//!         })
+//!         .lazy_load(
+//!             LazyLoad::new(false)
+//!                 .add_key(LazyKey::new("<Leader>g").action(|| {
+//!                     require("snacks")?
+//!                         .get::<Table>("lazygit")?
+//!                         .call_function::<()>("open", ())?;
+//!                     Ok(())
+//!                 }))
+//!                 .add_keys(vec![
+//!                     LazyKey::new("<Leader>st").action(picker("files", table! {})),
+//!                     LazyKey::new("<Leader>st").action(picker("grep", table! {})),
+//!                     LazyKey::new("<Leader>sr").action(picker("recent", table! {})),
+//!                     LazyKey::new("<Leader>ss").action(picker("lsp_workspace_symbols", table! {})),
+//!                     LazyKey::new("<Leader>sS").action(picker("lsp_symbols", table! {})),
+//!                 ])
+//!         )
+//! )
+//! lazy.setup()?
+//! ```
+
 use mlua::IntoLua;
 
 use crate::keymaps::Action;
 use crate::{table, vim_fn};
 
+/// Main struct for configuring and setting up lazy.
+///
+/// Creating a new instance with [`Lazy::new`] then add all the plugins require using
+/// [`Lazy::add_plugin`] and [`Lazy::add_plugins`] then finally call [`Lazy::setup`] to bootstrap
+/// and configure lazy
+///
+/// # Examples
+/// ```rust
+/// let mut lazty = lazy::new();
+/// lazy.add_plugin("nvim-tree/nvim-web-devicons")
+/// lazy.add_plugin(
+///     lazyplugin::new("stevearc/conform.nvim")
+///         .opts(table! {
+///             formatters_by_ft = table! {
+///                 lua = ["stylua"],
+///                 python = ["black"],
+///                 javascript = ["prettier"],
+///                 typescript = ["prettier"],
+///                 json = ["prettier"],
+///                 markdown = ["prettier"],
+///                 rust = ["rustfmt"],
+///                 yaml = ["prettier"],
+///                 toml = ["taplo"]
+///             },
+///             format_on_save = table! {
+///                 timeout_ms = 5000,
+///                 lsp_format = "fallback"
+///             }
+///         })
+///         .lazy_load(lazyload::new(true).events(&["bufwritepre"]))
+/// )  
+/// lazy.setup()?
+/// ```
 pub struct Lazy(Vec<LazyPlugin>);
 
-/// Enum storing used to specific the version of a plugin to be downloaded by Lazy
+/// Enum storing value used to specific the version of a plugin to be downloaded by Lazy.
 pub enum LazyVersion {
-    // Pin to a specific branch. Equivalent to `branch` in spec.
+    /// Pin to a specific branch. Equivalent to `branch` in spec.
     Branch(&'static str),
-    // Pin to a commit. Equivalent to `commit` in spec
+    /// Pin to a commit. Equivalent to `commit` in spec
     Commit(&'static str),
-    // Pin to a tag. Equivalent to `tag` in spec.
+    /// Pin to a tag. Equivalent to `tag` in spec.
     Tag(&'static str),
     /// Pin to a release or Semver. Equivalent to `version` in spec.
     Semver(&'static str),
 }
 
-/// Lazy loading configuration for plugin
+/// Lazy loading configuration for plugin.
 #[derive(Default)]
 pub struct LazyLoad {
     lazy: bool,
@@ -29,6 +125,7 @@ pub struct LazyLoad {
 
 // Missing mode because most if not all of the time it always normal mode
 // TODO: include mode in this struct for more info
+/// Lazy keybind for lazyloading.
 #[derive(Default)]
 pub struct LazyKey {
     key: &'static str,
@@ -36,7 +133,7 @@ pub struct LazyKey {
     desc: Option<&'static str>,
 }
 
-/// A plugin to be loaded and download for lazy
+/// A plugin to be loaded and download for lazy.
 #[derive(Default)]
 pub struct LazyPlugin {
     url: &'static str,
@@ -51,17 +148,18 @@ pub struct LazyPlugin {
 }
 
 impl Lazy {
-    /// Create a new Lazy instant to start managing plugin.
+    /// Create a new Lazy instance to start managing plugin.
+    #[must_use]
     pub fn new() -> Self {
         Self(vec![])
     }
 
-    /// Add a plugins for Lazy to managing and download.
+    /// Add a plugin for Lazy to managing and download.
     pub fn add_plugin(&mut self, plugin: impl Into<LazyPlugin>) {
         self.0.push(plugin.into());
     }
 
-    /// Add a plugins for Lazy to managing and download.
+    /// Add a collection of plugins for Lazy to managing and download.
     pub fn add_plugins(&mut self, plugins: Vec<impl Into<LazyPlugin>>) {
         for plugin in plugins {
             self.add_plugin(plugin);
@@ -77,7 +175,12 @@ impl Lazy {
         let lazypath =
             std::path::Path::new(&vim_fn::<String>("stdpath", "data")?).join("lazy/lazy.nvim");
 
-        let lazypath_str = lazypath.clone().into_os_string().into_string().unwrap().replace('/',"\\");
+        let lazypath_str = lazypath
+            .clone()
+            .into_os_string()
+            .into_string()
+            .unwrap()
+            .replace('/', "\\");
 
         if !lazypath.exists() {
             std::process::Command::new("git")
@@ -129,8 +232,15 @@ impl Lazy {
     }
 }
 
+impl Default for Lazy {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LazyPlugin {
-    /// Create a new builder.
+    /// Create a new plugin builder.
+    #[must_use]
     pub fn new(url: &'static str) -> Self {
         Self {
             url,
@@ -139,6 +249,7 @@ impl LazyPlugin {
     }
 
     /// Set the option for this plugin. Equivalent to `opts` in spec
+    #[must_use]
     pub fn opts(mut self, opts: mlua::Table) -> Self {
         self.opts = Some(opts);
         self
@@ -146,12 +257,14 @@ impl LazyPlugin {
 
     /// Specified which plugin this plugin depend on to be load at the same time. Equivalent to
     /// `dependencies` in spec.
+    #[must_use]
     pub fn depend(mut self, dependencies: &'static [&'static str]) -> Self {
         self.dependencies = Some(dependencies);
         self
     }
 
     /// Set a callback when this plugin is loaded to configure it. Equivalent to `config` in spec.
+    #[must_use]
     pub fn callback(
         mut self,
         callback: impl Fn(mlua::Table) -> nvim_oxi::Result<()> + 'static,
@@ -162,6 +275,7 @@ impl LazyPlugin {
 
     /// Set a different name for the module to be automatically require when lazy call setup. Equivalent to `main`
     /// in spec.
+    #[must_use]
     pub fn main(mut self, main: &'static str) -> Self {
         self.main = Some(main);
         self
@@ -169,6 +283,7 @@ impl LazyPlugin {
 
     /// Set a build command to be run after the plugin is installed or updated. Equivalent to
     /// `build` in spec.
+    #[must_use]
     pub fn build(mut self, build: &'static str) -> Self {
         self.build = Some(build);
         self
@@ -177,17 +292,22 @@ impl LazyPlugin {
     /// Set a version to be pinned when lazy is installing or updating. Equivalent to all the
     /// version specifier: `branch`, `tag`, `commit`, `version`. Refer to [`LazyVersion`] for more
     /// info.
+    #[must_use]
     pub fn version(mut self, version: LazyVersion) -> Self {
         self.version = Some(version);
         self
     }
 
     /// Specify how this plugin will be lazy load and the lazy loading configuration.
+    #[must_use]
     pub fn lazy_load(mut self, lazy_load: LazyLoad) -> Self {
         self.lazy_load = Some(lazy_load);
         self
     }
 
+    // TODO: Add documentation when this is finally documented by folke
+    #[allow(missing_docs)]
+    #[must_use]
     pub fn opts_extend(mut self, opt_extend: &'static [&'static str]) -> Self {
         self.opts_extend = Some(opt_extend);
         self
@@ -196,6 +316,7 @@ impl LazyPlugin {
 
 impl LazyLoad {
     /// Create a new `LazyLoad` builder.
+    #[must_use]
     pub fn new(lazy: bool) -> Self {
         Self {
             lazy,
@@ -204,30 +325,35 @@ impl LazyLoad {
     }
 
     /// Lazy load on events. Equivalent to `events` in spec.
+    #[must_use]
     pub fn events(mut self, events: &'static [&'static str]) -> Self {
         self.events = Some(events);
         self
     }
 
     /// Lazy load on command execution. Equivalent to `cmd` in spec.
+    #[must_use]
     pub fn cmd(mut self, cmd: &'static [&'static str]) -> Self {
         self.cmd = Some(cmd);
         self
     }
 
     /// Lazy load on file type. Equivalent to `ft` in spec.
+    #[must_use]
     pub fn ft(mut self, ft: &'static [&'static str]) -> Self {
         self.ft = Some(ft);
         self
     }
 
     /// Lazy load on key map. Equivalent to `keys` in spec.
+    #[must_use]
     pub fn add_key(mut self, key: impl Into<LazyKey>) -> Self {
         self.keys.push(key.into());
         self
     }
 
     /// Lazy load on key map. Equivalent to `keys` in spec.
+    #[must_use]
     pub fn add_keys(mut self, key: Vec<LazyKey>) -> Self {
         self.keys.extend(key);
         self
@@ -235,6 +361,8 @@ impl LazyLoad {
 }
 
 impl LazyKey {
+    /// Create a new key map builder.
+    #[must_use]
     pub fn new(key: &'static str) -> Self {
         Self {
             key,
@@ -242,6 +370,8 @@ impl LazyKey {
         }
     }
 
+    /// The action to be executed by this keymap.
+    #[must_use]
     pub fn action<I>(mut self, action: I) -> Self
     where
         I: Into<Action>,

@@ -4,7 +4,7 @@ use crate::theme::{HighlightOpt, set_hl};
 
 use super::Plugins;
 
-pub(crate) fn plugins()() -> Plugins {
+pub(crate) fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("hiphish/rainbow-delimiters.nvim")
             .main("rainbow-delimiters.setup")

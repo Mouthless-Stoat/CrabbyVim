@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+#![allow(dead_code, missing_docs)]
 
 macro_rules! icon_table {
     ($($name:ident = $icon:literal;)*) => {$(

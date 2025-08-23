@@ -1,16 +1,20 @@
+//! Configure highlight groups and the theme
+
 use nvim_oxi::api::set_var;
 
 use crate::options::set_option;
 
 mod syntax;
+pub use syntax::*;
 
-pub fn configure() -> nvim_oxi::Result<()> {
+pub(crate) fn configure() -> nvim_oxi::Result<()> {
     highlights()?;
     syntax::highlights()?;
 
     Ok(())
 }
 
+/// Helper to configure a collection of highlights group
 pub fn configure_highlights(hls: Vec<(&'static str, HighlightOpt)>) -> nvim_oxi::Result<()> {
     for hl in hls {
         set_hl(hl.0, hl.1)?;
@@ -117,11 +121,15 @@ fn highlights() -> nvim_oxi::Result<()> {
 macro_rules! colors {
     ($($name:ident = $value:literal;)*) => {
         #[derive(Debug, Clone, PartialEq, Eq)]
+        /// The Palette for the color use for the config theme.
+        #[allow(missing_docs)]
         pub enum Color {
             $($name,)*
             Other(String)
         }
         impl Color {
+            /// Convert to a rgb color code.
+            #[must_use]
             pub fn to_string(&self) -> String {
                 match self {
                     $(Self::$name => $value.into(),)*
@@ -193,6 +201,7 @@ colors! {
 // Not using SetHighlightOpts by nvim_oxi because it is too complex with too many feature that we
 // never use
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[allow(missing_docs)]
 pub struct HighlightOpt {
     pub fg: Option<Color>,
     pub bg: Option<Color>,
@@ -204,12 +213,14 @@ pub struct HighlightOpt {
     pub strike: bool,
 }
 
-#[allow(dead_code)]
+#[allow(dead_code, missing_docs)]
 impl HighlightOpt {
+    #[must_use]
     pub fn with_fg(color: Color) -> Self {
         Self::default().fg(color)
     }
 
+    #[must_use]
     pub fn with_bg(color: Color) -> Self {
         Self::default().bg(color)
     }
@@ -221,21 +232,25 @@ impl HighlightOpt {
         }
     }
 
+    #[must_use]
     pub fn fg(mut self, color: Color) -> Self {
         self.fg = Some(color);
         self
     }
+    #[must_use]
     pub fn bg(mut self, color: Color) -> Self {
         self.bg = Some(color);
         self
     }
 
+    #[must_use]
     pub fn bg_if_none(self, color: Color) -> Self {
         if self.bg.is_none() {
             return self.bg(color);
         }
         self
     }
+    #[must_use]
     pub fn fg_if_none(self, color: Color) -> Self {
         if self.fg.is_none() {
             return self.fg(color);
@@ -243,32 +258,39 @@ impl HighlightOpt {
         self
     }
 
+    #[must_use]
     pub fn underline(mut self) -> Self {
         self.underline = true;
         self
     }
+    #[must_use]
     pub fn bold(mut self) -> Self {
         self.bold = true;
         self
     }
+    #[must_use]
     pub fn italic(mut self) -> Self {
         self.italic = true;
         self
     }
+    #[must_use]
     pub fn reverse(mut self) -> Self {
         self.reverse = true;
         self
     }
+    #[must_use]
     pub fn reverse_fg_bg(mut self) -> Self {
         (self.fg, self.bg) = (self.bg, self.fg);
         self
     }
+    #[must_use]
     pub fn strike(mut self) -> Self {
         self.strike = true;
         self
     }
 }
 
+/// Set a highlight group with the given `name` with `opt`.
 pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi::Result<()> {
     let opt: HighlightOpt = opt.into();
 
@@ -297,6 +319,7 @@ pub fn set_hl(name: impl Into<String>, opt: impl Into<HighlightOpt>) -> nvim_oxi
     Ok(())
 }
 
+/// Get the highlight group with the given `name`.
 pub fn get_hl(name: impl Into<String>) -> nvim_oxi::Result<HighlightOpt> {
     let nvim_oxi::api::types::GetHlInfos::Single(hl) = nvim_oxi::api::get_hl(
         0,
