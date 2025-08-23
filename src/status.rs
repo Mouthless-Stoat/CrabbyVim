@@ -9,19 +9,11 @@ const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
 const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
 
 pub fn configure() -> nvim_oxi::Result<()> {
+    #[rustfmt::skip]
     configure_highlights(vec![
-        (
-            "StatusLine",
-            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
-        ),
-        (
-            "WinBar",
-            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
-        ),
-        (
-            "WinBarNc",
-            HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG),
-        ),
+        ("StatusLine", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+        ("WinBar", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+        ("WinBarNc", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
     ])?;
 
     set_option("laststatus", 3)?;
@@ -40,16 +32,19 @@ pub fn configure() -> nvim_oxi::Result<()> {
     winbar.add_center(FileName::new());
     winbar.add_right_center(FileStatus);
 
+    #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
         "statusline",
         nvim_oxi::mlua::lua().create_function_mut(move |_, ()| {
             Ok(statusline.render().expect("Can't render statusline"))
         })?,
     )?;
+    #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
         "winbar",
-        nvim_oxi::mlua::lua()
-            .create_function_mut(move |_, ()| Ok(winbar.render().expect("Can't render winbar")))?,
+        nvim_oxi::mlua::lua() .create_function_mut(move |_, ()| {
+            Ok(winbar.render().expect("Can't render winbar"))
+        })?,
     )?;
 
     set_option("statusline", "%!v:lua.statusline()")?;
