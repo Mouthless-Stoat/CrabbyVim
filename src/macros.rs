@@ -80,7 +80,7 @@ macro_rules! lua_table {
 /// ```
 #[macro_export]
 macro_rules! expr {
-    (return $ty:ident; $($tk:tt)*) => {
+    (return $ty:ty; $($tk:tt)*) => {
         nvim_oxi::mlua::lua().load(stringify!($($tk)*)).eval::<$ty>()?
     };
 }
