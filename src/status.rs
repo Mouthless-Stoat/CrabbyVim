@@ -125,7 +125,9 @@ type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
 struct Line {
     not_setup: bool,
     left: Tiles,
+    left_center: Tiles,
     center: Tiles,
+    right_center: Tiles,
     right: Tiles,
 }
 
@@ -239,47 +241,55 @@ impl Line {
             Ok(sections.join(" "))
         }
 
+        /// Pad the left and right section with space so that the center section is actually center
+        /// align to the window.
+        #[allow(clippy::needless_pass_by_value)]
+        fn equalize(left: String, right: String) -> nvim_oxi::Result<(String, String)> {
+            // Janky fix for nvim_oxi bug:
+            // https://github.com/noib3/nvim-oxi/issues/267
+            // TODO: update nvim_oxi when this bug is fix
+            let (left_len, right_len) = (
+                if left.is_empty() {
+                    0
+                } else {
+                    eval_status(&left)?.width
+                },
+                if right.is_empty() {
+                    0
+                } else {
+                    eval_status(&right)?.width
+                },
+            );
+            Ok((
+                format!(
+                    "{}{}",
+                    left,
+                    " ".repeat(right_len.saturating_sub(left_len).try_into().unwrap())
+                ),
+                format!(
+                    "{}{}",
+                    " ".repeat(left_len.saturating_sub(right_len).try_into().unwrap()),
+                    right,
+                ),
+            ))
+        }
+
         if self.not_setup {
             self.setup()?;
         }
 
-        let (left, cent, right) = (
+        let (left, lcent, cent, rcent, right) = (
             render_section(&mut self.left)?,
+            render_section(&mut self.left_center)?,
             render_section(&mut self.center)?,
+            render_section(&mut self.right_center)?,
             render_section(&mut self.right)?,
         );
 
-        // pad the left and right section with space so that the center section is actually center
-        // align to the window.
+        let (left, right) = equalize(left, right)?;
+        let (lcent, rcent) = equalize(lcent, rcent)?;
 
-        // Janky fix for nvim_oxi bug:
-        // https://github.com/noib3/nvim-oxi/issues/267
-        // TODO: update nvim_oxi when this bug is fix
-        let (left_len, right_len) = (
-            if left.is_empty() {
-                0
-            } else {
-                eval_status(&right)?.width
-            },
-            if right.is_empty() {
-                0
-            } else {
-                eval_status(&left)?.width
-            },
-        );
-
-        let left = format!(
-            "{}{}",
-            left,
-            " ".repeat(right_len.saturating_sub(left_len).try_into().unwrap())
-        );
-        let right = format!(
-            "{}{}",
-            " ".repeat(left_len.saturating_sub(right_len).try_into().unwrap()),
-            right,
-        );
-
-        Ok(format!("{left}%={cent}%={right}",))
+        Ok(format!("{left}%={lcent} {cent} {rcent}%={right}",))
     }
 
     fn add_left<T>(&mut self, tile: T)
@@ -290,12 +300,29 @@ impl Line {
         self.left.push((Box::new(tile), opt));
     }
 
+    #[allow(dead_code)]
+    fn add_left_center<T>(&mut self, tile: T)
+    where
+        T: Tile + 'static,
+    {
+        let opt = tile.highlight_opt();
+        self.left_center.push((Box::new(tile), opt));
+    }
+
     fn add_center<T>(&mut self, tile: T)
     where
         T: Tile + 'static,
     {
         let opt = tile.highlight_opt();
         self.center.push((Box::new(tile), opt));
+    }
+
+    fn add_right_center<T>(&mut self, tile: T)
+    where
+        T: Tile + 'static,
+    {
+        let opt = tile.highlight_opt();
+        self.right_center.push((Box::new(tile), opt));
     }
 
     fn add_right<T>(&mut self, tile: T)
