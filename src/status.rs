@@ -285,7 +285,8 @@ impl Line {
         );
 
         let (left, right) = equalize(left, right)?;
-        let (lcent, rcent) = equalize(lcent, rcent)?;
+        // fliped because the padding direction is reversed on center
+        let (rcent, lcent) = equalize(rcent, lcent)?;
 
         Ok(format!("{left}%={lcent} {cent} {rcent}%={right}",))
     }
