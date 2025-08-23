@@ -33,7 +33,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
 
     winbar.add_left(GitDiff);
     winbar.add_center(FileName::new());
-    winbar.add_right_center(FileStatus);
+    winbar.add_right_center(FileStatus::new());
 
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(

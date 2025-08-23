@@ -278,27 +278,37 @@ impl Tile for FileName {
     }
 }
 
-pub struct FileStatus;
+enum FileStatusFlag {
+    Modified,
+    UnModifiable,
+    None,
+}
+
+pub struct FileStatus(FileStatusFlag);
+
+impl FileStatus {
+    pub fn new() -> Self {
+        FileStatus(FileStatusFlag::None)
+    }
+}
 
 impl Tile for FileStatus {
     fn content(&self) -> nvim_oxi::Result<String> {
-        Ok(if get_option("modified")? {
-            "[+]".into()
-        } else if !get_option("modifiable")? {
-            "[-]".into()
-        } else {
-            String::new()
-        })
+        Ok(match self.0 {
+            FileStatusFlag::Modified => "[+]",
+            FileStatusFlag::UnModifiable => "[-]",
+            FileStatusFlag::None => "",
+        }
+        .into())
     }
 
     fn highlight_name(&self) -> nvim_oxi::Result<String> {
-        Ok(if get_option("modified")? {
-            "StatusFileMod".into()
-        } else if !get_option("modifiable")? {
-            "StatusFileUnMod".into()
-        } else {
-            String::new()
-        })
+        Ok(match self.0 {
+            FileStatusFlag::Modified => "StatusFileMod",
+            FileStatusFlag::UnModifiable => "StatusFileUnMod",
+            FileStatusFlag::None => "",
+        }
+        .into())
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -306,12 +316,22 @@ impl Tile for FileStatus {
     }
 
     fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
-        Ok(if get_option("modified")? {
-            HighlightOpt::with_bg(Green)
-        } else if !get_option("modifiable")? {
-            HighlightOpt::with_bg(Red)
-        } else {
-            old_opt
+        Ok(match self.0 {
+            FileStatusFlag::Modified => HighlightOpt::with_bg(Green),
+            FileStatusFlag::UnModifiable => HighlightOpt::with_bg(Red),
+            FileStatusFlag::None => old_opt,
         })
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = if !get_option("modifiable")? {
+            FileStatusFlag::UnModifiable
+        } else if get_option("modified")? {
+            FileStatusFlag::Modified
+        } else {
+            FileStatusFlag::None
+        };
+
+        Ok(())
     }
 }
