@@ -6,6 +6,7 @@ use nvim_oxi::api::Buffer;
 use nvim_oxi::api::get_var;
 
 use crate::icons;
+use crate::options::get_option;
 use crate::plugins::devicons::get_icon;
 use crate::theme::Color;
 use crate::theme::Color::*;
@@ -256,5 +257,43 @@ impl Tile for FileName {
 
     fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
         Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
+    }
+}
+
+pub struct FileStatus;
+
+impl Tile for FileStatus {
+    fn content(&self) -> nvim_oxi::Result<String> {
+        Ok(if get_option("modified")? {
+            "[+]".into()
+        } else if !get_option("modifiable")? {
+            "[-]".into()
+        } else {
+            String::new()
+        })
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(if get_option("modified")? {
+            "StatusFileMod".into()
+        } else if !get_option("modifiable")? {
+            "StatusFileUnMod".into()
+        } else {
+            String::new()
+        })
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::default()
+    }
+
+    fn update_highlight(&self, old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(if get_option("modified")? {
+            HighlightOpt::with_bg(Green)
+        } else if !get_option("modifiable")? {
+            HighlightOpt::with_bg(Red)
+        } else {
+            old_opt
+        })
     }
 }

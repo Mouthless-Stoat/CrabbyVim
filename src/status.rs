@@ -38,6 +38,7 @@ pub fn configure() -> nvim_oxi::Result<()> {
     let mut winbar = Line::new();
 
     winbar.add_center(FileName::new());
+    winbar.add_right_center(FileStatus);
 
     nvim_oxi::mlua::lua().globals().set(
         "statusline",
