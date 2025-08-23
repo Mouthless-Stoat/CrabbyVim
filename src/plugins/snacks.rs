@@ -9,7 +9,7 @@ use super::delimiters::delimiter_highlights;
 
 mod picker;
 
-pub fn plugins() -> Plugins {
+pub(crate) fn plugins()() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")

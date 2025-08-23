@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use crate::lazy::LazyPlugin;
 
 macro_rules! plugin {
@@ -12,7 +14,7 @@ macro_rules! plugin {
     };
     ($($plugin:ident $($with:ident $highlight:ident)?;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
-        pub fn plugins() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
             let mut vec = vec![];
             $(
                 vec.extend($plugin()?);
@@ -23,7 +25,7 @@ macro_rules! plugin {
     };
     ($($plugin:ident $($with:ident $highlight:ident)?;)*---$($expr:expr;)*) => {
         $(plugin!($plugin $($with $highlight)?);)*
-        pub fn plugins() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
             let mut vec = vec![$($expr.into()),*];
             $(
                 vec.extend($plugin()?);
@@ -33,7 +35,7 @@ macro_rules! plugin {
         }
     };
     ($($expr:expr;)*) => {
-        pub fn plugins() -> $crate::plugins::Plugins {
+        pub(crate) fn plugins()() -> $crate::plugins::Plugins {
             Ok(vec![$($expr.into()),*])
         }
     };
