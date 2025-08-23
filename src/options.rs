@@ -90,11 +90,13 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 }
 
 fn configure_neovide() -> nvim_oxi::Result<()> {
-    set_neovide_option("refresh_rate", 120)?;
     set_neovide_option("scale_factor", 1.0)?;
     set_neovide_option("cursor_animation_length", 0.08)?;
     set_neovide_option("cursor_trail_size", 0.5)?;
-    set_neovide_option("scroll_animation_length", 0.5)?;
+    set_neovide_option("position_animation_length", 0)?;
+
+    set_neovide_option("padding_right", 10)?;
+    set_neovide_option("padding_left", 10)?;
 
     set_key(&[Mode::Normal], "<C-=>", || {
         set_neovide_option(
