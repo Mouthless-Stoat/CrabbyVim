@@ -1,8 +1,10 @@
+use nvim_oxi::api::types::StatuslineInfos;
+
+use crate::autocmds::create_autocmd_cmd;
 use crate::options::set_option;
 use crate::theme::{Color, HighlightOpt, configure_highlights, set_hl};
 
 mod tiles;
-use nvim_oxi::api::types::StatuslineInfos;
 use tiles::*;
 
 const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
@@ -50,6 +52,8 @@ pub fn configure() -> nvim_oxi::Result<()> {
 
     set_option("statusline", "%!v:lua.statusline()")?;
     set_option("winbar", "%{%v:lua.winbar()%}")?;
+
+    create_autocmd_cmd(&["User"], &["GitSignsUpdate"], "redrawstatus!")?;
 
     Ok(())
 }
