@@ -67,5 +67,5 @@ icon_table! {
     LSP = "";
     FORMATTER = "";
     GIT_BRANCH = "";
-    GIT_DIFF = "";
+    GIT_DIFF = "";
 }
