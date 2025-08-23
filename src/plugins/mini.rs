@@ -9,7 +9,9 @@ macro_rules! mini {
 }
 
 plugin! {
-    mini!(ai);
+    mini!(ai).opts(lua_table!{
+        search_method = "cover"
+    });
     mini!(move).lazy_load(
         LazyLoad::new(true)
             .add_key("<M-h>")
