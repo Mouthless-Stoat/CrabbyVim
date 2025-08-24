@@ -13,8 +13,8 @@ pub(crate) fn plugins() -> Plugins {
 
         keymaps = {
             ["q"] = { "actions.close" },
-            ["C-s"] = false,
-            ["C-h"] = false
+            ["<C-s>"] = false,
+            ["<C-h>"] = false
         },
         view_options = {
             show_hidden = true,
