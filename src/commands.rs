@@ -1,6 +1,5 @@
 //! Configure user command and export helper to create new custom user command.
 
-#[allow(missing_docs)]
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
     create_command(
         "Move the working directory to the current file",

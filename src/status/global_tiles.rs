@@ -16,8 +16,15 @@ use super::{STATUS_LINE_FG, Tile, TileStyle};
 pub struct Mode(crate::Mode);
 
 impl Mode {
+    #[must_use]
     pub fn new() -> Self {
         Mode(crate::Mode::Normal)
+    }
+}
+
+impl Default for Mode {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -54,6 +61,7 @@ impl Tile for Mode {
 pub struct Cwd(String);
 
 impl Cwd {
+    #[must_use]
     pub fn new() -> Self {
         Cwd(String::new())
     }
@@ -66,6 +74,12 @@ impl Cwd {
             r"C:\Users\nphuy" => (icons::HOME_CWD, "home".into(), Yellow),
             p => (icons::FOLDER, p.into(), Yellow),
         }
+    }
+}
+
+impl Default for Cwd {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -187,6 +201,7 @@ impl DiagnosticCount {
 pub struct Diagnostic(bool, DiagnosticCount);
 
 impl Diagnostic {
+    #[must_use]
     pub fn new(is_global: bool) -> Self {
         Self(is_global, DiagnosticCount::default())
     }

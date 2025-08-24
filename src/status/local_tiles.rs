@@ -80,8 +80,15 @@ impl Tile for GitDiff {
 pub struct FileName(String);
 
 impl FileName {
+    #[must_use]
     pub fn new() -> Self {
         Self(String::new())
+    }
+}
+
+impl Default for FileName {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -119,8 +126,15 @@ impl Tile for FileName {
 pub struct AltFileName(String);
 
 impl AltFileName {
+    #[must_use]
     pub fn new() -> Self {
         Self(String::new())
+    }
+}
+
+impl Default for AltFileName {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -161,8 +175,15 @@ enum FileStatusFlag {
 pub struct FileStatus(FileStatusFlag);
 
 impl FileStatus {
+    #[must_use]
     pub fn new() -> Self {
         FileStatus(FileStatusFlag::None)
+    }
+}
+
+impl Default for FileStatus {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -213,8 +234,15 @@ impl Tile for FileStatus {
 pub struct Lsp(String);
 
 impl Lsp {
+    #[must_use]
     pub fn new() -> Self {
         Self(String::new())
+    }
+}
+
+impl Default for Lsp {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -263,8 +291,15 @@ impl Tile for Lsp {
 pub struct Formatter(String);
 
 impl Formatter {
-    pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Formatter {
         Self(String::new())
+    }
+}
+
+impl Default for Formatter {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
