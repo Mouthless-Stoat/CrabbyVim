@@ -29,7 +29,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     statusline.add_left(Mode::new());
     statusline.add_left(Cwd::new());
-    statusline.add_left(Git);
+    statusline.add_left(GitBranch);
     statusline.add_left(Diagnostic::new(true));
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
         statusline.add_right(Zoom);

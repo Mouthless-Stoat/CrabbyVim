@@ -100,8 +100,8 @@ impl Tile for Cwd {
     }
 }
 
-pub struct Git;
-impl Tile for Git {
+pub struct GitBranch;
+impl Tile for GitBranch {
     fn style(&self) -> TileStyle {
         TileStyle::Icon
     }
