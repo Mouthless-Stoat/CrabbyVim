@@ -42,7 +42,7 @@ plugin! {
                 suffix_last = "",
                 suffix_next = "",
             },
-            search_method = "cover_or_next",
+            search_method = "cover",
         })
         .callback(|opts| {
             use crate::Mode::*;
@@ -50,7 +50,7 @@ plugin! {
             require_setup("mini.surround", opts)?;
 
             nvim_oxi::api::del_keymap(Visual.into(), "ys")?;
-            set_key(&[Visual], "S", "[[:<C-u>lua MiniSurround.add('visual')<CR>]]")?;
+            set_key(&[Visual], "S", ":<C-u>lua MiniSurround.add('visual')<CR>")?;
 
             set_key(&[Normal], "yss", "ys_")?;
 
