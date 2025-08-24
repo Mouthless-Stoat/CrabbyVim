@@ -8,12 +8,16 @@ use nvim_oxi::{
 };
 
 use crate::{
+    diagnostic::DiagnosticSeverity,
     icons,
     options::get_option,
     plugins::devicons::get_icon,
     require, table,
-    theme::{Color, Color::*, HighlightOpt, get_hl, set_hl},
-    vim,
+    theme::{
+        Color::{self, *},
+        HighlightOpt, get_hl, set_hl,
+    },
+    vim, vim_fn,
 };
 
 use super::{STATUS_LINE_FG, Tile, TileStyle, eval_status};
@@ -270,6 +274,42 @@ impl Tile for FileName {
 
     fn update(&mut self) -> nvim_oxi::Result<()> {
         self.0 = eval_status("%t")?.str;
+        Ok(())
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
+    }
+}
+
+pub struct AltFileName(String);
+
+impl AltFileName {
+    pub fn new() -> Self {
+        Self(String::new())
+    }
+}
+
+impl Tile for AltFileName {
+    fn content(&self) -> nvim_oxi::Result<String> {
+        let file_name = self.0.clone();
+        Ok(if file_name.is_empty() {
+            String::new()
+        } else {
+            format!("alt: {file_name}")
+        })
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(format!("StatusAlt{}", get_icon(&self.0)?.1))
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Blue)
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = vim_fn("expand", "#:t")?;
         Ok(())
     }
 
