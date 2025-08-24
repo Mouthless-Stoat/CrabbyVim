@@ -52,7 +52,6 @@ plugin! {
     fidget with highlights;
     oil;
     mini;
-    matchup;
     delimiters with highlights;
     devicons;
     ---
