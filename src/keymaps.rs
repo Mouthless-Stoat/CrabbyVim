@@ -14,6 +14,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     set_key(&[Normal], "Q", "<nop>")?; // Eat shit and die
     set_key(&[Normal], "<C-s>", "<cmd>w<cr>")?;
+    set_key(&[Normal], "<Tab>", "<C-6>")?;
 
     // center when paging
     set_key(&[Normal], "<C-d>", "<C-d>zz")?;
