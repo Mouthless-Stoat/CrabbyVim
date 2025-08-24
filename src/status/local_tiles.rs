@@ -12,6 +12,8 @@ use crate::{
 
 use super::{STATUS_LINE_FG, Tile, TileStyle, eval_status};
 
+/// Tile to show the git diff of the current file with the help of
+/// [`gitsigns.nvim`](https://github.com/lewis6991/gitsigns.nvim)
 pub struct GitDiff;
 
 impl Tile for GitDiff {
@@ -77,10 +79,14 @@ impl Tile for GitDiff {
     }
 }
 
+/// Tile to show the current file name.
+///
+/// The tile also change the icon/color to match the file type using `nvim-web-devicons`
 pub struct FileName(String);
 
 impl FileName {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Self(String::new())
     }
@@ -123,10 +129,14 @@ impl Tile for FileName {
     }
 }
 
+/// Tile to show the alternate file name.
+///
+/// The tile also change the color to match the file type using `nvim-web-devicons`.
 pub struct AltFileName(String);
 
 impl AltFileName {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Self(String::new())
     }
@@ -172,10 +182,15 @@ enum FileStatusFlag {
     None,
 }
 
+/// Tile to show the current status of the current file.
+///
+/// Status are if the file was modified or can it even be modify. Use a `[+]` for if the file was
+/// modified and a `[-]` if the file can't be modify.
 pub struct FileStatus(FileStatusFlag);
 
 impl FileStatus {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         FileStatus(FileStatusFlag::None)
     }
@@ -231,10 +246,15 @@ impl Tile for FileStatus {
     }
 }
 
+/// Tile to show if a LSP is attach to the current file.
+///
+/// This tile simply show a tick mark if there is a lsp and a cross if a lsp is not found. The
+/// color of this file also change to match the current file type using `nvim-web-devicons`.
 pub struct Lsp(String);
 
 impl Lsp {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Self(String::new())
     }
@@ -288,6 +308,11 @@ impl Tile for Lsp {
     }
 }
 
+/// Tile to show if a formatter is attach to the current file using
+/// [`conform.nvim`](https://www.youtube.com/watch?v=iMs25XpjrAo)
+///
+/// This tile simply show a tick mark if there is a formatter and a cross if a formatter is not found. The
+/// color of this file also change to match the current file type using `nvim-web-devicons`.
 pub struct Formatter(String);
 
 impl Formatter {
@@ -339,10 +364,16 @@ impl Tile for Formatter {
     }
 }
 
+/// This tile show the status of tools attached to the current file.
+///
+/// The tile will display a gear icon if only a lsp is found, a paint brush if only a formatter is
+/// found, if both are found a tick mark will be display and if neither are found a cross is shown.
+/// The Tile also change color based on the file type using `nvim-web-devicons`.
 pub struct Tools(String);
 
 impl Tools {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Self(String::new())
     }

@@ -1,3 +1,25 @@
+//! A Custom bubble like statusline information that can also be use for `winbar` and `tabline`.
+//!
+//! You should set the following highlight group to get the best result out of this module
+//!```rust
+//! configure_highlights(vec![
+//!     ("StatusLine", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+//!     ("StatusLineNC", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+//!     ("WinBar", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+//!     ("WinBarNc", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+//! ])?;
+//!```
+//!
+//! To create a new statusline (or `winbar` and `tabline`) start with `Line::new()` to make struct
+//! to build up the line components. After the line is finish make a lua function that run
+//! `Line::render()` to render the line and lastly attach this lua function to the `statusline`
+//! neovim option. You might want to also create a few autocmds to redraw the statusline.
+//!
+//! A bunch of existing common components are provided but more can be created by makign a new type
+//! that implemented the [`Tile`] trait. A few tile require the use of a `new()` method like
+//! ([`Mode`], [`FileName`], etc.) because they use a cache to help with rendering the tile faster
+//! without refetching the information multiple time.
+
 use nvim_oxi::api::types::StatuslineInfos;
 
 use crate::{
@@ -12,8 +34,10 @@ pub use global_tiles::*;
 mod local_tiles;
 pub use local_tiles::*;
 
-const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
-const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
+/// The color of the statusline background
+pub const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
+/// The color of the statusline foreground
+pub const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
     #[rustfmt::skip]

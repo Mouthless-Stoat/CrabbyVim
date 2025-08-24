@@ -13,10 +13,14 @@ use crate::{
 
 use super::{STATUS_LINE_FG, Tile, TileStyle};
 
+/// Tile to show the current mode.
+///
+/// Color and text change accordingly with the tile.
 pub struct Mode(crate::Mode);
 
 impl Mode {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Mode(crate::Mode::Normal)
     }
@@ -58,15 +62,21 @@ impl Tile for Mode {
     }
 }
 
+/// Tiles to show the current working directory.
+///
+/// The tile also map some path to single word as well as change the icon/color to match. All these path
+/// are currently hard-coded but you can change the code base to add new mapping.
 pub struct Cwd(String);
 
 impl Cwd {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Self {
         Cwd(String::new())
     }
 
     fn map_path(&self) -> (&'static str, String, Color) {
+        // TODO: un hard-code these path for easier config.
         match self.0.as_str() {
             r"D:\OneDrive\Desktop\Code" => (icons::CODE_CWD, "code".into(), Blue),
             r"D:\OneDrive\Desktop" => (icons::DESKTOP_CWD, "desktop".into(), Orange),
@@ -114,7 +124,10 @@ impl Tile for Cwd {
     }
 }
 
+/// Tile to show the current git branch with the help of
+/// [`gitsigns.nvim`](https://github.com/lewis6991/gitsigns.nvim)
 pub struct GitBranch;
+
 impl Tile for GitBranch {
     fn style(&self) -> TileStyle {
         TileStyle::Icon
@@ -140,6 +153,9 @@ impl Tile for GitBranch {
     }
 }
 
+/// Tile to show the current location within the current file.
+///
+/// Padding are added so that 3 digits number can be shown without disrupting the layout.
 pub struct Loc;
 
 impl Tile for Loc {
@@ -156,6 +172,14 @@ impl Tile for Loc {
     }
 }
 
+/// Tile to show the current zoom level of `neovide_scale_factor`.
+///
+/// A conditional include is recommended so the tile can also be use with terminal neovim:
+/// ```rust
+/// if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
+///     statusline.add_right(Zoom);
+/// }
+/// ```
 pub struct Zoom;
 
 impl Tile for Zoom {
@@ -198,10 +222,15 @@ impl DiagnosticCount {
     }
 }
 
+/// Tile to show the diagnostic information/count of the current file or globally.
+///
+/// When in global mode the color of the icons also change based on how many error/warning are
+/// founds.
 pub struct Diagnostic(bool, DiagnosticCount);
 
 impl Diagnostic {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new(is_global: bool) -> Self {
         Self(is_global, DiagnosticCount::default())
     }
