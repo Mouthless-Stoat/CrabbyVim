@@ -1,8 +1,7 @@
 //! Configure autocmd and export helper to create new autocmd easier.
 use nvim_oxi::api::types::LogLevel;
 
-use crate::options::set_local_option;
-use crate::{vim_fn, vim_notify};
+use crate::{options::set_local_option, vim_fn, vim_notify};
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
     create_autocmd(&["BufEnter"], &["*.md"], |_| {

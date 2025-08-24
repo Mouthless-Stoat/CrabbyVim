@@ -1,27 +1,22 @@
 // If you want a lua version of this to include in your config check out
 // https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
 
-use mlua::ObjectLike;
-use mlua::Table;
-use nvim_oxi::Dictionary;
-use nvim_oxi::api::Buffer;
-use nvim_oxi::api::get_var;
+use mlua::{ObjectLike, Table};
+use nvim_oxi::{
+    Dictionary,
+    api::{Buffer, get_var},
+};
 
-use crate::icons;
-use crate::options::get_option;
-use crate::plugins::devicons::get_icon;
-use crate::require;
-use crate::table;
-use crate::theme::Color;
-use crate::theme::Color::*;
-use crate::theme::HighlightOpt;
-use crate::theme::get_hl;
-use crate::theme::set_hl;
-use crate::vim;
+use crate::{
+    icons,
+    options::get_option,
+    plugins::devicons::get_icon,
+    require, table,
+    theme::{Color, Color::*, HighlightOpt, get_hl, set_hl},
+    vim,
+};
 
-use super::STATUS_LINE_FG;
-use super::eval_status;
-use super::{Tile, TileStyle};
+use super::{STATUS_LINE_FG, Tile, TileStyle, eval_status};
 
 pub struct Mode(crate::Mode);
 

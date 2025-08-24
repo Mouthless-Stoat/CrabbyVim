@@ -66,7 +66,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-struct LspConfig {
+pub struct LspConfig {
     name: &'static str,
     settings: Table,
 }

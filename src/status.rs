@@ -1,8 +1,10 @@
 use nvim_oxi::api::types::StatuslineInfos;
 
-use crate::autocmds::create_autocmd_cmd;
-use crate::options::set_option;
-use crate::theme::{Color, HighlightOpt, configure_highlights, set_hl};
+use crate::{
+    autocmds::create_autocmd_cmd,
+    options::set_option,
+    theme::{Color, HighlightOpt, configure_highlights, set_hl},
+};
 
 mod tiles;
 use tiles::*;

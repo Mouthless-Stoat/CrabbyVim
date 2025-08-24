@@ -63,8 +63,7 @@
 
 use mlua::IntoLua;
 
-use crate::keymaps::Action;
-use crate::{table, vim_fn};
+use crate::{keymaps::Action, table, vim_fn};
 
 /// Main struct for configuring and setting up lazy.
 ///

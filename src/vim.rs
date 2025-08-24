@@ -1,6 +1,5 @@
 use mlua::{IntoLuaMulti, ObjectLike, Table};
-use nvim_oxi::Dictionary;
-use nvim_oxi::api::types::LogLevel;
+use nvim_oxi::{Dictionary, api::types::LogLevel};
 
 /// Helper to access the globals `vim` variable in lua.
 pub fn vim() -> mlua::Result<mlua::Table> {
