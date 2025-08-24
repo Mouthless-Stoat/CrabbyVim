@@ -403,12 +403,13 @@ impl Tile for Lsp {
                 },
             )?
             .get::<Table>(1)
-            .map(|t| t.get::<String>("name").unwrap())
-            .unwrap_or_default())
+            .map(|_| icons::GOOD)
+            .unwrap_or(icons::BAD)
+            .into())
     }
 
     fn highlight_name(&self) -> nvim_oxi::Result<String> {
-        Ok(format!("Status{}", get_icon(&self.0)?.1))
+        Ok(format!("StatusLsp{}", get_icon(&self.0)?.1))
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
@@ -446,12 +447,13 @@ impl Tile for Formatter {
         Ok(require("conform")?
             .call_function::<Table>("list_formatters", ())?
             .get::<Table>(1)
-            .map(|t| t.get::<String>("name").unwrap())
-            .unwrap_or_default())
+            .map(|_| icons::GOOD)
+            .unwrap_or(icons::BAD)
+            .into())
     }
 
     fn highlight_name(&self) -> nvim_oxi::Result<String> {
-        Ok(format!("Status{}", get_icon(&self.0)?.1))
+        Ok(format!("StatusFormatter{}", get_icon(&self.0)?.1))
     }
 
     fn highlight_opt(&self) -> HighlightOpt {
