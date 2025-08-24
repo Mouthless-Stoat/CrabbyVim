@@ -28,10 +28,10 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     statusline.add_left(Cwd::new());
     statusline.add_left(Git);
 
-    statusline.add_right(Loc);
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
         statusline.add_right(Zoom);
     }
+    statusline.add_right(Loc);
 
     let mut winbar = Line::new();
 
@@ -213,7 +213,6 @@ impl Line {
         setup_section(&self.center)?;
         setup_section(&self.right_center)?;
         setup_section(&self.right)?;
-        self.right.reverse();
 
         self.not_setup = false;
 
