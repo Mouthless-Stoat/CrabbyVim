@@ -338,3 +338,63 @@ impl Tile for Formatter {
         Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
     }
 }
+
+pub struct Tools(String);
+
+impl Tools {
+    #[must_use]
+    pub fn new() -> Self {
+        Self(String::new())
+    }
+}
+
+impl Default for Tools {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Tile for Tools {
+    fn content(&self) -> nvim_oxi::Result<String> {
+        let formatter_attach = require("conform")?
+            .call_function::<Table>("list_formatters", ())?
+            .len()?
+            > 0;
+
+        let lsp_attach = vim()?
+            .get::<Table>("lsp")?
+            .call_function::<Table>(
+                "get_clients",
+                table! {
+                    bufnr = Buffer::current().handle()
+                },
+            )?
+            .len()?
+            > 0;
+
+        Ok(match (formatter_attach, lsp_attach) {
+            (true, true) => icons::GOOD,
+            (true, false) => icons::FORMATTER,
+            (false, true) => icons::LSP,
+            (false, false) => icons::BAD,
+        }
+        .into())
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(format!("StatusTools{}", get_icon(&self.0)?.1))
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Blue)
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        self.0 = eval_status("%t")?.str;
+        Ok(())
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(get_hl(get_icon(&self.0)?.1)?.bg(STATUS_LINE_FG))
+    }
+}

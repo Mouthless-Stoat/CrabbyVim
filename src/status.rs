@@ -7,10 +7,10 @@ use crate::{
 };
 
 mod global_tiles;
-use global_tiles::*;
+pub use global_tiles::*;
 
 mod local_tiles;
-use local_tiles::*;
+pub use local_tiles::*;
 
 const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
 const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
@@ -38,13 +38,12 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     let mut winbar = Line::new();
 
-    winbar.add_left(Lsp::new());
     winbar.add_left(GitDiff);
     winbar.add_left(Diagnostic::new(false));
     winbar.add_center(FileName::new());
+    winbar.add_right_center(Tools::new());
     winbar.add_right_center(FileStatus::new());
     winbar.add_right(AltFileName::new());
-    winbar.add_right(Formatter::new());
 
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
