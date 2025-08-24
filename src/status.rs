@@ -27,6 +27,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     statusline.add_left(Mode::new());
     statusline.add_left(Cwd::new());
     statusline.add_left(Git);
+    statusline.add_left(Diagnostic::new(true));
 
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
         statusline.add_right(Zoom);
@@ -37,6 +38,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     winbar.add_left(Lsp::new());
     winbar.add_left(GitDiff);
+    winbar.add_left(Diagnostic::new(false));
     winbar.add_center(FileName::new());
     winbar.add_right_center(FileStatus::new());
     winbar.add_right(AltFileName::new());

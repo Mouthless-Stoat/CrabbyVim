@@ -31,7 +31,7 @@ icon_table! {
 
     SNIPPET = "";
     COLOR = "󰏘";
-    FILE = "󰈔";
+    FILE = "";
     REFERENCE = "󰬲";
     FOLDER = "󰉋";
     EVENT = "";

@@ -469,3 +469,136 @@ impl Tile for Formatter {
         Ok(get_hl(get_icon(&self.0)?.1)?.reverse_fg_bg())
     }
 }
+
+#[derive(Default)]
+struct DiagnosticCount {
+    error: i64,
+    warn: i64,
+    hint: i64,
+    info: i64,
+}
+
+impl DiagnosticCount {
+    /// Calculate the total amount of diagnostics excluding the info and hint diagnostics.
+    fn total(&self) -> i64 {
+        self.error + self.warn
+    }
+}
+
+pub struct Diagnostic(bool, DiagnosticCount);
+
+impl Diagnostic {
+    pub fn new(is_global: bool) -> Self {
+        Self(is_global, DiagnosticCount::default())
+    }
+}
+
+impl Tile for Diagnostic {
+    fn style(&self) -> TileStyle {
+        if self.0 {
+            TileStyle::Icon
+        } else {
+            TileStyle::Bubble
+        }
+    }
+
+    fn icon(&self) -> nvim_oxi::Result<String> {
+        Ok(icons::FOLDER.into())
+    }
+
+    fn content(&self) -> nvim_oxi::Result<String> {
+        let mut out = vec![];
+
+        let DiagnosticCount {
+            error,
+            warn,
+            hint,
+            info,
+        } = self.1;
+
+        if error > 0 {
+            out.push(format!("%#StatusError#{} {error}", icons::ERROR));
+        }
+        if warn > 0 {
+            out.push(format!("%#StatusWarn#{} {warn}", icons::WARN));
+        }
+        if hint > 0 {
+            out.push(format!("%#StatusHint#{} {hint}", icons::HINT));
+        }
+        if info > 0 {
+            out.push(format!("%#StatusInfo#{} {info}", icons::INFO));
+        }
+
+        Ok(out.join(" "))
+    }
+
+    fn highlight_name(&self) -> nvim_oxi::Result<String> {
+        Ok(if self.0 {
+            "StatusDiagnosticGlobal"
+        } else {
+            "StatusDiagnostic"
+        }
+        .into())
+    }
+
+    fn highlight_opt(&self) -> HighlightOpt {
+        HighlightOpt::with_bg(Red)
+    }
+
+    fn update_highlight(&self, _old_opt: HighlightOpt) -> nvim_oxi::Result<HighlightOpt> {
+        Ok(if self.0 {
+            let total = self.1.total();
+            let color = match total {
+                0 => Purple,
+                1..5 => Yellow,
+                5..10 => Orange,
+                _ => Red,
+            };
+            HighlightOpt::with_bg(color)
+        } else {
+            HighlightOpt::with_bg(STATUS_LINE_FG)
+        })
+    }
+
+    fn setup(&self) -> nvim_oxi::Result<()> {
+        set_hl("StatusError", HighlightOpt::with_fg(Red).bg(STATUS_LINE_FG))?;
+        set_hl(
+            "StatusWarn",
+            HighlightOpt::with_fg(Yellow).bg(STATUS_LINE_FG),
+        )?;
+        set_hl("StatusInfo", HighlightOpt::with_fg(Blue).bg(STATUS_LINE_FG))?;
+        set_hl(
+            "StatusHint",
+            HighlightOpt::with_fg(Purple).bg(STATUS_LINE_FG),
+        )?;
+        Ok(())
+    }
+
+    fn update(&mut self) -> nvim_oxi::Result<()> {
+        let get_diagnostic = |severity: DiagnosticSeverity| -> nvim_oxi::Result<i64> {
+            Ok(vim()?
+                .get::<Table>("diagnostic")?
+                .call_function::<Table>(
+                    "get",
+                    (
+                        if self.0 {
+                            mlua::Nil
+                        } else {
+                            mlua::Value::Integer(0)
+                        },
+                        table! {severity = severity},
+                    ),
+                )?
+                .len()?)
+        };
+
+        self.1 = DiagnosticCount {
+            error: get_diagnostic(DiagnosticSeverity::Error)?,
+            warn: get_diagnostic(DiagnosticSeverity::Warn)?,
+            hint: get_diagnostic(DiagnosticSeverity::Hint)?,
+            info: get_diagnostic(DiagnosticSeverity::Info)?,
+        };
+
+        Ok(())
+    }
+}
