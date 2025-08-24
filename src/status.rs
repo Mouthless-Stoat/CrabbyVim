@@ -6,8 +6,11 @@ use crate::{
     theme::{Color, HighlightOpt, configure_highlights, set_hl},
 };
 
-mod tiles;
-use tiles::*;
+mod global_tiles;
+use global_tiles::*;
+
+mod local_tiles;
+use local_tiles::*;
 
 const STATUS_LINE_BG: Color = crate::theme::Color::Bg1;
 const STATUS_LINE_FG: Color = crate::theme::Color::Bg2;
