@@ -19,6 +19,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     #[rustfmt::skip]
     configure_highlights(vec![
         ("StatusLine", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
+        ("StatusLineNC", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
         ("WinBar", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
         ("WinBarNc", HighlightOpt::with_bg(STATUS_LINE_BG).fg(STATUS_LINE_FG)),
     ])?;
