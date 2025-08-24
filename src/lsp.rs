@@ -109,6 +109,7 @@ pub struct Lsp(Vec<LspConfig>);
 
 impl Lsp {
     /// Create a new LSP structure to configure the LSP servers
+    #[must_use]
     pub fn new() -> Self {
         Lsp(vec![])
     }
@@ -132,5 +133,11 @@ impl Lsp {
         }
 
         Ok(())
+    }
+}
+
+impl Default for Lsp {
+    fn default() -> Self {
+        Self::new()
     }
 }

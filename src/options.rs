@@ -93,7 +93,6 @@ fn configure_neovide() -> nvim_oxi::Result<()> {
     set_neovide_option("cursor_trail_size", 0.5)?;
     set_neovide_option("position_animation_length", 0)?;
 
-    set_neovide_option("padding_right", 10)?;
     set_neovide_option("padding_left", 10)?;
 
     set_key(&[Mode::Normal], "<C-=>", || {
