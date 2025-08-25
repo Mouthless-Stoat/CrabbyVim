@@ -107,7 +107,7 @@ pub enum TileStyle {
 }
 
 /// Trait for a tile to implement. Each tile need to implement:
-/// [`Tile::content()`], [`Tile::highlight_name`] and [`Tile::highlight_opt`].
+/// [`Tile::content`], [`Tile::highlight_name`] and [`Tile::highlight_opt`].
 /// - [`Tile::content`] return what need to be render within each tile
 /// - [`Tile::highlight_name`] return the highlight group that will be use to highlight the tile.
 ///   This should only color the the background of the highlight group, the foreground and everything
