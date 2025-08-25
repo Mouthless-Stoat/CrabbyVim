@@ -174,6 +174,15 @@ pub trait Tile {
 pub type Tiles = Vec<(Box<dyn Tile>, HighlightOpt)>;
 
 /// A line of [`Tile`] separated into section to be align.
+///
+/// A line is separated into 5 sections:
+/// - Left: A left aligned section.
+/// - Left Center: A center align section render to the left of the absolute center.
+/// - Center: A center align section render at the absolute center.
+/// - Right Center: A center align section render to the right of the absolute center.
+/// - Right: A right aligned section
+///
+/// Each section of the line are render then join together with space.
 #[derive(Default)]
 pub struct Line {
     not_setup: bool,
