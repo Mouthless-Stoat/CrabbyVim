@@ -21,3 +21,4 @@ These are todo for the project not code todo and clean up, those are inline comm
 -   [x] Lazy load plugins
 -   [ ] Configure quickfix along with `nvim-bqf` or `quicker.nvim`
 -   [ ] Document how to make changes to the config as well as how the code base work for future reference
+-   [ ] Sticky note implementation simply cus it is really fun.
