@@ -1,7 +1,5 @@
-use mlua::ObjectLike;
-
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
-use crate::{lua_table, require};
+use crate::lua_table;
 
 use super::Plugins;
 

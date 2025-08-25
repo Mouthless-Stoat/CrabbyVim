@@ -380,6 +380,7 @@ impl LazyKey {
     }
 
     /// The mode this keymap is map in.
+    #[must_use]
     pub fn modes(mut self, modes: &'static [Mode]) -> Self {
         self.modes = modes;
         self

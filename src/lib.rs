@@ -85,6 +85,8 @@ impl Mode {
         }
     }
 
+    /// Convert this mode into char use for keymap.
+    #[must_use]
     pub fn as_char(self) -> char {
         match self {
             Mode::Normal => 'n',
@@ -97,7 +99,9 @@ impl Mode {
         }
     }
 
-    fn nvo() -> &'static [Mode] {
+    /// Mode for Normal, Visual and Operator.
+    #[must_use]
+    pub fn nvo() -> &'static [Mode] {
         &[Mode::Normal, Mode::Visual, Mode::Operator]
     }
 }
