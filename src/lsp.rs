@@ -66,9 +66,12 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
+/// A struct to configure an LSP.
 pub struct LspConfig {
-    name: &'static str,
-    settings: Table,
+    /// Name of the LSP.
+    pub name: &'static str,
+    /// Setting for the LSP.
+    pub settings: Table,
 }
 
 /// Main struct for configuring and setting up LSP.

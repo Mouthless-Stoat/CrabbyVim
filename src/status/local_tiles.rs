@@ -317,6 +317,7 @@ pub struct Formatter(String);
 
 impl Formatter {
     #[must_use]
+    #[allow(missing_docs)]
     pub fn new() -> Formatter {
         Self(String::new())
     }
