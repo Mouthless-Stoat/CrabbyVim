@@ -17,7 +17,7 @@ These are todo for the project not code todo and clean up, those are inline comm
 -   [x] A surround plugin for surrounding
 -   [ ] Dialing plugin
 -   [x] Loading icon for lsp with `fidget.nvim`
--   [ ] Quicker movement with `flash.nvim` or `hop.nvim`
+-   [x] Quicker movement with `flash.nvim` or `hop.nvim`
 -   [x] Lazy load plugins
 -   [ ] Configure quickfix along with `nvim-bqf` or `quicker.nvim`
 -   [ ] Document how to make changes to the config as well as how the code base work for future reference
