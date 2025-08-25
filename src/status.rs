@@ -20,6 +20,9 @@
 //! ([`Mode`], [`FileName`], etc.) because they use a cache to help with rendering the tile faster
 //! without refetching the information multiple time.
 
+// If you want a lua version of this statusline check out the old version:
+// https://github.com/Mouthless-Stoat/Nvim-config/blob/913333d01835ac974d7079bdc5cf9fbb03d869a5/lua/config/theme/plugins/status.lua
+
 use nvim_oxi::api::types::StatuslineInfos;
 
 use crate::{
