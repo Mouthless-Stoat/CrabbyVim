@@ -4,6 +4,7 @@ use crate::{
     keymaps::Action,
     lazy::{LazyKey, LazyLoad, LazyPlugin},
     require, table,
+    theme::{HighlightOpt, configure_highlights},
 };
 
 use super::Plugins;
@@ -17,10 +18,6 @@ pub fn plugins() -> Plugins {
                 .add_key(LazyKey::new("f").action(hop("hint_char1", table! {hint_offset = -1}))),
         ),
     ])
-}
-
-pub fn highlights() -> nvim_oxi::Result<()> {
-    Ok(())
 }
 
 fn hop(func: &'static str, opts: mlua::Table) -> Action {

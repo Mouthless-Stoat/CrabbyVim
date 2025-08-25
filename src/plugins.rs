@@ -54,7 +54,7 @@ plugin! {
     mini;
     delimiters with highlights;
     devicons;
-    hop with highlights;
+    hop;
     ---
     "wakatime/vim-wakatime";
     LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
