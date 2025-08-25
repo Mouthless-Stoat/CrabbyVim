@@ -1,6 +1,9 @@
-use crate::keymaps::set_key;
-use crate::lazy::LazyLoad;
-use crate::{lua_table, require_setup};
+use crate::{
+    Mode,
+    keymaps::set_key,
+    lazy::{LazyKey, LazyLoad},
+    lua_table, require_setup,
+};
 
 macro_rules! mini {
     ($name:ident) => {
@@ -14,10 +17,10 @@ plugin! {
     });
     mini!(move).lazy_load(
         LazyLoad::new(true)
-            .add_key("<M-h>")
-            .add_key("<M-j>")
-            .add_key("<M-k>")
-            .add_key("<M-l>")
+            .add_key(LazyKey::new("<M-h>").modes(&[Mode::Normal, Mode::Visual]))
+            .add_key(LazyKey::new("<M-j>").modes(&[Mode::Normal, Mode::Visual]))
+            .add_key(LazyKey::new("<M-k>").modes(&[Mode::Normal, Mode::Visual]))
+            .add_key(LazyKey::new("<M-l>").modes(&[Mode::Normal, Mode::Visual]))
     );
     mini!(pairs).lazy_load(LazyLoad::new(true).events(&["InsertEnter *.*"]));
 
@@ -29,7 +32,7 @@ plugin! {
                 .add_key("ys")
                 .add_key("ds")
                 .add_key("cs")
-                .add_key("V")
+                .add_key(LazyKey::new("S").modes(&[Mode::Visual]))
         ).opts(lua_table! {
             mappings = {
             add = "ys",
