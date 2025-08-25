@@ -52,7 +52,7 @@ impl Tile for Mode {
             crate::Mode::Command => Yellow,
             crate::Mode::Visual => Purple,
             crate::Mode::Replace => Red,
-            crate::Mode::Terminal => Cyan,
+            crate::Mode::Terminal | crate::Mode::Operator => Cyan,
         }))
     }
 

@@ -55,6 +55,7 @@ pub enum Mode {
     Visual,
     Replace,
     Terminal,
+    Operator,
 }
 
 impl Mode {
@@ -80,7 +81,24 @@ impl Mode {
             Self::Visual => "visual",
             Self::Replace => "replace",
             Self::Terminal => "terminal",
+            Self::Operator => "operator",
         }
+    }
+
+    pub fn as_char(self) -> char {
+        match self {
+            Mode::Normal => 'n',
+            Mode::Insert => 'i',
+            Mode::Command => 'c',
+            Mode::Visual => 'v',
+            Mode::Replace => 'r',
+            Mode::Terminal => 't',
+            Mode::Operator => 'o',
+        }
+    }
+
+    fn nvo() -> &'static [Mode] {
+        &[Mode::Normal, Mode::Visual, Mode::Operator]
     }
 }
 
@@ -92,6 +110,7 @@ impl From<Mode> for OxiMode {
             Mode::Command => OxiMode::CmdLine,
             Mode::Visual => OxiMode::Visual,
             Mode::Terminal => OxiMode::Terminal,
+            Mode::Operator => OxiMode::OperatorPending,
             Mode::Replace => panic!("You can't convert from replace mode"),
         }
     }

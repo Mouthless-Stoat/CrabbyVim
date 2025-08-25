@@ -63,6 +63,7 @@
 
 use mlua::IntoLua;
 
+use crate::Mode;
 use crate::{keymaps::Action, table, vim_fn};
 
 /// Main struct for configuring and setting up lazy.
@@ -122,14 +123,13 @@ pub struct LazyLoad {
     keys: Vec<LazyKey>,
 }
 
-// Missing mode because most if not all of the time it always normal mode
-// TODO: include mode in this struct for more info
 /// Lazy keybind for lazyloading.
 #[derive(Default)]
 pub struct LazyKey {
     key: &'static str,
     action: Option<Action>,
     desc: Option<&'static str>,
+    modes: &'static [Mode],
 }
 
 /// A plugin to be loaded and download for lazy.
@@ -378,6 +378,12 @@ impl LazyKey {
         self.action = Some(action.into());
         self
     }
+
+    /// The mode this keymap is map in.
+    pub fn modes(mut self, modes: &'static [Mode]) -> Self {
+        self.modes = modes;
+        self
+    }
 }
 
 // implement easy config for plugin without much configuration
@@ -442,6 +448,13 @@ impl IntoLua for LazyPlugin {
                     k.push(key.action)?;
                     if let Some(desc) = key.desc {
                         k.set("desc", desc)?;
+                    }
+
+                    if !key.modes.is_empty() {
+                        k.set(
+                            "mode",
+                            key.modes.iter().map(|m| m.as_char()).collect::<Vec<_>>(),
+                        )?;
                     }
                     keys.push(k)?;
                 }
