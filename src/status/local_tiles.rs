@@ -309,7 +309,7 @@ impl Tile for Lsp {
 }
 
 /// Tile to show if a formatter is attach to the current file using
-/// [`conform.nvim`](https://www.youtube.com/watch?v=iMs25XpjrAo)
+/// [`conform.nvim`](https://github.com/stevearc/conform.nvim)
 ///
 /// This tile simply show a tick mark if there is a formatter and a cross if a formatter is not found. The
 /// color of this file also change to match the current file type using `nvim-web-devicons`.
