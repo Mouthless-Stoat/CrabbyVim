@@ -136,6 +136,11 @@ macro_rules! func {
     }};
 }
 
+/// Macro to help make a array like table in lua.
+/// # Examples
+/// ```rust
+/// let tables = lua_vec![1, 2, 3, 4, "hello", "world"]
+/// ```
 #[macro_export]
 macro_rules! lua_vec {
     ( $($item:expr),* ) => {
