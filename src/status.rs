@@ -27,7 +27,7 @@ use nvim_oxi::api::types::StatuslineInfos;
 
 use crate::{
     autocmds::create_autocmd_cmd,
-    options::set_option,
+    options::{get_option, set_option},
     theme::{Color, HighlightOpt, configure_highlights, set_hl},
 };
 
@@ -80,6 +80,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
             Ok(statusline.render().expect("Can't render statusline"))
         })?,
     )?;
+
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
         "winbar",
@@ -194,6 +195,7 @@ pub struct Line {
     center: Tiles,
     right_center: Tiles,
     right: Tiles,
+    exclude_ft: Vec<&'static str>,
 }
 
 impl Line {
@@ -347,6 +349,13 @@ impl Line {
             self.setup()?;
         }
 
+        if self
+            .exclude_ft
+            .contains(&get_option::<String>("ft")?.as_str())
+        {
+            return Ok(String::new());
+        }
+
         let (left, lcent, cent, rcent, right) = (
             render_section(&mut self.left)?,
             render_section(&mut self.left_center)?,
@@ -412,6 +421,11 @@ impl Line {
     {
         let opt = tile.highlight_opt();
         self.right.push((Box::new(tile), opt));
+    }
+
+    /// Add a file type to be excluded when rendering
+    pub fn exclude_ft(&mut self, ft: &'static str) {
+        self.exclude_ft.push(ft);
     }
 }
 
