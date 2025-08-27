@@ -135,3 +135,14 @@ macro_rules! func {
         })?
     }};
 }
+
+#[macro_export]
+macro_rules! lua_vec {
+    ( $($item:expr),* ) => {
+        {
+            let tbl = table! {};
+            $(tbl.push($item)?;)*
+            tbl
+        }
+    };
+}
