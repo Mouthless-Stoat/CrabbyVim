@@ -1,0 +1,136 @@
+ *CrabbyVim* 	A Neovim config written in rust
+
+==============================================================================
+							     *CrabbyVim-intro*
+# Introduction ~
+
+Welcome to to CrabbyVim, a neovim config writtern fully in rust except for a
+few embeded lua code to interface with plugins and other lua exclusive binding
+like lsp and diagnostic. The config mainly uses |lazy.nvim| to plugins
+downloading, updating and configuring. If there any any question about using
+the plugins manager refer to |lazy.nvim| help file.
+
+The config try to have minimal plugins and only the essential small quality of
+life improvement. A list of all installed plugins can be view using *:Lazy*,
+most plugins are lazyloaded that is they won't be load until they are actually
+require by the config to lower startup time. To learn how to add new plugins
+see |CrabbyVim-add-plugins|.
+
+TO see how the config work you can read this help file or read the
+documentation comment around the config along with examples on how to use each
+functions and options. To view these documentation easier run `cargo doc
+--no-deps --open` to tell `cargo` to build all the documentation into a
+website and open it for you.
+
+------------------------------------------------------------------------------
+
+						       *CrabbyVim-configuring*
+# Configuring ~
+
+To start with configuring the config go to the `src/lib.rs` file and look at
+the `config()` function, this function is the main entry of the config where
+everything is loaded and configure. The config are separated into multiple
+file and module each configuring a small part of it. To disable any module or
+configuration simply comment the `configure()` call out and that configuration
+will not be loaded or execute. Each module also contain helper function to
+configure their respective module.
+
+						       *CrabbyVim-add-plugins*
+## Adding new plugins ~
+
+To add new plugins, go to the `src/plugins.rs` module and scroll to the very
+bottom. This `plugins!` macro are in charge of loading the plugins
+configuration and giving them to `lazy.nvim` to be manage:
+
+>rust
+    plugin! {
+	snacks with highlights;
+	conform;
+	gitsigns with highlights;
+	lsp;
+	treesitter;
+	fidget with highlights;
+	oil;
+	mini;
+	delimiters with highlights;
+	devicons;
+	hop;
+	---
+	"wakatime/vim-wakatime";
+	LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
+    }
+<
+
+The macro are separated into 2 sections, a section for module plugins and
+simple plugins, separated using the `---`. The first are for module plugins
+which are plugins that are in a separated file, these are usually plugins
+which require more configuration to be done to them. The second section are
+for simple plugins that require little to no configuration. For example the
+plugins `vim-wakatime` above need little configuration so it is simply
+included by using it's git url to fetch the plugins. The other plugins there
+`aw-watcher-vim` also need little configuration only needed a callback to
+setup so both plugins are in the simple plugins section.
+
+The others plugins like |snacks.nvim| require a bit more configuration to be
+useful so it is extracted into a new file in `src/plugins/snacks.rs` to be
+configure.
+
+						*CrabbyVim-add-plugins-simple*
+### Adding simple plugins ~
+
+To include a new simple plugin simply add it to the end of the simple plugins
+list. For example to add the `multicursor.nvim` plugins to the config simply
+add `"multicursor.nvim"` to the list of simple plugin:
+
+>rust
+    plugin! {
+	snacks with highlights;
+	// ...
+	devicons;
+	---
+	"wakatime/vim-wakatime";
+	LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
+	"jake-stewart/multicursor.nvim"
+    }
+<
+
+Some little configuration can also be done here by changing the simple string
+to creating a new `LazyPlugin` struct and configuring it that way. But of this
+configuration become large or unwieldy it is recommended to separate it into a
+new file and using a module plugins
+
+						*CrabbyVim-add-plugins-module*
+### Adding a module plugins ~
+
+To include a new module plugin, make a new file in the `src/plugins/` folder
+with the plugin name. And populate the file content with a `plugins()`
+function that return a `Plugins` type. For example to add the
+`multicursor.nvim` plugins to the config fill the file with this:
+
+>rust
+    use super::Plugins;
+
+    fn plugins() -> Plugins {
+	Ok(vec![
+	    LazyPlugin::new("jake-stewart/multicursor.nvim")
+	])
+    }
+<
+
+`Plugins` is simply a type alias to `nvim_oxi::Result<Vec<LazyPlugin>>` which
+is a `Vec` of all the plugins that need to be add. Then if the file name is
+`multicursor.rs` simply add the file name to the list of module plugins:
+
+>rust
+    plugin! {
+	snacks with highlights;
+	// ...
+	multicursor;
+	devicons;
+	---
+	"wakatime/vim-wakatime";
+	LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
+    }
+<
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
