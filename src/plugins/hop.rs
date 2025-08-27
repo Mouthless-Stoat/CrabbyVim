@@ -4,7 +4,6 @@ use crate::{
     keymaps::Action,
     lazy::{LazyKey, LazyLoad, LazyPlugin},
     require, table,
-    theme::{HighlightOpt, configure_highlights},
 };
 
 use super::Plugins;
