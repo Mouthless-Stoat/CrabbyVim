@@ -7,19 +7,16 @@ use crate::{lua_table, require, table};
 
 use super::delimiters::delimiter_highlights;
 
-mod picker;
 mod dashboard;
+mod picker;
 
 pub(crate) fn plugins() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")
-            .depend(&[
-                "nvim-tree/nvim-web-devicons",
-                "aznhe21/actions-preview.nvim",
-            ])
+            .depend(&["nvim-tree/nvim-web-devicons"])
             .opts(table! {
-                indent = table!{ 
+                indent = table!{
                     scope = table!{
                         hl = delimiter_highlights()
                     }
@@ -35,28 +32,14 @@ pub(crate) fn plugins() -> Plugins {
                     }
                 }
             })
-            .lazy_load(
-                LazyLoad::new(false)
-                    .add_keys(picker::key()?)
-                    .add_key(LazyKey::new("<Leader>g").action(|| {
-                        require("snacks")?
-                            .get::<Table>("lazygit")?
-                            .call_function::<()>("open", ())?;
-                        Ok(())
-                    }))
-                    .add_key(LazyKey::new("<Leader>c").action(|| {
-                        require("actions-preview")?.call_function::<()>("code_actions", ())?;
-                        Ok(())
-                    }))
-            ),
-        LazyPlugin::new("aznhe21/actions-preview.nvim").opts(lua_table! {
-            highlight_command = {
-                function() return require("actions-preview.highlight").delta("delta --paging=never") end
-            },
-            snacks = {
-                focus = "list"
-            }
-        }),
+            .lazy_load(LazyLoad::new(false).add_keys(picker::key()?).add_key(
+                LazyKey::new("<Leader>g").action(|| {
+                    require("snacks")?
+                        .get::<Table>("lazygit")?
+                        .call_function::<()>("open", ())?;
+                    Ok(())
+                }),
+            )),
     ])
 }
 
@@ -74,6 +57,6 @@ pub fn highlights() -> nvim_oxi::Result<()> {
         ("SnacksIndent5", HighlightOpt::with_fg(Cyan)),
         ("SnacksIndent6", HighlightOpt::with_fg(Blue)),
         ("SnacksIndent7", HighlightOpt::with_fg(Purple)),
-    ])      ?;
+    ])?;
     Ok(())
 }

@@ -69,44 +69,31 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     lsp.configure()?;
 
     create_autocmd(&["LspAttach"], &["*"], |mut args| {
-        let mut set_key = |mode: Mode, key: &'static str, action: Action| -> nvim_oxi::Result<()> {
-            let mut opts = nvim_oxi::api::opts::SetKeymapOpts::builder();
+        let mut set_key =
+            |key: &'static str, name: &'static str, opt: mlua::Table| -> nvim_oxi::Result<()> {
+                let mut opts = nvim_oxi::api::opts::SetKeymapOpts::builder();
 
-            opts.silent(true);
+                opts.silent(true);
+                opts.callback(move |()| -> nvim_oxi::Result<()> {
+                    vim()?
+                        .get::<Table>("lsp")?
+                        .get::<Table>("buf")?
+                        .call_function::<()>(name, opt.clone())?;
+                    Ok(())
+                });
 
-            let mut rhs = "";
-            match action {
-                Action::Map(key) => rhs = key,
-                Action::Fn(mut fn_mut) => {
-                    opts.callback(move |()| match fn_mut() {
-                        Ok(()) => (),
-                        Err(err) => nvim_oxi::api::err_writeln(format!("{err}").as_str()),
-                    });
-                }
-            }
-
-            args.buffer
-                .set_keymap(mode.into(), key, rhs, &opts.build())?;
-            Ok(())
-        };
+                args.buffer
+                    .set_keymap(Mode::Normal.into(), key, "", &opts.build())?;
+                Ok(())
+            };
 
         set_key(
-            Mode::Normal,
             "K",
-            (|| {
-                vim()?
-                    .get::<Table>("lsp")?
-                    .get::<Table>("buf")?
-                    .call_function::<()>(
-                        "hover",
-                        table! {
-                            close_events = ["CursorMoved", "BufLeave", "WinLeave"]
-                        },
-                    )?;
-                Ok(())
-            })
-            .into(),
+            "hover",
+            table! { close_events = ["CursorMoved", "BufLeave", "WinLeave"] },
         )?;
+
+        set_key("<leader>c", "code_action", table! {})?;
         Ok(())
     })?;
 
