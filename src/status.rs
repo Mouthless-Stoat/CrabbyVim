@@ -73,6 +73,8 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     winbar.add_right_center(FileStatus::new());
     winbar.add_right(AltFileName::new());
 
+    winbar.exclude_ft("snacks_dashboard");
+
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
         "statusline",

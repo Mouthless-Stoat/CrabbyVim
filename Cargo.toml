@@ -22,6 +22,7 @@ crate-type = ["cdylib"]
 [dependencies]
 mlua = { version = "0.11", features = ["luajit", "vendored", "macros"] }
 paste = "1.0.15"
+rand = "0.9.2"
 
   [dependencies.nvim-oxi]
   git = "https://github.com/noib3/nvim-oxi"

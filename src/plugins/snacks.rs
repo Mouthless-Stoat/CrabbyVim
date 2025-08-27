@@ -8,6 +8,7 @@ use crate::{lua_table, require, table};
 use super::delimiters::delimiter_highlights;
 
 mod picker;
+mod dashboard;
 
 pub(crate) fn plugins() -> Plugins {
     // TODO: replace this lua spam with rust function to be more "authentic"
@@ -24,6 +25,7 @@ pub(crate) fn plugins() -> Plugins {
                     }
                 },
                 picker = picker::config()?,
+                dashboard = dashboard::config()?,
                 lazygit = lua_table!{
                     config = {
                         os = { editPreset = "" }
@@ -62,7 +64,9 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     use crate::theme::Color::*;
 
     picker::highlights()?;
+    dashboard::highlights()?;
     configure_highlights(vec![
+        ("SnacksSpecial", HighlightOpt::with_fg(Blue)),
         ("SnacksIndent1", HighlightOpt::with_fg(Red)),
         ("SnacksIndent2", HighlightOpt::with_fg(Orange)),
         ("SnacksIndent3", HighlightOpt::with_fg(Yellow)),

@@ -68,4 +68,11 @@ icon_table! {
     FORMATTER = "";
     GIT_BRANCH = "";
     GIT_DIFF = "";
+
+    LAZY = "󰒲";
+    GEAR = "";
+    EXIT = "";
+    UPDATE = "";
+
+    LIGHTNING = "";
 }
