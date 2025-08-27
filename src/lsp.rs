@@ -32,7 +32,9 @@
 //! lsp.configure()?;
 //! ```
 
-use crate::{lua_table, require, table};
+use crate::keymaps::set_key;
+use crate::{Mode, lua_table, require, table, vim};
+use ::mlua::ObjectLike;
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
 
@@ -63,6 +65,20 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     });
 
     lsp.configure()?;
+
+    set_key(&[Mode::Normal], "K", || {
+        vim()?
+            .get::<Table>("lsp")?
+            .get::<Table>("buf")?
+            .call_function::<()>(
+                "hover",
+                table! {
+                    close_events = ["CursorMoved", "BufLeave", "WinLeave"]
+                },
+            )?;
+        Ok(())
+    })?;
+
     Ok(())
 }
 
