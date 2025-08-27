@@ -32,11 +32,13 @@
 //! lsp.configure()?;
 //! ```
 
-use crate::keymaps::set_key;
-use crate::{Mode, lua_table, require, table, vim};
-use ::mlua::ObjectLike;
+use mlua::ObjectLike;
 use mlua::{Function, Table};
 use nvim_oxi::mlua;
+
+use crate::autocmds::create_autocmd;
+use crate::keymaps::Action;
+use crate::{Mode, lua_table, require, table, vim};
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
     let mut lsp = Lsp::new();
@@ -66,16 +68,45 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     lsp.configure()?;
 
-    set_key(&[Mode::Normal], "K", || {
-        vim()?
-            .get::<Table>("lsp")?
-            .get::<Table>("buf")?
-            .call_function::<()>(
-                "hover",
-                table! {
-                    close_events = ["CursorMoved", "BufLeave", "WinLeave"]
-                },
-            )?;
+    create_autocmd(&["LspAttach"], &["*"], |mut args| {
+        let mut set_key = |mode: Mode, key: &'static str, action: Action| -> nvim_oxi::Result<()> {
+            let mut opts = nvim_oxi::api::opts::SetKeymapOpts::builder();
+
+            opts.silent(true);
+
+            let mut rhs = "";
+            match action {
+                Action::Map(key) => rhs = key,
+                Action::Fn(mut fn_mut) => {
+                    opts.callback(move |()| match fn_mut() {
+                        Ok(()) => (),
+                        Err(err) => nvim_oxi::api::err_writeln(format!("{err}").as_str()),
+                    });
+                }
+            }
+
+            args.buffer
+                .set_keymap(mode.into(), key, rhs, &opts.build())?;
+            Ok(())
+        };
+
+        set_key(
+            Mode::Normal,
+            "K",
+            (|| {
+                vim()?
+                    .get::<Table>("lsp")?
+                    .get::<Table>("buf")?
+                    .call_function::<()>(
+                        "hover",
+                        table! {
+                            close_events = ["CursorMoved", "BufLeave", "WinLeave"]
+                        },
+                    )?;
+                Ok(())
+            })
+            .into(),
+        )?;
         Ok(())
     })?;
 
