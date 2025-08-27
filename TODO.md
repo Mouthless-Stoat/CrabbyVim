@@ -4,8 +4,8 @@ These are todo for the project not code todo and clean up, those are inline comm
 
 -   [x] Add mason to handle LSP and formatter
 -   [x] Add `gitsign.nvim` or fugitive for gutter icon
--   [ ] Set up various snacks
-    -   [ ] Dashboard?
+-   [x] Set up various snacks
+    -   [x] Dashboard?
     -   [x] `lazygit`
     -   [x] Indent (or try `hlclunk.nvim`)
     -   [x] Picker
