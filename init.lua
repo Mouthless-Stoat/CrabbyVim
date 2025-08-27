@@ -23,3 +23,4 @@ if not vim.uv.fs_stat(rust_config) then
     vim.cmd.cd(cwd)
 end
 require("config")
+vim.cmd.helptags(vim.fs.joinpath(config_path, "/doc"))
