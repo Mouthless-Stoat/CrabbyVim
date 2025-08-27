@@ -37,7 +37,6 @@ use mlua::{Function, Table};
 use nvim_oxi::mlua;
 
 use crate::autocmds::create_autocmd;
-use crate::keymaps::Action;
 use crate::{Mode, lua_table, require, table, vim};
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
