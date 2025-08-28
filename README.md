@@ -6,6 +6,26 @@
 
 A Neovim config completely written in Rust to be blazingly fast and to proof that everything can and will be rewrite in rust.
 
+
+
+<details>
+<summary>Screenshot</summary>
+
+<img width="1876" height="962" alt="image" src="https://github.com/user-attachments/assets/764421b7-28c4-4a19-af82-cb4c254827c6" />
+
+<img width="1881" height="968" alt="image" src="https://github.com/user-attachments/assets/1954f39c-9bad-4cdc-ad65-152dba6acd61" />
+
+<img width="1876" height="977" alt="image" src="https://github.com/user-attachments/assets/d47c50ca-a1c2-4d10-b637-910b4597584b" />
+
+<img width="1872" height="980" alt="image" src="https://github.com/user-attachments/assets/cb8bcfad-9ff0-45fa-82c7-124a498b3be4" />
+
+<img width="1878" height="974" alt="image" src="https://github.com/user-attachments/assets/e198322c-fea4-41db-9edd-e29bae08614b" />
+
+<img width="1875" height="968" alt="image" src="https://github.com/user-attachments/assets/82333470-02b3-44e4-8cf6-89007d684bdc" />
+
+<img width="1889" height="972" alt="image" src="https://github.com/user-attachments/assets/e4cd1ce4-74da-46c2-949c-93e3d5a839fb" />
+</details>
+
 ## Requirements
 
 -   Neovim = 0.11
