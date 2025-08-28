@@ -6,10 +6,12 @@ use crate::options::set_option;
 
 mod syntax;
 pub use syntax::*;
+mod markup;
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
     highlights()?;
     syntax::highlights()?;
+    markup::highlights()?;
 
     Ok(())
 }
