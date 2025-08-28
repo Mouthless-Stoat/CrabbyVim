@@ -71,10 +71,11 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
     Ok(table! {
         preset = table! {
             keys = vec![
-                table!{ hidden = true, key = "f", action = "<leader>sf" },
-                table!{ hidden = true, key = "s", action = ":Scratch" },
-                table!{ hidden = true, key = "u", action = ":Lazy update" },
-                table!{ hidden = true, key = "q", action = ":qa" }
+                table!{ hidden = true, key = "f", action = "<leader>sf" }, // Files
+                table!{ hidden = true, key = "r", action = "<leader>sr" }, // Recents
+                table!{ hidden = true, key = "u", action = ":Lazy update" }, // Update
+                table!{ hidden = true, key = "l", action = ":Lazy" }, // Lazy
+                table!{ hidden = true, key = "q", action = ":qa" } // qa
             ]
         },
         sections = lua_vec! [
@@ -84,8 +85,9 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                 align = "center",
                 text = vec![
                     text!(format!(" {} Files ", icons::FOLDER), "SnacksDashboardRed"),
-                    text!(format!(" {} Scratch ", icons::FILE), "SnacksDashboardGreen"),
+                    text!(format!(" {} Recents ", icons::CLOCK), "SnacksDashboardGreen"),
                     text!(format!(" {} Update ", icons::UPDATE), "SnacksDashboardYellow"),
+                    text!(format!(" {} Lazy ", icons::UPDATE), "SnacksDashboardBlue"),
                     text!(format!(" {} Quit ", icons::EXIT), "SnacksDashboardPurple")
                 ]
             },

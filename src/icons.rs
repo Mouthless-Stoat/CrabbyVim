@@ -40,7 +40,7 @@ icon_table! {
 
     GOOD = "";
     BAD = "";
-    PENDING = "";
+    CLOCK = "";
 
     INSTALLED = "󰋘";
     UNINSTALLED = "󰋙";
