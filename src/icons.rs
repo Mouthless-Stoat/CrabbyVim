@@ -75,4 +75,12 @@ icon_table! {
     UPDATE = "";
 
     LIGHTNING = "";
+
+    ONE = "󰬺 ";
+    TWO = "󰬻 ";
+    THREE = "󰬼 ";
+    FOUR = "󰬽 ";
+    FIVE = "󰬾 ";
+    SIX = "󰬿 ";
+
 }
