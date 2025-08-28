@@ -1,6 +1,6 @@
 #![allow(missing_docs)]
 
-use crate::lazy::LazyPlugin;
+use crate::lazy::{LazyLoad, LazyPlugin};
 
 macro_rules! plugin {
     ($mod:ident) => {
@@ -55,7 +55,7 @@ plugin! {
     delimiters with highlights;
     devicons;
     hop;
-    // ---
-    // "wakatime/vim-wakatime";
-    // LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())});
+    ---
+    LazyPlugin::new ("wakatime/vim-wakatime").lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
+    LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())}).lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
 }
