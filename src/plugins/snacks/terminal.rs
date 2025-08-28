@@ -6,16 +6,20 @@ use crate::{lua_table, require};
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     Ok(lua_table! {
         win = {
-            layout = {
-                box = "horizontal",
-                backdrop = false,
-                height = 0.6,
-                row = -1,
-            },
+            height = function(win)
+                if win.opts.position == "bottom" then
+                    return 0.6
+                end
+                return 0.9
+            end,
+            row = function(win)
+                if win.opts.position == "bottom" then
+                    return 0.6
+                end
+                return 1
+            end,
+            wo = { winbar = " " },
             keys = { ["<C-`>"] = { "hide", mode = "t" } },
-            wo = {
-                winbar = ""
-            }
         }
     })
 }
