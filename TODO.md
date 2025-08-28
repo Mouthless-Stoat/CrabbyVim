@@ -12,7 +12,7 @@ These are todo for the project not code todo and clean up, those are inline comm
         -   [x] File picker using file type icon provided by devicon
         -   [x] Icon for lsp workspace
         -   [x] Code actions preview
--   [ ] `floaterm.nvim` or use a custom implementation or use `snacks.terminal`
+-   [x] `floaterm.nvim` or use a custom implementation or use `snacks.terminal`
 -   [x] Status line configuration
 -   [x] A surround plugin for surrounding
 -   [ ] Dialing plugin
