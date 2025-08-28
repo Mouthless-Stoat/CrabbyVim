@@ -1,5 +1,9 @@
 # CrabbyVim
 
+<p align="center">
+  <img width="595" height="208" alt="image" src="https://github.com/user-attachments/assets/7d0e253d-67eb-4fee-bd1e-0996bedb83d9" />
+</p>
+
 A Neovim config completely written in Rust to be blazingly fast and to proof that everything can and will be rewrite in rust.
 
 ## Requirements
