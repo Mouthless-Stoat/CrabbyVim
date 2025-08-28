@@ -1,4 +1,4 @@
-use crate::lazy::{LazyPlugin, LazyVersion};
+use crate::lazy::{LazyLoad, LazyPlugin, LazyVersion};
 use crate::theme::{Color, HighlightOpt, set_hl};
 use crate::{icons, lua_table, table};
 
@@ -76,8 +76,11 @@ pub(crate) fn plugins() -> nvim_oxi::Result<Vec<LazyPlugin>> {
             .depend(&["neovim/nvim-lspconfig", "L3MON4D3/LuaSnip"])
             .version(LazyVersion::Semver("1.*"))
             .opts_extend(&["sources.default"])
-            .opts(blink_opt),
-        LazyPlugin::new("L3MON4D3/LuaSnip").version(LazyVersion::Semver("v2.*")),
+            .opts(blink_opt)
+            .lazy_load(LazyLoad::new(true)),
+        LazyPlugin::new("L3MON4D3/LuaSnip")
+            .version(LazyVersion::Semver("v2.*"))
+            .lazy_load(LazyLoad::new(true)),
     ])
 }
 

@@ -1,7 +1,7 @@
 use crate::theme::{HighlightOpt, configure_highlights};
 use crate::{icons, table};
 
-use crate::lazy::LazyPlugin;
+use crate::lazy::{LazyLoad, LazyPlugin};
 use crate::plugins::Plugins;
 
 pub(crate) fn plugins() -> Plugins {
@@ -14,14 +14,16 @@ pub(crate) fn plugins() -> Plugins {
         untracked = table!{text = icons::UNTRACKED}
     };
 
-    Ok(vec![LazyPlugin::new("lewis6991/gitsigns.nvim").opts(
-        table! {
-            signs = &signs_table,
-            signs_staged = signs_table,
-            numhl = true,
-            attach_to_untracked = true
-        },
-    )])
+    Ok(vec![
+        LazyPlugin::new("lewis6991/gitsigns.nvim")
+            .opts(table! {
+                signs = &signs_table,
+                signs_staged = signs_table,
+                numhl = true,
+                attach_to_untracked = true
+            })
+            .lazy_load(LazyLoad::new(true).events(&["BufReadPost"])),
+    ])
 }
 
 pub fn highlights() -> nvim_oxi::Result<()> {

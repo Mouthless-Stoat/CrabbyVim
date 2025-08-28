@@ -15,13 +15,8 @@ pub fn plugins() -> Plugins {
             LazyLoad::new(true)
                 .add_key(LazyKey::new("<leader><leader>").action("<cmd>HopWord<cr>"))
                 .add_key(
-                    LazyKey::new("f")
+                    LazyKey::new("s")
                         .action("<cmd>HopChar1<cr>")
-                        .modes(Mode::nvo()),
-                )
-                .add_key(
-                    LazyKey::new("t")
-                        .action(hop("hint_char1", table! {hint_offset = -1}))
                         .modes(Mode::nvo()),
                 ),
         ),

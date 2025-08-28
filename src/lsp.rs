@@ -33,7 +33,7 @@
 //! ```
 
 use mlua::ObjectLike;
-use mlua::{Function, Table};
+use mlua::Table;
 use nvim_oxi::mlua;
 
 use crate::autocmds::create_autocmd;
@@ -65,7 +65,14 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
         },
     });
 
-    lsp.configure()?;
+    create_autocmd(
+        &["BufReadPre", "CmdlineEnter"],
+        &["*"],
+        move |_| -> nvim_oxi::Result<()> {
+            lsp.configure()?;
+            Ok(())
+        },
+    )?;
 
     create_autocmd(&["LspAttach"], &["*"], |mut args| {
         let mut set_key =
@@ -141,13 +148,13 @@ pub struct LspConfig {
 ///
 /// lsp.configure()?;
 /// ```
-pub struct Lsp(Vec<LspConfig>);
+pub struct Lsp(Vec<LspConfig>, bool);
 
 impl Lsp {
     /// Create a new LSP structure to configure the LSP servers
     #[must_use]
     pub fn new() -> Self {
-        Lsp(vec![])
+        Lsp(vec![], false)
     }
 
     /// Add a new LSP server config
@@ -156,16 +163,21 @@ impl Lsp {
     }
 
     /// Configure the LSP server with all config.
-    pub fn configure(self) -> nvim_oxi::Result<()> {
+    pub fn configure(&self) -> nvim_oxi::Result<()> {
+        if self.1 {
+            return Ok(());
+        }
         let vim_lsp = crate::vim()?.get::<Table>("lsp")?;
         let lsp_config = vim_lsp.get::<Table>("config")?;
 
-        for config in self.0 {
+        for config in &self.0 {
             lsp_config.set(config.name, table! {
-                settings = config.settings,
-                capabilities = require("blink.cmp")?.get::<Function>("get_lsp_capabilities")?.call::<Table>(())?
+                settings = config.settings.clone(),
+                capabilities = require("blink.cmp")?.get::<mlua::Function>("get_lsp_capabilities")?.call::<Table>(())?
             })?;
-            vim_lsp.get::<Function>("enable")?.call::<()>(config.name)?;
+            vim_lsp
+                .get::<mlua::Function>("enable")?
+                .call::<()>(config.name)?;
         }
 
         Ok(())

@@ -26,7 +26,7 @@
 use nvim_oxi::api::types::StatuslineInfos;
 
 use crate::{
-    autocmds::create_autocmd_cmd,
+    autocmds::{create_autocmd_cmd, create_autocmd_oneshot},
     options::{get_option, set_option},
     theme::{Color, HighlightOpt, configure_highlights, set_hl},
 };
@@ -91,11 +91,13 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
         })?,
     )?;
 
-    set_option("statusline", "%!v:lua.statusline()")?;
-    set_option("winbar", "%{%v:lua.winbar()%}")?;
-
-    create_autocmd_cmd(&["User"], &["GitSignsUpdate"], "redrawstatus!")?;
-    create_autocmd_cmd(&["DiagnosticChanged"], &["*"], "redrawstatus!")?;
+    create_autocmd_oneshot("User", &["VeryLazy"], |_| {
+        set_option("statusline", "%!v:lua.statusline()")?;
+        set_option("winbar", "%{%v:lua.winbar()%}")?;
+        create_autocmd_cmd(&["User"], &["GitSignsUpdate"], "redrawstatus!")?;
+        create_autocmd_cmd(&["DiagnosticChanged"], &["*"], "redrawstatus!")?;
+        Ok(())
+    })?;
 
     Ok(())
 }

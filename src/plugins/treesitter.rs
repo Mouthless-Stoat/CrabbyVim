@@ -1,4 +1,4 @@
-use crate::lazy::{LazyPlugin, LazyVersion};
+use crate::lazy::{LazyLoad, LazyPlugin, LazyVersion};
 use crate::lua_table;
 
 use super::Plugins;
@@ -31,6 +31,11 @@ pub(crate) fn plugins() -> Plugins {
                     additional_vim_regex_highlighting = false
                 },
                 indent = { enable = true }
-            }),
+            })
+            .lazy_load(
+                LazyLoad::new(true)
+                    .events(&["BufReadPost", "BufNewFile"])
+                    .cmd(&["TSInstall", "TSUpdate"]),
+            ),
     ])
 }

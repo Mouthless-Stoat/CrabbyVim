@@ -1,12 +1,15 @@
 use mlua::ObjectLike;
 
+use crate::lazy::{LazyLoad, LazyPlugin};
 use crate::{require, table};
 
 use super::Plugins;
 
 #[allow(clippy::unnecessary_wraps)]
 pub(crate) fn plugins() -> Plugins {
-    Ok(vec!["nvim-tree/nvim-web-devicons".into()])
+    Ok(vec![
+        LazyPlugin::new("nvim-tree/nvim-web-devicons").lazy_load(LazyLoad::new(true)),
+    ])
 }
 
 pub fn get_icon_by_filetype(filetype: String) -> nvim_oxi::Result<String> {

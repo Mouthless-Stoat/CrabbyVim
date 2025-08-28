@@ -1,4 +1,4 @@
-use crate::lazy::LazyPlugin;
+use crate::lazy::{LazyLoad, LazyPlugin};
 use crate::table;
 use crate::theme::{HighlightOpt, set_hl};
 
@@ -10,7 +10,8 @@ pub(crate) fn plugins() -> Plugins {
             .main("rainbow-delimiters.setup")
             .opts(table! {
                 highlight = delimiter_highlights()
-            }),
+            })
+            .lazy_load(LazyLoad::new(true).events(&["BufReadPost", "BufNewFile"])),
     ])
 }
 

@@ -14,7 +14,11 @@ macro_rules! mini {
 plugin! {
     mini!(ai).opts(lua_table!{
         search_method = "cover"
-    });
+    }).lazy_load(
+        LazyLoad::new(true)
+            .add_key(LazyKey::new("a").modes(Mode::nvo()))
+            .add_key(LazyKey::new("i").modes(Mode::nvo()))
+    );
     mini!(move).lazy_load(
         LazyLoad::new(true)
             .add_key(LazyKey::new("<M-h>").modes(&[Mode::Normal, Mode::Visual]))

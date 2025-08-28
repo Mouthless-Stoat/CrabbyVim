@@ -1,4 +1,4 @@
-use crate::lazy::{LazyPlugin, LazyVersion};
+use crate::lazy::{LazyLoad, LazyPlugin, LazyVersion};
 use crate::lua_table;
 use crate::theme::{HighlightOpt, configure_highlights};
 
@@ -32,7 +32,8 @@ pub(crate) fn plugins() -> Plugins {
                     },
                     override_vim_notify = true
                 },
-            }),
+            })
+            .lazy_load(LazyLoad::new(true).events(&["VeryLazy"])),
     ])
 }
 
