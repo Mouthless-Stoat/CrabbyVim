@@ -24,7 +24,7 @@ pub fn get_icon(file: &str) -> nvim_oxi::Result<(String, String)> {
         let mut t = file.split('.');
         match (t.next(), t.next()) {
             (Some(name), None) => (name, ""),
-            (Some(name), Some(ext)) => (name, ext),
+            (Some(_), Some(ext)) => (file, ext),
             (None, None | Some(_)) => unreachable!(),
         }
     };
