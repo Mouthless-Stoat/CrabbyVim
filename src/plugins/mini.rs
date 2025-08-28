@@ -7,7 +7,7 @@ use crate::{
 
 macro_rules! mini {
     ($name:ident) => {
-        $crate::lazy::LazyPlugin::new(concat!("echasnovski/mini.", stringify!($name)))
+        $crate::lazy::LazyPlugin::new(concat!("nvim-mini/mini.", stringify!($name)))
     };
 }
 
