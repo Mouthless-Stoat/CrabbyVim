@@ -106,7 +106,7 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     Ok(())
 }
 
-pub fn key() -> nvim_oxi::Result<Vec<LazyKey>> {
+pub fn keys() -> nvim_oxi::Result<Vec<LazyKey>> {
     Ok(vec![
         LazyKey::new("<Leader>sf")
             .action(picker("files", lua_table! {layout={hidden={"preview"}}})),

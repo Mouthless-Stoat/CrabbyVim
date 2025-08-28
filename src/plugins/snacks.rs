@@ -43,7 +43,7 @@ pub(crate) fn plugins() -> Plugins {
             .lazy_load(
                 LazyLoad::new(true)
                     .events(&["VeryLazy"])
-                    .add_keys(picker::key()?)
+                    .add_keys(picker::keys()?)
                     .add_keys(terminal::keys())
                     .add_key(LazyKey::new("<Leader>g").action(|| {
                         require("snacks")?
