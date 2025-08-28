@@ -10,6 +10,7 @@ use super::delimiters::delimiter_highlights;
 
 mod dashboard;
 mod picker;
+mod terminal;
 
 pub(crate) fn plugins() -> Plugins {
     create_command(
@@ -29,6 +30,7 @@ pub(crate) fn plugins() -> Plugins {
                 },
                 picker = picker::config()?,
                 dashboard = dashboard::config()?,
+                terminal = terminal::config()?,
                 lazygit = lua_table!{
                     config = {
                         os = { editPreset = "" }
@@ -42,6 +44,7 @@ pub(crate) fn plugins() -> Plugins {
                 LazyLoad::new(true)
                     .events(&["VeryLazy"])
                     .add_keys(picker::key()?)
+                    .add_keys(terminal::keys())
                     .add_key(LazyKey::new("<Leader>g").action(|| {
                         require("snacks")?
                             .get::<Table>("lazygit")?
