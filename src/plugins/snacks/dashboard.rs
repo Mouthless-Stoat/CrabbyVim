@@ -115,9 +115,10 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                         }
                     },
 
-                height = 10,
+                height = 5,
                 indent = 1,
-                padding = 1
+                padding = 1,
+                ttl = 60 // refresh every 5 minute
             },
             func! {
                 || -> mlua::Table {
