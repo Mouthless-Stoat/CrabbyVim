@@ -96,7 +96,7 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
             table!{
                 title = text!("Recents", "SnacksDashboardGreen"),
                 icon = text!(icons::FILE, "SnacksDashboardGreen"),
-                section = "recent_files", limit = 5, indent = 2, padding = 1
+                section = "recent_files", limit = 10, indent = 2, padding = 1
             },
             table!{
                 title = text!("Projects", "SnacksDashboardBlue"),
