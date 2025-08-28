@@ -5,7 +5,7 @@ config_path = vim.fn.stdpath("config")
 binary_path = vim.fs.joinpath(
     config_path,
     "/target/release",
-    vim.fn.has("win32") == 1 and "config.dll" or (vim.fn.has("mac") == 1 and "config.dylib" or "config.so")
+    vim.fn.has("win32") == 1 and "config.dll" or (vim.fn.has("mac") == 1 and "libconfig.dylib" or "libconfig.so")
 )
 rust_config = vim.fs.joinpath(config_path, "/lua", vim.fn.has("win32") == 1 and "config.dll" or "config.so")
 
