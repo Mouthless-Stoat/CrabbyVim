@@ -1,5 +1,6 @@
 use mlua::{ObjectLike, Table};
 
+use crate::commands::create_command;
 use crate::lazy::{LazyKey, LazyLoad, LazyPlugin};
 use crate::plugins::Plugins;
 use crate::theme::{HighlightOpt, configure_highlights};
@@ -11,6 +12,11 @@ mod dashboard;
 mod picker;
 
 pub(crate) fn plugins() -> Plugins {
+    create_command(
+        "Open the dashboard",
+        "CrabbyDash",
+        ":lua Snacks.dashboard()",
+    )?;
     // TODO: replace this lua spam with rust function to be more "authentic"
     Ok(vec![
         LazyPlugin::new("folke/snacks.nvim")
