@@ -132,6 +132,7 @@ pub fn highlights() -> nvim_oxi::Result<()> {
     configure_highlights(vec![
         ("SnacksDashboardKey", HighlightOpt::with_fg(Yellow)),
         ("SnacksDashboardFile", HighlightOpt::with_fg(Blue)),
+        ("SnacksDashboardIcon", HighlightOpt::with_fg(Blue)),
         (
             "SnacksDashboardFooter",
             HighlightOpt::with_fg(Gray).italic(),
@@ -189,10 +190,9 @@ pub fn header() -> nvim_oxi::Result<mlua::Table> {
 pub fn startup() -> nvim_oxi::Result<Vec<mlua::Table>> {
     let stats = require("lazy")?.call_function::<Table>("stats", ())?;
     let ms = (stats.get::<f64>("startuptime")? * 100.0 + 0.5).floor() / 100.0;
-    vim_notify(&ms.to_string(), LogLevel::Debug)?;
 
     Ok(vec![
-        text!(icons::LIGHTNING, "SnacksDashboardYellowIta"),
+        text!(icons::LIGHTNING, "SnacksDashboardYellow"),
         text!(" Neovim loaded ", "SnacksDashboardFooter"),
         text!(
             stats.get::<i32>("loaded")?.to_string(),
