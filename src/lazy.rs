@@ -144,6 +144,7 @@ pub struct LazyPlugin {
     build: Option<&'static str>,
     version: Option<LazyVersion>,
     lazy_load: Option<LazyLoad>,
+    priority: Option<usize>,
 }
 
 impl Lazy {
@@ -306,6 +307,13 @@ impl LazyPlugin {
         self.opts_extend = Some(opt_extend);
         self
     }
+
+    /// Specify the loading priority of this plugins. Equivalent to `priority` in spec
+    #[must_use]
+    pub fn priority(mut self, priority: usize) -> Self {
+        self.priority = Some(priority);
+        self
+    }
 }
 
 impl LazyLoad {
@@ -421,6 +429,10 @@ impl IntoLua for LazyPlugin {
                 LazyVersion::Tag(t) => spec.set("tag", t)?,
                 LazyVersion::Semver(v) => spec.set("version", v)?,
             }
+        }
+
+        if let Some(priority) = self.priority {
+            spec.set("priority", priority)?;
         }
 
         if let Some(lazy_load) = self.lazy_load {
