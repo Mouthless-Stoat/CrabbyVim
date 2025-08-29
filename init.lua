@@ -1,5 +1,5 @@
 -- Rebuilt rust config on startup
-local WIP = true
+local WIP = false
 
 config_path = vim.fn.stdpath("config")
 binary_path = vim.fs.joinpath(
