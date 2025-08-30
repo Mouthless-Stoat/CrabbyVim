@@ -75,6 +75,8 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
 
     winbar.exclude_ft("snacks_dashboard");
     winbar.exclude_ft("snacks_terminal");
+    winbar.exclude_ft("undotree");
+    winbar.exclude_ft("diff");
 
     #[rustfmt::skip]
     nvim_oxi::mlua::lua().globals().set(
