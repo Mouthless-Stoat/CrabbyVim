@@ -9,7 +9,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
         set_local_option("linebreak", true)?;
         set_local_option("spell", true)?;
         set_local_option("breakindent", true)?;
-        set_local_option("showbreak", "| ")?;
+        set_local_option("showbreak", "│ ")?;
         Ok(())
     })?;
 
