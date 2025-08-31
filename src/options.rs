@@ -81,17 +81,27 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     })?;
 
     if nvim_oxi::api::get_var::<bool>("neovide").is_ok() {
-        configure_neovide()?;
+        configure_neovide(false)?;
     }
 
     Ok(())
 }
 
-fn configure_neovide() -> nvim_oxi::Result<()> {
-    set_neovide_option("scale_factor", 1.0)?;
-    set_neovide_option("cursor_animation_length", 0.08)?;
-    set_neovide_option("cursor_trail_size", 0.5)?;
-    set_neovide_option("position_animation_length", 0)?;
+fn configure_neovide(animation: bool) -> nvim_oxi::Result<()> {
+    if animation {
+        set_neovide_option("scale_factor", 1.0)?;
+        set_neovide_option("cursor_animation_length", 0.08)?;
+        set_neovide_option("cursor_trail_size", 0.5)?;
+        set_neovide_option("position_animation_length", 0)?;
+    } else {
+        set_neovide_option("position_animation_length", 0)?;
+        set_neovide_option("cursor_animation_length", 0.0)?;
+        set_neovide_option("cursor_trail_size", 0)?;
+        set_neovide_option("cursor_animate_in_insert_mode", false)?;
+        set_neovide_option("cursor_animate_command_line", false)?;
+        set_neovide_option("scroll_animation_far_lines", 0)?;
+        set_neovide_option("scroll_animation_length", 0.0)?;
+    }
 
     set_neovide_option("padding_left", 10)?;
 
