@@ -3,7 +3,7 @@ use mlua::ObjectLike;
 use crate::keymaps::Action;
 use crate::lazy::LazyKey;
 use crate::theme::{HighlightOpt, set_hl};
-use crate::{icons, lua_table, require, table};
+use crate::{icons, lua_table, require, table, expr};
 
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
@@ -88,6 +88,15 @@ pub fn config() -> nvim_oxi::Result<mlua::Table> {
                 Operator = icons::OPERATOR,
                 TypeParameter = icons::TYPE_PARAMETER
             }
+        },
+        config = expr!{
+            return mlua::Function;
+            function(conf)
+                if conf.source == "select" then
+                    conf.focus = "list"
+                end
+                return conf
+            end
         }
     })
 }
