@@ -63,7 +63,7 @@
 
 use mlua::IntoLua;
 
-use crate::Mode;
+use crate::{Mode, lua_table};
 use crate::{keymaps::Action, table, vim_fn};
 
 /// Main struct for configuring and setting up lazy.
@@ -209,13 +209,16 @@ impl Lazy {
     pub fn setup(self) -> nvim_oxi::Result<()> {
         Self::bootstrap()?;
 
-        let tbl = table! {
-            change_detection = table! {
+        let tbl = lua_table! {
+            change_detection = {
                 enable = false,
                 notify = false
             },
-            rocks = table! {
+            rocks = {
                 enabled = false
+            },
+            checker = {
+                enabled = true
             }
         };
 
