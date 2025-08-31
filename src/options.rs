@@ -49,7 +49,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     set_option("undofile", true)?;
 
     set_option("scrolloff", 8)?;
-    set_option("guifont", "CaskaydiaCove Nerd Font Mono:h10:#h-none")?;
+    set_option("guifont", "CaskaydiaCove NFM:h10:#h-none")?;
 
     if vim_fn("has", "win32")? {
         // god bless this soul https://www.reddit.com/r/neovim/comments/1crdv93/comment/lolujpr
