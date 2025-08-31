@@ -51,7 +51,7 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
     set_option("scrolloff", 8)?;
     set_option("guifont", "CaskaydiaCove NFM:h10:#h-none")?;
 
-    if vim_fn("has", "win32")? {
+    if vim_fn::<i32>("has", "win32")? == 1 {
         // god bless this soul https://www.reddit.com/r/neovim/comments/1crdv93/comment/lolujpr
         set_option("shell", "pwsh.exe")?;
         set_option(
