@@ -21,7 +21,8 @@ pub fn plugins() -> Plugins {
                         yaml = {},
                     }
                 },
-                markdown = renderer_config()?
+                markdown = renderer_config()?,
+                typst = table!{ enable = false }
             })
             .lazy_load(LazyLoad::new(true)),
     ])
