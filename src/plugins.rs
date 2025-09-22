@@ -59,4 +59,5 @@ plugin! {
     ---
     LazyPlugin::new ("wakatime/vim-wakatime").lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
     LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())}).lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
+    "chomosuke/typst-preview.nvim";
 }
