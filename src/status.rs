@@ -371,7 +371,11 @@ impl Line {
             render_section(&mut self.right)?,
         );
 
-        let (left, right) = equalize(left, right)?;
+        let (left, right) = if cent.is_empty() && lcent.is_empty() && rcent.is_empty() {
+            (left, right)
+        } else {
+            equalize(left, right)?
+        };
         // fliped because the padding direction is reversed on center
         let (rcent, lcent) = equalize(rcent, lcent)?;
 
