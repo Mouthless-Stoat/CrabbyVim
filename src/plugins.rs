@@ -55,7 +55,6 @@ plugin! {
     delimiters with highlights;
     devicons;
     hop;
-    markview with highlights;
     undotree;
     ---
     LazyPlugin::new ("wakatime/vim-wakatime").lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));

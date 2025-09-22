@@ -9,7 +9,6 @@ use super::Plugins;
 pub(crate) fn plugins() -> Plugins {
     Ok(vec![
         LazyPlugin::new("nvim-treesitter/nvim-treesitter")
-            .depend(&["OXY2DEV/markview.nvim"])
             .main("nvim-treesitter.configs")
             .version(LazyVersion::Branch("master"))
             .build(":TSUpdate")
