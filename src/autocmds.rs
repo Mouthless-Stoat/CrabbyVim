@@ -4,7 +4,7 @@ use nvim_oxi::api::types::LogLevel;
 use crate::{options::set_local_option, vim_fn, vim_notify};
 
 pub(crate) fn configure() -> nvim_oxi::Result<()> {
-    create_autocmd(&["BufEnter"], &["*.md"], |_| {
+    create_autocmd(&["BufEnter"], &["*.md", "*.typ"], |_| {
         set_local_option("wrap", true)?;
         set_local_option("linebreak", true)?;
         set_local_option("spell", true)?;
