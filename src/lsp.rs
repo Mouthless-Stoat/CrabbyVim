@@ -65,6 +65,23 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
         },
     });
 
+    lsp.add_config(LspConfig {
+        name: "lua_ls",
+        settings: lua_table! {
+            workspace = {
+                library = {
+                    "C:\\Users\\nphuy\\AppData\\Roaming\\Balatro\\Mods\\lovely\\dump",
+                    "C:\\Users\\nphuy\\AppData\\Roaming\\Balatro\\Mods\\smods"
+                }
+            }
+        },
+    });
+
+    lsp.add_config(LspConfig {
+        name: "tinymist",
+        settings: lua_table! {},
+    });
+
     create_autocmd(
         &["BufReadPre", "CmdlineEnter"],
         &["*"],
