@@ -82,5 +82,4 @@ icon_table! {
     FOUR = "󰬽 ";
     FIVE = "󰬾 ";
     SIX = "󰬿 ";
-
 }
