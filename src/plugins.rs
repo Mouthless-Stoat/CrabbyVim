@@ -58,7 +58,6 @@ plugin! {
     undotree;
     ---
     // LazyPlugin::new ("wakatime/vim-wakatime").lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
-    LazyPlugin::new("FilipHarald/aw-watcher-vim").callback(|_|{Ok(())}).lazy_load(LazyLoad::new(true).events(&["VeryLazy"]));
     LazyPlugin::new("chomosuke/typst-preview.nvim").opts(crate::lua_table!{
         port = 8000
     });

@@ -145,6 +145,7 @@ pub struct LazyPlugin {
     version: Option<LazyVersion>,
     lazy_load: Option<LazyLoad>,
     priority: Option<usize>,
+    cond: bool,
 }
 
 impl Lazy {
@@ -303,7 +304,7 @@ impl LazyPlugin {
         self
     }
 
-    // TODO: Add documentation when this is finally documented by folke
+    // TODO: Add documentation when this is finally documented by folke.
     #[allow(missing_docs)]
     #[must_use]
     pub fn opts_extend(mut self, opt_extend: &'static [&'static str]) -> Self {
@@ -311,7 +312,7 @@ impl LazyPlugin {
         self
     }
 
-    /// Specify the loading priority of this plugins. Equivalent to `priority` in spec
+    /// Specify the loading priority of this plugins. Equivalent to `priority` in spec.
     #[must_use]
     pub fn priority(mut self, priority: usize) -> Self {
         self.priority = Some(priority);
