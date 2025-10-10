@@ -30,37 +30,7 @@ plugin! {
 
     // follow mini.surround doc for similar setup to tpope/vim-surround. Hitting a twice for
     // arround motion feel strange
-    mini!(surround)
-        .lazy_load(
-            LazyLoad::new(true)
-                .add_key("ys")
-                .add_key("ds")
-                .add_key("cs")
-                .add_key(LazyKey::new("S").modes(&[Mode::Visual]))
-        ).opts(lua_table! {
-            mappings = {
-            add = "ys",
-                delete = "ds",
-                find = "",
-                find_left = "",
-                highlight = "",
-                replace = "cs",
-                update_n_lines = "",
-                suffix_last = "",
-                suffix_next = "",
-            },
-            search_method = "cover",
-        })
-        .callback(|opts| {
-            use crate::Mode::*;
-
-            require_setup("mini.surround", opts)?;
-
-            nvim_oxi::api::del_keymap(Visual.into(), "ys")?;
-            set_key(&[Visual], "S", ":<C-u>lua MiniSurround.add('visual')<CR>")?;
-
-            set_key(&[Normal], "yss", "ys_")?;
-
-            Ok(())
-        });
+    mini!(surround).lazy_load(LazyLoad::new(true).add_key("s")).opts(
+            lua_table! { search_method = "cover" }
+    );
 }
