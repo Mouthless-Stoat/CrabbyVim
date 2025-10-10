@@ -18,7 +18,8 @@ pub(crate) fn plugins() -> Plugins {
                     markdown = ["prettier"],
                     rust = ["rustfmt"],
                     yaml = ["prettier"],
-                    toml = ["taplo"]
+                    toml = ["taplo"],
+                    typst = ["typstyle"]
                 }
             })
             .callback(|opts| {
