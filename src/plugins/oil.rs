@@ -10,7 +10,6 @@ pub(crate) fn plugins() -> Plugins {
         skip_confirm_for_simple_edits = true,
 
         keymaps = {
-            ["q"] = { "actions.close" },
             ["<C-s>"] = false,
             ["<C-h>"] = false
         },
