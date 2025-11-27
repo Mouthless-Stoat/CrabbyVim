@@ -18,16 +18,17 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        formatter = pkgs.nixfmt-tree;
         packages.default = pkgs.rustPlatform.buildRustPackage {
           pname = "crabby-vim";
           version = "0.1.0";
           src = ./.;
-	  cargoHash = "sha256-s0hk3c/RzR/HmFhFeGI5rV/Dwc9jHNmaD5IDd9kFHYc=";
-	  postInstall = ''
-	    mkdir $out -p
-	    cp $out/lib/libconfig.so $out/config.so
-	    rm -r $out/lib
-	  '';
+          cargoHash = "sha256-5TNyFafpRucgs5GDzIrMuQcGjNV7MyCHvYqF7JuP14M=";
+          postInstall = ''
+            	    mkdir $out -p
+            	    cp $out/lib/libconfig.so $out/config.so
+            	    rm -r $out/lib
+            	  '';
         };
       }
     );
