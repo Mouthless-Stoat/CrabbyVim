@@ -59,7 +59,8 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
                     enable = true
                 },
                 check = {
-                    command = "clippy"
+                    command = "clippy",
+                    allTargets = true
                 }
             }
         },
