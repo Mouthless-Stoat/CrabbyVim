@@ -28,9 +28,7 @@ plugin! {
     );
     mini!(pairs).lazy_load(LazyLoad::new(true).events(&["InsertEnter *.*"]));
 
-    // follow mini.surround doc for similar setup to tpope/vim-surround. Hitting a twice for
-    // arround motion feel strange
     mini!(surround).lazy_load(LazyLoad::new(true).add_key("s")).opts(
-            lua_table! { search_method = "cover" }
+            lua_table! { search_method = "cover", n_lines = 50 }
     );
 }
