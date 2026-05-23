@@ -82,6 +82,11 @@ pub(crate) fn configure() -> nvim_oxi::Result<()> {
         settings: lua_table! {},
     });
 
+    lsp.add_config(LspConfig {
+        name: "denols",
+        settings: lua_table! {},
+    });
+
     create_autocmd(
         &["BufReadPre", "CmdlineEnter"],
         &["*"],

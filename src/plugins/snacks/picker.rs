@@ -3,7 +3,7 @@ use mlua::ObjectLike;
 use crate::keymaps::Action;
 use crate::lazy::LazyKey;
 use crate::theme::{HighlightOpt, set_hl};
-use crate::{icons, lua_table, require, table, expr};
+use crate::{expr, icons, lua_table, require, table};
 
 pub fn config() -> nvim_oxi::Result<mlua::Table> {
     use icons::*;
